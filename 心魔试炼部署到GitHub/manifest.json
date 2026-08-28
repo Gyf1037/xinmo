@@ -1,0 +1,31 @@
+{
+  "name": "心魔试炼 · 专注修仙录",
+  "short_name": "心魔试炼",
+  "description": "以专注为剑，斩上古凶兽。记录每日专注时长，与心魔凶兽一战的修行小游戏。",
+  "lang": "zh-CN",
+  "start_url": "./心魔试炼.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0a14",
+  "theme_color": "#0a0a14",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
