@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -45,9 +45,68 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(100, 70, 140, 0.25) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(40, 70, 100, 0.2) 0%, transparent 60%);
+    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(100, 60, 150, 0.3) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 85% 110%, rgba(30, 80, 110, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(140, 50, 80, 0.12) 0%, transparent 55%),
+    linear-gradient(180deg, #0a0a16 0%, #0f0c22 40%, #0a1020 100%);
 }
+/* 全局仙侠氛围背景 */
+.global-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.gb-stars {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 35% 65%, rgba(255,255,255,0.35), transparent),
+    radial-gradient(1.5px 1.5px at 55% 15%, rgba(212,175,55,0.4), transparent),
+    radial-gradient(1px 1px at 75% 45%, rgba(255,255,255,0.3), transparent),
+    radial-gradient(1px 1px at 90% 75%, rgba(154,215,230,0.35), transparent),
+    radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.25), transparent),
+    radial-gradient(1.5px 1.5px at 65% 30%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 45% 50%, rgba(212,175,55,0.3), transparent),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.35), transparent),
+    radial-gradient(1px 1px at 5% 40%, rgba(154,215,230,0.3), transparent);
+  opacity: 0.6;
+}
+.gb-mountains {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 35%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='%230c0a1e' d='M0,224 L120,160 L240,200 L360,120 L480,180 L600,100 L720,160 L840,80 L960,140 L1080,90 L1200,150 L1320,110 L1440,170 L1440,320 L0,320 Z'/%3E%3Cpath fill='%2312102a' d='M0,256 L160,200 L320,240 L480,180 L640,220 L800,160 L960,200 L1120,150 L1280,190 L1440,160 L1440,320 L0,320 Z' opacity='0.6'/%3E%3C/svg%3E") bottom center / cover no-repeat;
+  opacity: 0.5;
+}
+.gb-embers { position: absolute; inset: -20% 0; background-repeat: repeat; }
+.gb-embers-1 {
+  background-image:
+    radial-gradient(2px 2px at 10% 80%, rgba(212,175,55,0.5), transparent),
+    radial-gradient(1.5px 1.5px at 30% 60%, rgba(212,175,55,0.4), transparent),
+    radial-gradient(2px 2px at 50% 90%, rgba(154,215,230,0.4), transparent),
+    radial-gradient(1px 1px at 70% 70%, rgba(212,175,55,0.35), transparent),
+    radial-gradient(1.5px 1.5px at 90% 50%, rgba(212,175,55,0.45), transparent),
+    radial-gradient(1px 1px at 20% 40%, rgba(154,215,230,0.3), transparent),
+    radial-gradient(2px 2px at 60% 30%, rgba(212,175,55,0.35), transparent),
+    radial-gradient(1.5px 1.5px at 85% 85%, rgba(212,175,55,0.4), transparent);
+  background-size: 100% 100%;
+  animation: emberRise1 18s linear infinite;
+}
+.gb-embers-2 {
+  background-image:
+    radial-gradient(1.5px 1.5px at 15% 70%, rgba(212,175,55,0.35), transparent),
+    radial-gradient(1px 1px at 40% 85%, rgba(154,215,230,0.3), transparent),
+    radial-gradient(2px 2px at 65% 55%, rgba(212,175,55,0.4), transparent),
+    radial-gradient(1px 1px at 80% 95%, rgba(212,175,55,0.3), transparent),
+    radial-gradient(1.5px 1.5px at 5% 50%, rgba(212,175,55,0.25), transparent),
+    radial-gradient(1px 1px at 55% 75%, rgba(154,215,230,0.35), transparent);
+  background-size: 100% 100%;
+  animation: emberRise2 25s linear infinite;
+}
+@keyframes emberRise1 { 0% { transform: translateY(30%); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 0.8; } 100% { transform: translateY(-30%); opacity: 0; } }
+@keyframes emberRise2 { 0% { transform: translateY(25%); opacity: 0; } 15% { opacity: 0.9; } 85% { opacity: 0.7; } 100% { transform: translateY(-35%); opacity: 0; } }
+.page-container { position: relative; z-index: 1; }
+.home-advance { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+@media (max-width: 700px) { .home-advance { grid-template-columns: 1fr; } }
+.daily-task-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.daily-task-row input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
+.daily-task-row.done .form-input { text-decoration: line-through; opacity: 0.5; }
+.realm-progress-bar { height: 8px; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; margin: 8px 0 4px; }
+.realm-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--cinnabar)); border-radius: 4px; transition: width 0.5s; }
 h1, h2, h3, h4, .serif { font-family: 'Noto Serif SC', serif; }
 button { font-family: inherit; cursor: pointer; border: none; outline: none; }
 input, textarea, select { font-family: inherit; outline: none; }
@@ -377,7 +436,6 @@ input, textarea, select { font-family: inherit; outline: none; }
 .equip-stats { font-size: 11px; color: var(--text-dim); }
 .equip-stats span { margin-right: 8px; }
 .equip-stats .power { color: var(--cinnabar-light); }
-.equip-stats .hp { color: var(--jade-light); }
 .equip-stats .crit { color: var(--gold-light); }
 .equip-cat-tag {
   font-size: 10px; padding: 2px 6px; border-radius: 4px;
@@ -522,6 +580,65 @@ input, textarea, select { font-family: inherit; outline: none; }
 .log-entry.monster { color: var(--cinnabar-light); }
 .log-entry.system { color: var(--gold-light); font-weight: 600; }
 .log-entry.crit { color: var(--gold-light); font-weight: 700; }
+/* ========== 灵力条 ========== */
+.spirit-bar-container {
+  width: 170px; height: 12px;
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(139,107,184,0.5);
+  border-radius: 6px; overflow: hidden;
+  margin: 6px auto 0; position: relative;
+}
+.spirit-bar {
+  height: 100%; border-radius: 5px;
+  background: linear-gradient(90deg, var(--purple-dark) 0%, var(--purple) 55%, var(--jade-light) 100%);
+  transition: width 0.4s ease;
+}
+.spirit-text {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: #fff; font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+}
+/* ========== 状态徽章 ========== */
+.status-list {
+  display: flex; justify-content: center; gap: 4px;
+  margin-top: 4px; min-height: 18px; flex-wrap: wrap;
+}
+.status-badge {
+  font-size: 10px; padding: 1px 7px; border-radius: 8px;
+  background: rgba(139,107,184,0.2); border: 1px solid rgba(139,107,184,0.5);
+  color: var(--jade-light); font-weight: 600; white-space: nowrap;
+}
+.status-badge.debuff { color: var(--cinnabar-light); border-color: rgba(194,59,34,0.5); background: rgba(194,59,34,0.15); }
+.status-badge.buff { color: var(--gold-light); border-color: rgba(212,175,55,0.5); background: rgba(212,175,55,0.12); }
+.status-badge.shield { color: #9ad7e6; border-color: rgba(95,158,160,0.6); background: rgba(95,158,160,0.15); }
+/* ========== 战斗行动栏 ========== */
+.battle-actions {
+  position: relative; z-index: 2;
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  padding: 14px 20px;
+  background: rgba(10, 10, 20, 0.88);
+  border-top: 1px solid var(--border-gold);
+}
+.battle-action-btn {
+  padding: 12px 20px; border-radius: 10px;
+  background: rgba(212,175,55,0.1);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-light); font-size: 14px; font-weight: 600;
+  font-family: 'Noto Serif SC', serif;
+  transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  min-width: 118px;
+}
+.battle-action-btn:hover:not(:disabled) { background: rgba(212,175,55,0.2); border-color: var(--gold); transform: translateY(-1px); }
+.battle-action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.battle-action-btn .aa-name { font-size: 14px; font-weight: 700; }
+.battle-action-btn .aa-sub { font-size: 10px; color: var(--text-dim); }
+.battle-action-btn .aa-cost { font-size: 10px; color: var(--purple); }
+.battle-action-btn.defensive { border-color: rgba(95,158,160,0.5); color: var(--jade-light); background: rgba(95,158,160,0.08); }
+.battle-action-btn.defensive:hover:not(:disabled) { background: rgba(95,158,160,0.18); border-color: var(--jade); }
+.battle-action-btn.skill { border-color: rgba(139,107,184,0.6); color: #c9b0f0; background: rgba(139,107,184,0.12); }
+.battle-action-btn.skill:hover:not(:disabled) { background: rgba(139,107,184,0.25); border-color: var(--purple); }
 .battle-overlay {
   position: absolute; inset: 0; z-index: 20;
   display: flex; align-items: center; justify-content: center;
@@ -633,7 +750,6 @@ input, textarea, select { font-family: inherit; outline: none; }
 .inventory-card-stats { display: flex; gap: 14px; margin-bottom: 8px; }
 .inventory-card-stat { font-size: 12px; }
 .inventory-card-stat.power { color: var(--cinnabar-light); }
-.inventory-card-stat.hp { color: var(--jade-light); }
 .inventory-card-stat.crit { color: var(--gold-light); }
 .inventory-card-effect { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px; min-height: 18px; }
 .inventory-card-actions { display: flex; gap: 8px; }
@@ -711,33 +827,51 @@ input, textarea, select { font-family: inherit; outline: none; }
 .toast.error { border-color: var(--cinnabar); }
 @keyframes toastIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes toastOut { to { opacity: 0; transform: translateX(30px); } }
-/* ========== 存档备份 ========== */
-.save-manager { display: flex; flex-direction: column; gap: 12px; }
-.save-tip { font-size: 12px; color: var(--text-dim); line-height: 1.8; }
-.save-tip strong { color: var(--gold-light); font-weight: 600; }
-.save-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.save-modal-overlay {
-  position: fixed; inset: 0; z-index: 9998;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(10, 10, 20, 0.82);
-  backdrop-filter: blur(4px);
-}
-.save-modal {
-  width: min(540px, 92vw);
-  background: var(--bg-panel);
-  border: 1px solid var(--border-gold-strong);
-  border-radius: 12px;
-  padding: 22px;
-  box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
-}
-.save-modal-body { margin: 14px 0; }
-.save-modal-body textarea {
-  font-family: Consolas, 'Courier New', monospace;
+/* ========== 词条标签 ========== */
+.affix-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.affix-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 10px;
   font-size: 11px;
-  line-height: 1.6;
+  background: rgba(139,107,184,0.15); border: 1px solid rgba(139,107,184,0.4);
+  color: #c9b0f0;
 }
-.save-modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-.save-modal-hint { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.affix-tag.good { background: rgba(95,158,160,0.12); border-color: rgba(95,158,160,0.4); color: var(--jade-light); }
+.affix-tag .affix-del { cursor: pointer; color: var(--cinnabar-light); opacity: 0.6; font-weight: 700; }
+.affix-tag .affix-del:hover { opacity: 1; }
+.affix-editor { display: flex; gap: 6px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.affix-editor select { flex: 1; min-width: 100px; }
+.affix-editor input { width: 70px; }
+.diff-btn.active { background: rgba(212,175,55,0.2); border-color: var(--gold); color: var(--gold-light); }
+.skill-config-row { display: flex; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; }
+.skill-config-row .skill-name { font-weight: 600; color: var(--gold-light); font-size: 13px; min-width: 70px; }
+.skill-config-row .skill-desc { font-size: 11px; color: var(--text-dim); flex: 1; min-width: 120px; }
+.skill-config-row input { width: 60px; text-align: center; }
+/* ========== 宗门/擂台 ========== */
+.sector-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.sector-card {
+  background: var(--bg-panel-light); border: 1px solid var(--border-gold);
+  border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.25s;
+  position: relative; overflow: hidden;
+}
+.sector-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: var(--shadow-gold); }
+.sector-card.cleared { border-color: rgba(95,158,160,0.5); }
+.sector-icon { font-size: 32px; margin-bottom: 6px; }
+.sector-name { font-family: 'Noto Serif SC', serif; font-size: 17px; font-weight: 700; color: var(--gold-light); margin-bottom: 3px; }
+.sector-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.6; min-height: 36px; }
+.sector-meta { font-size: 11px; color: var(--text-dim); display: flex; justify-content: space-between; }
+.sector-progress { height: 5px; background: rgba(0,0,0,0.4); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.sector-progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 3px; transition: width 0.4s; }
+.boss-banner {
+  text-align: center; padding: 10px 16px; margin-bottom: 12px;
+  background: rgba(194,59,34,0.1); border: 1px solid rgba(194,59,34,0.3);
+  border-radius: 8px; font-family: 'Noto Serif SC', serif; font-size: 14px; color: var(--cinnabar-light);
+}
+.arena-stats { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+.arena-stat { text-align: center; min-width: 80px; }
+.arena-stat-val { font-family: 'Noto Serif SC', serif; font-size: 30px; font-weight: 900; color: var(--gold-light); }
+.arena-stat-label { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.arena-actions { display: flex; gap: 12px; justify-content: center; margin-top: 16px; }
 /* ========== 响应式 ========== */
 @media (max-width: 640px) {
   .top-nav { padding: 0 12px; }
@@ -749,6 +883,8 @@ input, textarea, select { font-family: inherit; outline: none; }
   .battle-arena { padding: 20px 16px 10px; min-height: 300px; }
   .combatant-char { width: 95px; height: 140px; }
   .hp-bar-container { width: 115px; }
+  .spirit-bar-container { width: 115px; }
+  .battle-action-btn { min-width: 92px; padding: 10px 12px; }
   .combatant-name { font-size: 13px; }
   .difficulty-selector { grid-template-columns: repeat(2, 1fr); }
   .form-row { grid-template-columns: 1fr; }
@@ -759,6 +895,7 @@ input, textarea, select { font-family: inherit; outline: none; }
 </style>
 </head>
 <body>
+<div class="global-bg"><div class="gb-stars"></div><div class="gb-mountains"></div><div class="gb-embers gb-embers-1"></div><div class="gb-embers gb-embers-2"></div></div>
 <!-- ========== 顶部导航 ========== -->
 <nav class="top-nav">
   <div class="nav-brand" onclick="navigate('home')">心魔试炼</div>
@@ -767,6 +904,8 @@ input, textarea, select { font-family: inherit; outline: none; }
     <a class="nav-link" data-view="prepare" onclick="navigate('prepare')">开启试炼</a>
     <a class="nav-link" data-view="inventory" onclick="navigate('inventory')">法宝背包</a>
     <a class="nav-link" data-view="history" onclick="navigate('history')">战绩录</a>
+    <a class="nav-link" data-view="sect" onclick="navigate('sect')">宗门试炼</a>
+    <a class="nav-link" data-view="arena" onclick="navigate('arena')">无尽擂台</a>
   </div>
   <div class="nav-date" id="navDate"></div>
 </nav>
@@ -854,6 +993,29 @@ input, textarea, select { font-family: inherit; outline: none; }
         今日，你已专注修行多时，可敢入试炼，与凶兽一战？
       </div>
     </div>
+    <!-- 境界与每日三事 -->
+    <div class="home-advance">
+      <div class="panel" style="padding:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div class="panel-title" style="font-size:15px;margin-bottom:0;">修为境界</div>
+          <button class="btn btn-ghost btn-sm" onclick="toggleRealmEditor()">编辑境界</button>
+        </div>
+        <div id="realmDisplay"></div>
+        <div id="realmEditorHome" style="display:none;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;">
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">境界名称（每行一个，从低到高，每1000分钟突破）</div>
+          <textarea class="form-textarea" id="realmNamesInputHome" rows="3" style="font-size:12px;"></textarea>
+          <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="saveRealmNamesFromHome()">保存境界名</button>
+        </div>
+      </div>
+      <div class="panel" style="padding:16px;">
+        <div class="panel-title" style="font-size:15px;margin-bottom:10px;">每日三事 · 心魔碎片 <span id="fragCount" style="font-size:12px;color:var(--cinnabar-light);">0枚</span></div>
+        <div id="dailyTasks"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" onclick="craftFragment()">合成法宝(10枚)</button>
+          <button class="btn btn-ghost btn-sm" onclick="challengeHeartDemon()">挑战心魔本体(30枚)</button>
+        </div>
+      </div>
+    </div>
     <div class="stats-grid" id="homeStats"></div>
     <div class="recent-battles">
       <div class="panel">
@@ -861,15 +1023,24 @@ input, textarea, select { font-family: inherit; outline: none; }
         <div class="battle-list" id="recentBattles"></div>
       </div>
     </div>
-    <div style="margin-top:24px;">
-      <div class="panel">
-        <div class="panel-title">存档备份</div>
-        <div class="save-manager">
-          <p class="save-tip">iPhone 长时间不用可能被系统清理本地存档。建议定期<strong>导出</strong>，把生成的字符保存到备忘录或文件传输助手；换机、换浏览器或数据丢失后，用<strong>导入</strong>粘贴字符即可完整恢复（法宝、凶兽、战绩、专注记录全部回来）。</p>
-          <div class="save-actions">
-            <button class="btn btn-primary btn-sm" onclick="exportSave()">导出存档</button>
-            <button class="btn btn-ghost btn-sm" onclick="showImportModal()">导入存档</button>
-          </div>
+    <div class="panel" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div class="panel-title" style="font-size:14px;margin-bottom:0;">存档管理</div>
+        <span style="font-size:11px;color:var(--text-dim);">文件 / 剪贴板 双模式</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+        <button class="btn btn-ghost btn-sm" onclick="exportSave()">导出文件</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSaveInput').click()">导入文件</button>
+        <button class="btn btn-ghost btn-sm" onclick="copySave()">复制存档</button>
+        <button class="btn btn-ghost btn-sm" onclick="togglePasteImport()">粘贴导入</button>
+        <input type="file" id="importSaveInput" accept=".json" style="display:none;" onchange="importSave(this.files[0])">
+      </div>
+      <div id="pasteImportArea" style="display:none;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">粘贴存档JSON（手机端推荐）</div>
+        <textarea class="form-textarea" id="pasteImportText" rows="4" style="font-size:11px;font-family:monospace;" placeholder="在此粘贴复制的存档数据..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn btn-primary btn-sm" onclick="importFromText()">确认导入</button>
+          <button class="btn btn-ghost btn-sm" onclick="togglePasteImport()">取消</button>
         </div>
       </div>
     </div>
@@ -957,13 +1128,30 @@ input, textarea, select { font-family: inherit; outline: none; }
           <div class="preview-card">
             <div style="font-family:'Noto Serif SC',serif;font-size:15px;color:var(--gold-light);font-weight:700;margin-bottom:10px;">战力推演</div>
             <div class="preview-row"><span class="preview-label">基础攻击力</span><span class="preview-value" id="previewBaseAtk">336</span></div>
-            <div class="preview-row"><span class="preview-label">装备攻击加成</span><span class="preview-value" id="previewEquipBonus">+0</span></div>
+            <div class="preview-row"><span class="preview-label">装备加成</span><span class="preview-value" id="previewEquipBonus">+0</span></div>
             <div class="preview-row"><span class="preview-label">总攻击力</span><span class="preview-value" id="previewTotalAtk">336</span></div>
             <div class="preview-row"><span class="preview-label">暴击率</span><span class="preview-value" id="previewCrit">15%</span></div>
-            <div class="preview-row"><span class="preview-label">基础生命值</span><span class="preview-value" id="previewBaseHp">310</span></div>
-            <div class="preview-row"><span class="preview-label">装备生命加成</span><span class="preview-value" id="previewHpBonus">+0</span></div>
-            <div class="preview-row"><span class="preview-label">总生命值</span><span class="preview-value" id="previewTotalHp">310</span></div>
+            <div class="preview-row"><span class="preview-label">生命值</span><span class="preview-value" id="previewHp">310</span></div>
             <div class="preview-row"><span class="preview-label">预估胜率</span><span class="preview-value" id="previewWinRate">--</span></div>
+            <div id="previewSkillList" style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);"></div>
+          </div>
+          <!-- 神通与难度设置 -->
+          <div style="margin-top:16px;">
+            <div onclick="toggleHelp('skillSettings')" style="cursor:pointer;font-size:13px;color:var(--gold-light);font-weight:600;margin-bottom:8px;">▸ 神通与难度设置</div>
+            <div id="skillSettings" style="display:none;">
+              <div style="margin-bottom:14px;">
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">反派难度系数（敌人血量与攻击同时放大，宗门/擂台同样生效）</div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                  <button class="btn btn-ghost btn-sm diff-btn" data-diff="0.7" onclick="setDifficulty(0.7)">简单 0.7×</button>
+                  <button class="btn btn-ghost btn-sm diff-btn" data-diff="1.0" onclick="setDifficulty(1.0)">普通 1.0×</button>
+                  <button class="btn btn-ghost btn-sm diff-btn" data-diff="1.4" onclick="setDifficulty(1.4)">困难 1.4×</button>
+                  <button class="btn btn-ghost btn-sm diff-btn" data-diff="1.8" onclick="setDifficulty(1.8)">地狱 1.8×</button>
+                  <input type="number" class="form-input" id="customDiffInput" style="width:72px;" placeholder="自定义" min="0.1" max="5" step="0.1" onchange="setDifficulty(parseFloat(this.value)||1)">
+                </div>
+              </div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">功法神通参数（按类别配置，战斗中实时生效）</div>
+              <div id="gongfaSkillConfig"></div>
+            </div>
           </div>
           <div style="margin-top:20px;text-align:center;">
             <button class="btn btn-primary btn-lg" id="startBattleBtn" onclick="startBattle()">踏入试炼</button>
@@ -985,6 +1173,11 @@ input, textarea, select { font-family: inherit; outline: none; }
             <div class="hp-bar player" id="playerHpBar" style="width:100%"></div>
             <div class="hp-text" id="playerHpText">100/100</div>
           </div>
+          <div class="spirit-bar-container">
+            <div class="spirit-bar" id="playerSpiritBar" style="width:100%"></div>
+            <div class="spirit-text" id="playerSpiritText">灵力 100/100</div>
+          </div>
+          <div class="status-list" id="playerStatuses"></div>
         </div>
         <div class="combatant monster" id="monsterCombatant">
           <div class="combatant-char">
@@ -995,6 +1188,7 @@ input, textarea, select { font-family: inherit; outline: none; }
             <div class="hp-bar monster" id="monsterHpBar" style="width:100%"></div>
             <div class="hp-text" id="monsterHpText">300/300</div>
           </div>
+          <div class="status-list" id="monsterStatuses"></div>
         </div>
       </div>
       <div class="battle-info-bar">
@@ -1005,6 +1199,7 @@ input, textarea, select { font-family: inherit; outline: none; }
         </div>
       </div>
       <div class="battle-log" id="battleLog"></div>
+      <div class="battle-actions" id="battleActions"></div>
       <!-- 结算遮罩 -->
       <div class="battle-overlay" id="battleOverlay" style="display:none;">
         <div class="result-panel">
@@ -1069,17 +1264,24 @@ input, textarea, select { font-family: inherit; outline: none; }
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">生命加成</label>
-          <input type="number" class="form-input" id="newEquipHp" placeholder="例如：100" min="0" value="0">
-        </div>
-        <div class="form-group">
           <label class="form-label">暴击加成（%）</label>
           <input type="number" class="form-input" id="newEquipCrit" placeholder="例如：5" min="0" max="100" value="0">
         </div>
+        <div class="form-group">
+          <label class="form-label">特效描述（可选）</label>
+          <input type="text" class="form-input" id="newEquipEffect" placeholder="例如：攻击时有几率触发剑气">
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">特效描述（可选）</label>
-        <input type="text" class="form-input" id="newEquipEffect" placeholder="例如：攻击时有几率触发剑气">
+        <label class="form-label">法宝词条（可选，可叠加多个，战斗中真实生效）</label>
+        <div class="affix-list" id="equipAffixList"></div>
+        <div class="affix-editor">
+          <select class="form-select" id="newEquipAffixType" style="flex:1;min-width:110px;">
+            <option value="">选择词条类型…</option>
+          </select>
+          <input type="number" class="form-input" id="newEquipAffixValue" placeholder="数值" style="width:80px;" min="0">
+          <button class="btn btn-primary btn-sm" type="button" onclick="addAffixToEditor()">添加词条</button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">图片（可选，从相册上传）</label>
@@ -1122,23 +1324,135 @@ input, textarea, select { font-family: inherit; outline: none; }
       <div class="empty-state" id="historyEmpty" style="display:none;">尚无战报，去开启第一场试炼吧</div>
     </div>
   </div>
-</div>
-<!-- Toast 容器 -->
-<div class="toast-container" id="toastContainer"></div>
-<!-- 存档导出/导入弹窗 -->
-<div class="save-modal-overlay" id="saveModal" style="display:none;" onclick="if(event.target===this)closeSaveModal()">
-  <div class="save-modal">
-    <div class="panel-title" id="saveModalTitle" style="margin-bottom:0;">导出存档</div>
-    <div class="save-modal-body">
-      <div class="save-modal-hint" id="saveModalHint">复制下面的字符，粘贴到备忘录或文件传输助手保存。</div>
-      <textarea class="form-textarea" id="saveModalText" spellcheck="false"></textarea>
+  <!-- ========== 宗门试炼页 ========== -->
+  <div id="view-sect" class="view">
+    <div class="panel" style="margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="panel-title" style="margin-bottom:0;">宗门试炼</div>
+        <button class="btn btn-primary btn-sm" onclick="openSectEditor()">+ 新增宗门</button>
+      </div>
+      <!-- 玩法说明 -->
+      <div class="help-section" style="margin-bottom:16px;">
+        <div class="help-toggle" onclick="toggleHelp('sectHelp')" style="cursor:pointer;font-size:13px;color:var(--gold-light);font-weight:600;">▸ 玩法说明</div>
+        <div id="sectHelp" class="help-content" style="display:none;font-size:12px;color:var(--text-secondary);line-height:1.9;margin-top:8px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;">
+          <b style="color:var(--gold-light);">战斗系统：</b>回合制，每回合选择「挥剑」「神通」「调息」。灵力满值100，神通消耗灵力，调息回灵并获得护盾。<br>
+          <b style="color:var(--gold-light);">法宝词条：</b>装备可附带生命、灵力、回灵、吸血、灼烧、淬毒、斩杀、反伤、护体、连击等词条，战斗中真实生效。<br>
+          <b style="color:var(--gold-light);">宗门规则：</b>每宗需连胜数名敌人（弟子→长老→掌门），连战中血量不恢复、灵力每战回满。通关获得宗门专属法宝。可自定义宗门与敌人。<br>
+          <b style="color:var(--gold-light);">状态效果：</b>灼烧/中毒持续掉血，虚弱降攻，护盾吸收伤害，迷乱可能使招式失效，激怒提升攻击。
+        </div>
+      </div>
+      <div class="sector-grid" id="sectorGrid"></div>
     </div>
-    <div class="save-modal-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeSaveModal()">取消</button>
-      <button class="btn btn-primary btn-sm" id="saveModalPrimary" onclick="saveModalPrimaryAction()">复制</button>
+    <!-- 宗门详情 -->
+    <div class="panel" id="sectorDetailPanel" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="panel-title" style="margin-bottom:0;" id="sectorDetailTitle">宗门详情</div>
+        <div>
+          <button class="btn btn-ghost btn-sm" onclick="closeSectDetail()">返回</button>
+        </div>
+      </div>
+      <div id="sectorDetailContent"></div>
+    </div>
+    <!-- 宗门编辑器 -->
+    <div class="panel" id="sectEditorPanel" style="display:none;">
+      <div class="panel-title" id="sectEditorTitle">新增宗门</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">宗门名称</label>
+          <input type="text" class="form-input" id="sectEditorName" placeholder="例如：青云宗">
+        </div>
+        <div class="form-group">
+          <label class="form-label">图标（emoji）</label>
+          <input type="text" class="form-input" id="sectEditorIcon" placeholder="⛰️" maxlength="4" style="width:80px;">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">宗门描述</label>
+        <input type="text" class="form-input" id="sectEditorDesc" placeholder="例如：正道魁首，剑法通神">
+      </div>
+      <div class="form-group">
+        <label class="form-label">敌人列表（按挑战顺序）</label>
+        <div id="sectEnemyList"></div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addSectEnemy()">+ 添加敌人</button>
+      </div>
+      <div style="border-top:1px solid var(--border-gold);padding-top:14px;margin-top:14px;">
+        <div class="form-label" style="margin-bottom:8px;">通关奖励法宝</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">法宝名称</label>
+            <input type="text" class="form-input" id="sectRewardName" placeholder="例如：青云剑诀">
+          </div>
+          <div class="form-group">
+            <label class="form-label">类型</label>
+            <select class="form-select" id="sectRewardType">
+              <option value="gongfa">功法</option>
+              <option value="permanent">永久法宝</option>
+              <option value="consumable">消耗法宝</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">攻击加成</label>
+            <input type="number" class="form-input" id="sectRewardPower" value="0" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">暴击加成（%）</label>
+            <input type="number" class="form-input" id="sectRewardCrit" value="0" min="0" max="100">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">特效描述</label>
+          <input type="text" class="form-input" id="sectRewardEffect" placeholder="例如：青云宗镇宗剑诀">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn btn-primary" onclick="saveSect()">保存宗门</button>
+        <button class="btn btn-ghost" onclick="closeSectEditor()">取消</button>
+        <button class="btn btn-ghost" id="sectDeleteBtn" style="margin-left:auto;color:var(--cinnabar-light);display:none;" onclick="deleteSect()">删除此宗门</button>
+      </div>
+    </div>
+  </div>
+  <!-- ========== 无尽擂台页 ========== -->
+  <div id="view-arena" class="view">
+    <div class="panel" style="margin-bottom:20px;">
+      <div class="panel-title">无尽擂台</div>
+      <div class="help-section" style="margin-bottom:16px;">
+        <div class="help-toggle" onclick="toggleHelp('arenaHelp')" style="cursor:pointer;font-size:13px;color:var(--gold-light);font-weight:600;">▸ 玩法说明</div>
+        <div id="arenaHelp" class="help-content" style="display:none;font-size:12px;color:var(--text-secondary);line-height:1.9;margin-top:8px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;">
+          <b style="color:var(--gold-light);">规则：</b>连续挑战凶兽，每轮敌人更强（血量×1.12、攻击×1.10）。连战中血量不恢复、灵力每战回满。<br>
+          <b style="color:var(--gold-light);">精英怪：</b>每3轮出现精英凶兽（血量×1.5、攻击×1.3，自带技能）。第5轮起普通凶兽也可能携带技能。<br>
+          <b style="color:var(--gold-light);">奖励：</b>每5轮胜利可获得一件随机法宝（含词条）。可随时撤退保留已获奖励。<br>
+          <b style="color:var(--gold-light);">策略：</b>合理使用调息回灵凝盾，在精英轮前保持血量；吸血/反伤/护盾词条在持久战中价值极高。
+        </div>
+      </div>
+      <div class="arena-stats">
+        <div class="arena-stat"><div class="arena-stat-val" id="arenaBest">0</div><div class="arena-stat-label">最高连胜</div></div>
+        <div class="arena-stat"><div class="arena-stat-val" id="arenaTotal">0</div><div class="arena-stat-label">累计挑战</div></div>
+        <div class="arena-stat"><div class="arena-stat-val" id="arenaRewards">0</div><div class="arena-stat-label">获得法宝</div></div>
+      </div>
+      <div style="text-align:center;">
+        <button class="btn btn-primary btn-lg" onclick="startArena()">登上擂台</button>
+      </div>
+    </div>
+    <!-- 擂台进行中 -->
+    <div class="panel" id="arenaRunPanel" style="display:none;">
+      <div class="boss-banner" id="arenaRunBanner">第 1 轮</div>
+      <div class="arena-stats">
+        <div class="arena-stat"><div class="arena-stat-val" id="arenaCurrentRound">1</div><div class="arena-stat-label">当前轮次</div></div>
+        <div class="arena-stat"><div class="arena-stat-val" id="arenaCurrentHp">--</div><div class="arena-stat-label">剩余生命</div></div>
+        <div class="arena-stat"><div class="arena-stat-val" id="arenaNextEnemy">--</div><div class="arena-stat-label">下一个对手</div></div>
+      </div>
+      <div id="arenaRunContent" style="text-align:center;"></div>
+      <div class="arena-actions" id="arenaRunActions" style="display:none;">
+        <button class="btn btn-primary" onclick="arenaContinue()">继续挑战</button>
+        <button class="btn btn-ghost" onclick="arenaRetreat()">领取奖励撤退</button>
+      </div>
     </div>
   </div>
 </div>
+<!-- Toast 容器 -->
+<div class="toast-container" id="toastContainer"></div>
 <script>
 // ============================================================
 //  心魔试炼 · 专注修仙录 v2.1 — 游戏核心逻辑
@@ -1165,7 +1479,6 @@ let gameState = {
   monsters: [],
   history: [],
   seededGongfa: false,
-  seededHpGear: false,
 };
 let prepareState = {
   selectedMonsterId: 'm1',
@@ -1184,6 +1497,37 @@ let currentHistoryFilter = 'all';
 let addingCategoryType = null;
 let editingEquipId = null;
 let equipImageData = '';
+let editingAffixes = [];
+// ---------- 词条编辑器 ----------
+function populateAffixTypeSelect() {
+  const sel = document.getElementById('newEquipAffixType');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">选择词条类型…</option>' + Object.entries(AFFIX_TYPES).map(([k, v]) =>
+    `<option value="${k}">${v.name}（${v.desc.replace('{v}', 'N')}）</option>`
+  ).join('');
+}
+function renderEquipAffixEditor() {
+  const container = document.getElementById('equipAffixList');
+  if (!container) return;
+  if (editingAffixes.length === 0) { container.innerHTML = '<span style="font-size:11px;color:var(--text-dim);">暂无词条</span>'; return; }
+  container.innerHTML = editingAffixes.map((a, i) => {
+    const t = AFFIX_TYPES[a.type];
+    return `<span class="affix-tag good">${t ? t.name : a.type} ${a.value}${t ? t.unit : ''}<span class="affix-del" onclick="removeAffixFromEditor(${i})">×</span></span>`;
+  }).join('');
+}
+function addAffixToEditor() {
+  const type = document.getElementById('newEquipAffixType').value;
+  const val = parseInt(document.getElementById('newEquipAffixValue').value) || 0;
+  if (!type || val <= 0) { showToast('请选择词条类型并填写数值', 'error'); return; }
+  editingAffixes.push({ type, value: val });
+  document.getElementById('newEquipAffixType').value = '';
+  document.getElementById('newEquipAffixValue').value = '';
+  renderEquipAffixEditor();
+}
+function removeAffixFromEditor(idx) {
+  editingAffixes.splice(idx, 1);
+  renderEquipAffixEditor();
+}
 // ---------- 存档 ----------
 function loadSave() {
   let data = null;
@@ -1196,7 +1540,6 @@ function loadSave() {
   gameState.monsters = data?.monsters || [];
   gameState.history = data?.history || [];
   gameState.seededGongfa = !!data?.seededGongfa;
-  gameState.seededHpGear = !!data?.seededHpGear;
   // 兼容旧存档：补上缺失的类型数组
   ['gongfa', 'permanent', 'consumable'].forEach(t => {
     if (!Array.isArray(gameState.categories[t])) gameState.categories[t] = [];
@@ -1221,7 +1564,6 @@ function loadSave() {
         { id: 'cat_sword', name: '剑' },
         { id: 'cat_fire', name: '异火' },
         { id: 'cat_jade', name: '玉佩' },
-        { id: 'cat_armor', name: '宝甲' },
       ],
       consumable: [
         { id: 'cat_talisman', name: '符箓' },
@@ -1230,63 +1572,150 @@ function loadSave() {
     };
     gameState.equipment = {
       gongfa: [
-        { id: genId(), name: '太虚心法', type:'gongfa', categoryId:'cat_xinfa', power:20, crit:10, effect:'吐纳调息，心神合一，攻守兼备', createdAt:Date.now() },
-        { id: genId(), name: '御剑诀', type:'gongfa', categoryId:'cat_jianjue', power:35, crit:5, effect:'以气御剑，锋芒毕露', createdAt:Date.now() },
-        { id: genId(), name: '踏云身法', type:'gongfa', categoryId:'cat_shenfa', power:15, crit:15, effect:'身若游龙，行云流水', createdAt:Date.now() },
+        { id: genId(), name: '太虚心法', type:'gongfa', categoryId:'cat_xinfa', power:20, crit:10, effect:'吐纳调息，心神合一，攻守兼备', affixes:[{type:'hp',value:40},{type:'regen',value:5}], createdAt:Date.now() },
+        { id: genId(), name: '御剑诀', type:'gongfa', categoryId:'cat_jianjue', power:35, crit:5, effect:'以气御剑，锋芒毕露', affixes:[{type:'execute',value:25},{type:'multiHit',value:15}], createdAt:Date.now() },
+        { id: genId(), name: '踏云身法', type:'gongfa', categoryId:'cat_shenfa', power:15, crit:15, effect:'身若游龙，行云流水', affixes:[{type:'multiHit',value:20},{type:'spirit',value:20}], createdAt:Date.now() },
       ],
       permanent: [
-        { id: genId(), name: '青莲剑', type:'permanent', categoryId:'cat_sword', power:25, crit:5, effect:'青莲出鞘，剑气纵横', createdAt:Date.now() },
-        { id: genId(), name: '静心玉佩', type:'permanent', categoryId:'cat_jade', power:15, crit:8, effect:'佩戴时心神宁静，暴击率提升', createdAt:Date.now() },
-        { id: genId(), name: '幽冥冷火', type:'permanent', categoryId:'cat_fire', power:30, crit:3, effect:'异火附体，攻击灼烧敌人', createdAt:Date.now() },
-        { id: genId(), name: '玄龟宝甲', type:'permanent', categoryId:'cat_armor', power:12, crit:0, hp:120, effect:'玄龟之甲，护体御敌', createdAt:Date.now() },
+        { id: genId(), name: '青莲剑', type:'permanent', categoryId:'cat_sword', power:25, crit:5, effect:'青莲出鞘，剑气纵横', affixes:[{type:'execute',value:20},{type:'lifesteal',value:8}], createdAt:Date.now() },
+        { id: genId(), name: '静心玉佩', type:'permanent', categoryId:'cat_jade', power:15, crit:8, effect:'佩戴时心神宁静，暴击率提升', affixes:[{type:'shield',value:60},{type:'spirit',value:15}], createdAt:Date.now() },
+        { id: genId(), name: '幽冥冷火', type:'permanent', categoryId:'cat_fire', power:30, crit:3, effect:'异火附体，攻击灼烧敌人', affixes:[{type:'burn',value:30}], createdAt:Date.now() },
       ],
       consumable: [
-        { id: genId(), name: '凝神符箓', type:'consumable', categoryId:'cat_talisman', power:40, crit:10, effect:'一次性符箓，激发后战力暴涨', createdAt:Date.now() },
-        { id: genId(), name: '大力丹', type:'consumable', categoryId:'cat_pill', power:50, crit:0, effect:'一次性丹药，短时大幅提升攻击', createdAt:Date.now() },
-        { id: genId(), name: '回春丹', type:'consumable', categoryId:'cat_pill', power:0, crit:0, hp:180, effect:'服用后气血充盈，生命大幅提升', createdAt:Date.now() },
+        { id: genId(), name: '凝神符箓', type:'consumable', categoryId:'cat_talisman', power:40, crit:10, effect:'一次性符箓，激发后战力暴涨', affixes:[{type:'regen',value:8},{type:'shield',value:50}], createdAt:Date.now() },
+        { id: genId(), name: '大力丹', type:'consumable', categoryId:'cat_pill', power:50, crit:0, effect:'一次性丹药，短时大幅提升攻击', affixes:[{type:'lifesteal',value:12},{type:'execute',value:15}], createdAt:Date.now() },
       ],
     };
     gameState.seededGongfa = true;
-    gameState.seededHpGear = true;
     saveGame();
-  } else {
-    // 旧存档升级：按需补种，各类型只补一次（之后删光也不会再补）
-    if (!gameState.seededGongfa && gameState.equipment.gongfa.length === 0) {
-      gameState.categories.gongfa = [
-        { id: 'cat_xinfa', name: '心法' },
-        { id: 'cat_jianjue', name: '剑诀' },
-        { id: 'cat_shenfa', name: '身法' },
-      ];
-      gameState.equipment.gongfa = [
-        { id: genId(), name: '太虚心法', type:'gongfa', categoryId:'cat_xinfa', power:20, crit:10, effect:'吐纳调息，心神合一，攻守兼备', createdAt:Date.now() },
-        { id: genId(), name: '御剑诀', type:'gongfa', categoryId:'cat_jianjue', power:35, crit:5, effect:'以气御剑，锋芒毕露', createdAt:Date.now() },
-        { id: genId(), name: '踏云身法', type:'gongfa', categoryId:'cat_shenfa', power:15, crit:15, effect:'身若游龙，行云流水', createdAt:Date.now() },
-      ];
-      gameState.seededGongfa = true;
-      saveGame();
-    }
-    if (!gameState.seededHpGear) {
-      // 补默认宝甲与丹药（只补一次）
-      let armorCat = gameState.categories.permanent.find(c => c.name === '宝甲');
-      if (!armorCat) {
-        armorCat = { id: genId(), name: '宝甲' };
-        gameState.categories.permanent.push(armorCat);
-      }
-      gameState.equipment.permanent.push({ id: genId(), name: '玄龟宝甲', type:'permanent', categoryId: armorCat.id, power:12, crit:0, hp:120, effect:'玄龟之甲，护体御敌', createdAt:Date.now() });
-      let pillCat = gameState.categories.consumable.find(c => c.name === '丹药');
-      if (!pillCat) {
-        pillCat = { id: genId(), name: '丹药' };
-        gameState.categories.consumable.push(pillCat);
-      }
-      gameState.equipment.consumable.push({ id: genId(), name: '回春丹', type:'consumable', categoryId: pillCat.id, power:0, crit:0, hp:180, effect:'服用后气血充盈，生命大幅提升', createdAt:Date.now() });
-      gameState.seededHpGear = true;
-      saveGame();
-    }
+  } else if (!gameState.seededGongfa && gameState.equipment.gongfa.length === 0) {
+    // 旧存档升级：只补一次默认功法（之后删光也不会再补）
+    gameState.categories.gongfa = [
+      { id: 'cat_xinfa', name: '心法' },
+      { id: 'cat_jianjue', name: '剑诀' },
+      { id: 'cat_shenfa', name: '身法' },
+    ];
+    gameState.equipment.gongfa = [
+      { id: genId(), name: '太虚心法', type:'gongfa', categoryId:'cat_xinfa', power:20, crit:10, effect:'吐纳调息，心神合一，攻守兼备', affixes:[{type:'hp',value:40},{type:'regen',value:5}], createdAt:Date.now() },
+      { id: genId(), name: '御剑诀', type:'gongfa', categoryId:'cat_jianjue', power:35, crit:5, effect:'以气御剑，锋芒毕露', affixes:[{type:'execute',value:25},{type:'multiHit',value:15}], createdAt:Date.now() },
+      { id: genId(), name: '踏云身法', type:'gongfa', categoryId:'cat_shenfa', power:15, crit:15, effect:'身若游龙，行云流水', affixes:[{type:'multiHit',value:20},{type:'spirit',value:20}], createdAt:Date.now() },
+    ];
+    gameState.seededGongfa = true;
+    saveGame();
   }
 }
 function saveGame() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState)); }
   catch(e) { console.warn('保存失败', e); }
+}
+
+// ========== 存档导出/导入 ==========
+var SAVE_KEYS = [
+  'xinmo_shilian_save_v3', 'xinmo_gongfa_cfg', 'xinmo_realms', 'xinmo_daily',
+  'xinmo_difficulty', 'xinmo_sectors', 'xinmo_sector_cleared', 'xinmo_arena'
+];
+function exportSave() {
+  var data = { version: 1, exportedAt: new Date().toISOString(), data: {} };
+  SAVE_KEYS.forEach(function(k) {
+    var v = localStorage.getItem(k);
+    if (v !== null) data.data[k] = v;
+  });
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '心魔试炼存档_' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('存档已导出', 'success');
+}
+function importSave(file) {
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var parsed = JSON.parse(e.target.result);
+      if (!parsed.data || typeof parsed.data !== 'object') throw new Error('格式错误');
+      var count = 0;
+      Object.keys(parsed.data).forEach(function(k) {
+        if (SAVE_KEYS.indexOf(k) >= 0) {
+          localStorage.setItem(k, parsed.data[k]);
+          count++;
+        }
+      });
+      if (count === 0) throw new Error('未找到有效存档数据');
+      showToast('导入成功（' + count + '项），页面即将刷新', 'success');
+      setTimeout(function() { location.reload(); }, 1200);
+    } catch (err) {
+      showToast('导入失败：' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  document.getElementById('importSaveInput').value = '';
+}
+
+function copySave() {
+  var data = { version: 1, exportedAt: new Date().toISOString(), data: {} };
+  SAVE_KEYS.forEach(function(k) {
+    var v = localStorage.getItem(k);
+    if (v !== null) data.data[k] = v;
+  });
+  var text = JSON.stringify(data);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('存档已复制到剪贴板', 'success');
+    }).catch(function() {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('存档已复制到剪贴板', 'success');
+  } catch (e) {
+    showToast('复制失败，请手动选择导出文件', 'error');
+  }
+  document.body.removeChild(ta);
+}
+function togglePasteImport() {
+  var el = document.getElementById('pasteImportArea');
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  if (el.style.display === 'block') {
+    document.getElementById('pasteImportText').value = '';
+    document.getElementById('pasteImportText').focus();
+  }
+}
+function importFromText() {
+  var text = document.getElementById('pasteImportText').value.trim();
+  if (!text) { showToast('请先粘贴存档数据', 'error'); return; }
+  try {
+    var parsed = JSON.parse(text);
+    if (!parsed.data || typeof parsed.data !== 'object') throw new Error('格式错误');
+    var count = 0;
+    Object.keys(parsed.data).forEach(function(k) {
+      if (SAVE_KEYS.indexOf(k) >= 0) {
+        localStorage.setItem(k, parsed.data[k]);
+        count++;
+      }
+    });
+    if (count === 0) throw new Error('未找到有效存档数据');
+    showToast('导入成功（' + count + '项），页面即将刷新', 'success');
+    setTimeout(function() { location.reload(); }, 1200);
+  } catch (err) {
+    showToast('导入失败：' + err.message, 'error');
+  }
 }
 function genId() { return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7); }
 // ---------- 工具函数 ----------
@@ -1337,11 +1766,15 @@ function navigate(view) {
   if (view === 'prepare') renderPrepare();
   if (view === 'inventory') renderInventory();
   if (view === 'history') renderHistory();
+  if (view === 'sect') { renderSects(); document.getElementById('sectorDetailPanel').style.display = 'none'; document.getElementById('sectEditorPanel').style.display = 'none'; }
+  if (view === 'arena') renderArena();
   window.scrollTo(0, 0);
 }
 // ---------- 首页渲染 ----------
 function renderHome() {
   document.getElementById('heroDate').textContent = formatDate();
+  renderRealm();
+  renderDailyTasks();
   const total = gameState.history.length;
   const wins = gameState.history.filter(h => h.result === 'win').length;
   const winRate = total > 0 ? Math.round(wins / total * 100) : 0;
@@ -1378,6 +1811,8 @@ function renderPrepare() {
   renderMonsterSelector();
   renderPrepareCatSelector();
   renderPrepareEquipList();
+  renderGongfaSkillConfig();
+  setDifficulty(difficultyMult);
   updatePreview();
 }
 function getMonsterById(id) {
@@ -1504,8 +1939,8 @@ function renderPrepareEquipList() {
           <div class="equip-name">${eq.name}</div>
           <div class="equip-stats">
             <span class="power">攻+${eq.power}</span>
-            ${eq.hp ? `<span class="hp">命+${eq.hp}</span>` : ''}
             <span class="crit">暴+${eq.crit}%</span>
+            ${(eq.affixes && eq.affixes.length > 0) ? `<span style="color:var(--purple);">词条×${eq.affixes.length}</span>` : ''}
           </div>
         </div>
         <span class="equip-cat-tag">${getCatName(activeTab, eq.categoryId)}</span>
@@ -1524,44 +1959,92 @@ function togglePrepareEquip(type, id) {
   updatePreview();
 }
 function updatePreview() {
-  const minutes = parseInt(document.getElementById('focusMinutes').value) || 0;
-  const baseAtk = Math.floor(minutes * 0.8);
-  const baseHp = Math.floor(100 + minutes * 0.5);
-  let equipBonus = 0, critBonus = 0, hpBonus = 0;
-  [...prepareState.selectedGongfa, ...prepareState.selectedPermanent, ...prepareState.selectedConsumable].forEach(id => {
-    const eq = [...gameState.equipment.gongfa, ...gameState.equipment.permanent, ...gameState.equipment.consumable].find(e => e.id === id);
-    if (eq) { equipBonus += eq.power; critBonus += eq.crit || 0; hpBonus += eq.hp || 0; }
+  var minutes = parseInt(document.getElementById('focusMinutes').value) || 0;
+  var baseAtk = Math.floor(minutes * 0.8);
+  var baseHp = Math.floor(100 + minutes * 0.5);
+  var equipBonus = 0, critBonus = 0;
+  var usedEquips = [];
+  prepareState.selectedGongfa.concat(prepareState.selectedPermanent, prepareState.selectedConsumable).forEach(function(id) {
+    var eq = gameState.equipment.gongfa.concat(gameState.equipment.permanent, gameState.equipment.consumable).find(function(e) { return e.id === id; });
+    if (eq) { equipBonus += eq.power; critBonus += eq.crit || 0; usedEquips.push(eq); }
   });
-  const totalAtk = baseAtk + equipBonus;
-  const totalCrit = Math.min(15 + critBonus, 100);
-  const totalHp = baseHp + hpBonus;
+  var realmInfo = getRealmInfo();
+  var aff = collectAffixes(usedEquips);
+  var totalAtk = baseAtk + equipBonus + realmInfo.bonusAtk;
+  var totalCrit = Math.min(15 + critBonus, 100);
+  var totalHp = baseHp + aff.hp + realmInfo.bonusHp;
   document.getElementById('previewBaseAtk').textContent = baseAtk;
   document.getElementById('previewEquipBonus').textContent = '+' + equipBonus;
   document.getElementById('previewTotalAtk').textContent = totalAtk;
   document.getElementById('previewCrit').textContent = totalCrit + '%';
-  document.getElementById('previewBaseHp').textContent = baseHp;
-  document.getElementById('previewHpBonus').textContent = '+' + hpBonus;
-  document.getElementById('previewTotalHp').textContent = totalHp;
-  const monster = getMonsterById(prepareState.selectedMonsterId);
+  document.getElementById('previewHp').textContent = totalHp + (aff.hp > 0 ? ' (+' + aff.hp + '词条)' : '');
+  var monster = getMonsterById(prepareState.selectedMonsterId);
   if (monster && minutes > 0 && totalAtk > 0) {
-    let wins = 0;
-    const sims = 300;
-    for (let i = 0; i < sims; i++) {
-      if (simulateBattle(totalAtk, totalCrit, totalHp, monster.maxHp, monster.attack)) wins++;
+    var mHp = Math.floor(monster.maxHp * difficultyMult * realmInfo.realmMult);
+    var mAtk = Math.floor(monster.attack * difficultyMult * realmInfo.realmMult);
+    var wins = 0;
+    var sims = 300;
+    for (var i = 0; i < sims; i++) {
+      if (simulateBattle(totalAtk, totalCrit, totalHp, mHp, mAtk, monster.id)) wins++;
     }
-    document.getElementById('previewWinRate').textContent = Math.round(wins / sims * 100) + '%';
+    document.getElementById('previewWinRate').textContent = Math.round(wins / sims * 100) + '%' + ((difficultyMult * realmInfo.realmMult) !== 1.0 ? ' (' + (difficultyMult * realmInfo.realmMult).toFixed(2) + '×强度)' : '');
   } else {
     document.getElementById('previewWinRate').textContent = '--';
   }
+  var skContainer = document.getElementById('previewSkillList');
+  if (skContainer) {
+    var usedGongfa = prepareState.selectedGongfa.map(function(id) { return gameState.equipment.gongfa.find(function(e) { return e.id === id; }); }).filter(Boolean);
+    if (usedGongfa.length === 0) { skContainer.innerHTML = ''; }
+    else {
+      skContainer.innerHTML = '<div style="font-size:11px;color:var(--text-dim);margin-bottom:4px;">已解锁神通</div>' + usedGongfa.map(function(eq) {
+        var type = gongfaTypeOf(eq);
+        var cfg = GONGFA_SKILL_CONFIG[type];
+        return '<div style="font-size:11px;color:var(--jade-light);padding:2px 0;">' + eq.name + '·' + cfg.name + ' — 耗灵' + cfg.cost + '，' + skillDesc(type) + '</div>';
+      }).join('');
+    }
+  }
 }
-function simulateBattle(atk, crit, hp, mHp, mAtk) {
-  let pHp = hp, monsterHp = mHp;
-  while (pHp > 0 && monsterHp > 0) {
-    const isCrit = Math.random() * 100 < crit;
-    let dmg = atk * (isCrit ? 2 : 1) * (0.9 + Math.random() * 0.2);
-    monsterHp -= dmg;
-    if (monsterHp <= 0) return true;
-    pHp -= mAtk * (0.9 + Math.random() * 0.2);
+function simulateBattle(atk, critPct, hp, mHp, mAtk, monsterId) {
+  const sk = MONSTER_SKILLS[monsterId] || DEFAULT_MONSTER_SKILL;
+  let pHp = hp, mhp = mHp, spirit = 100;
+  let mUsed = false, cd = 0, mRage = 0, pWeaken = 0, pPoison = 0, pPoisonDmg = 0;
+  let round = 0;
+  while (pHp > 0 && mhp > 0 && round < 300) {
+    round++;
+    const pAtk = pWeaken > 0 ? Math.floor(atk * 0.7) : atk;
+    let pDmg;
+    if (spirit >= 50) {
+      spirit -= 50;
+      pDmg = Math.floor(pAtk * 2.0 * (Math.random() * 100 < critPct ? 2 : 1));
+    } else {
+      pDmg = Math.floor(pAtk * (Math.random() * 100 < critPct ? 2 : 1) * (0.9 + Math.random() * 0.2));
+    }
+    mhp -= pDmg;
+    if (mhp <= 0) return true;
+    let mAction = null;
+    if (sk.triggerHp !== undefined && !mUsed && mhp / mHp <= sk.triggerHp) { mUsed = true; mAction = sk; }
+    else if (sk.cooldown) { if (cd <= 0) { cd = sk.cooldown; mAction = sk; } else cd--; }
+    const mAtkNow = mRage > 0 ? Math.floor(mAtk * mRage) : mAtk;
+    if (!mAction) {
+      pHp -= Math.floor(mAtkNow * (0.9 + Math.random() * 0.2));
+    } else if (mAction.type === 'heavy') {
+      pHp -= Math.floor(mAtkNow * mAction.mult * (0.9 + Math.random() * 0.2));
+    } else if (mAction.type === 'enrage') {
+      mRage = mAction.atkMult || 1.5;
+    } else if (mAction.type === 'weaken') {
+      pWeaken = mAction.duration || 2;
+    } else if (mAction.type === 'poison') {
+      pPoison = mAction.poisonDuration || 4;
+      pPoisonDmg = Math.max(3, Math.floor(hp * (mAction.poisonPct || 0.04)));
+    } else if (mAction.type === 'lifesteal') {
+      mhp = Math.min(mHp, mhp + Math.floor(mHp * (mAction.healPct || 0.08)));
+    } else if (mAction.type === 'confuse') {
+      // 混沌迷乱：约一半概率本回合玩家行动收益减半
+    }
+    if (pWeaken > 0) pWeaken--;
+    if (pPoison > 0) { pHp -= pPoisonDmg; pPoison--; }
+    spirit = Math.min(100, spirit + 30);
+    if (pHp <= 0) return false;
   }
   return pHp > 0;
 }
@@ -1710,41 +2193,501 @@ function compressImage(file, cb) {
   };
   reader.readAsDataURL(file);
 }
-// ---------- 战斗引擎（减慢节奏）----------
-function startBattle() {
-  const note = document.getElementById('difficultyDesc').value.trim();
-  const minutes = parseInt(document.getElementById('focusMinutes').value) || 0;
-  if (minutes <= 0) { showToast('专注时长需大于0，以专注为剑方可斩魔', 'error'); return; }
-  const monster = getMonsterById(prepareState.selectedMonsterId);
-  if (!monster) { showToast('请先选择一只凶兽', 'error'); return; }
-  const baseAtk = Math.floor(minutes * 0.8);
-  const baseHp = Math.floor(100 + minutes * 0.5);
-  let equipBonus = 0, critBonus = 0, hpBonus = 0;
-  const usedEquips = [];
-  [...prepareState.selectedGongfa, ...prepareState.selectedPermanent, ...prepareState.selectedConsumable].forEach(id => {
-    const eq = [...gameState.equipment.gongfa, ...gameState.equipment.permanent, ...gameState.equipment.consumable].find(e => e.id === id);
+// ---------- 战斗引擎 v3.0（回合制 · 灵力神通 · 凶兽专技 · 状态系统）----------
+// 凶兽专属神通配置
+const MONSTER_SKILLS = {
+  m1: { name:'暴虐', type:'enrage', atkMult:1.5, triggerHp:0.30, once:true, text:'朱厌双目赤红，凶性大发，周身煞气冲天，攻击力暴涨！' },
+  m2: { name:'吞噬', type:'lifesteal', healPct:0.08, triggerHp:0.50, once:true, text:'穷奇张开血盆大口，吞噬修士气血，凶威更盛！' },
+  m3: { name:'饕餮之口', type:'heavy', mult:1.7, cooldown:3, text:'饕餮仰天狂啸，巨口吞噬天地，发动恐怖一击！' },
+  m4: { name:'震慑', type:'weaken', reducePct:0.30, duration:3, triggerHp:0.40, once:true, text:'梼杌一声震天咆哮，煞气震慑心神，修士气势为之一滞！' },
+  m5: { name:'混沌乱神', type:'confuse', cooldown:3, failChance:0.5, text:'混沌无形之气弥漫开来，扭曲天地，修士神智迷乱！' },
+  m6: { name:'毒泽千里', type:'poison', poisonPct:0.04, poisonDuration:5, triggerHp:1.0, once:true, text:'相柳九首齐出，喷吐漫天毒雾，毒泽千里，修士身中剧毒！' },
+};
+const DEFAULT_MONSTER_SKILL = { name:'狂暴', type:'enrage', atkMult:1.35, triggerHp:0.3, once:true, text:'凶兽凶性迸发，疯狂扑杀，杀气滔天！' };
+
+// 装备词条类型
+const AFFIX_TYPES = {
+  hp:       { name:'生命',  desc:'最大生命 +{v}',   unit:'' },
+  spirit:   { name:'灵力',  desc:'最大灵力 +{v}',   unit:'' },
+  regen:    { name:'回灵',  desc:'每回合回灵 +{v}', unit:'' },
+  lifesteal:{ name:'吸血',  desc:'攻击吸血 {v}%',   unit:'%' },
+  burn:     { name:'灼烧',  desc:'攻击 {v}% 几率灼烧', unit:'%' },
+  poison:   { name:'淬毒',  desc:'攻击 {v}% 几率中毒', unit:'%' },
+  execute:  { name:'斩杀',  desc:'目标血量≤{v}%时伤害+50%', unit:'%' },
+  thorns:   { name:'反伤',  desc:'受击反弹 {v}%',   unit:'%' },
+  shield:   { name:'护体',  desc:'开局获得 {v} 点护盾', unit:'' },
+  multiHit: { name:'连击',  desc:'攻击 {v}% 几率额外一击', unit:'%' },
+};
+function affixText(a) {
+  const t = AFFIX_TYPES[a.type];
+  if (!t) return a.type + ':' + a.value;
+  return t.desc.replace('{v}', a.value);
+}
+// 汇总所有装备词条
+function collectAffixes(usedEquips) {
+  const sum = { hp:0, spirit:0, regen:0, lifesteal:0, burn:0, poison:0, execute:0, thorns:0, shield:0, multiHit:0 };
+  usedEquips.forEach(eq => {
+    (eq.affixes || []).forEach(a => {
+      if (sum[a.type] !== undefined) sum[a.type] += (a.value || 0);
+    });
+  });
+  return sum;
+}
+
+// 战斗旁白池（让战报不再千篇一律）
+const PLAYER_BASIC_LINES = [
+  '修士挥剑斩出，剑光如虹！',
+  '修士剑锋一转，直取凶兽要害！',
+  '修士踏前一步，剑影破空而至！',
+  '修士凝神运剑，剑气激荡四野！',
+];
+const PLAYER_CRIT_LINES = [
+  '剑意冲霄，气机暴涨，触发暴击！',
+  '剑光爆闪，正中要害，暴击！',
+  '剑气如龙，贯穿凶兽，暴击！',
+];
+const PLAYER_BASIC_HIT = [
+  '对 {m} 造成 {d} 点伤害。',
+  '在 {m} 身上留下一道剑痕，{d} 点伤害。',
+  '剑气命中 {m}，{d} 点伤害。',
+];
+const MONSTER_BASIC_LINES = [
+  '{m} 咆哮着扑来！',
+  '{m} 挥爪撕裂虚空，直逼修士！',
+  '{m} 猛地冲撞，杀意凛然！',
+  '{m} 身形暴起，发动猛攻！',
+];
+const MONSTER_BASIC_HIT = [
+  '对修士造成 {d} 点伤害。',
+  '修士被撕开一道伤口，{d} 点伤害。',
+  '凶兽利爪落下，{d} 点伤害。',
+];
+const MEDITATE_LINES = [
+  '修士闭目凝神，灵力缓缓回涌，周身泛起护体灵光。',
+  '修士运功调息，气海翻涌，灵力恢复，凝出一层灵盾。',
+];
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+// 法宝被动：根据装备特效/名称文字自动解析
+function parsePassives(usedEquips) {
+  const p = { burnChance: 0, poisonChance: 0, lifestealPct: 0, dmgBonus: 0 };
+  usedEquips.forEach(eq => {
+    const eff = (eq.effect || '') + (eq.name || '');
+    if (/灼烧|异火|火|焚/.test(eff)) p.burnChance = Math.min(p.burnChance + 0.15, 0.6);
+    if (/毒/.test(eff)) p.poisonChance = Math.min(p.poisonChance + 0.15, 0.6);
+    if (/吸血|噬/.test(eff)) p.lifestealPct += 0.2;
+    if (/剑|锋|破|攻/.test(eff)) p.dmgBonus += 0.08;
+  });
+  return p;
+}
+
+// 功法 → 神通（按分类与名称推导）
+// 功法神通配置（可自定义，持久化保存）
+var GONGFA_SKILL_CONFIG = {
+  heal:     { name:'归元', cost:40, dmgMult:0.8, healPct:0.22 },
+  slash:    { name:'破军', cost:50, dmgMult:2.2, critBonus:25 },
+  multihit: { name:'残影', cost:45, dmgMult:1.25, hits:2 },
+  burst:    { name:'乾坤', cost:50, dmgMult:1.8, burnChance:0.2 },
+};
+function loadGongfaConfig() {
+  try {
+    var raw = localStorage.getItem('xinmo_gongfa_cfg');
+    if (raw) { var saved = JSON.parse(raw); Object.keys(GONGFA_SKILL_CONFIG).forEach(function(k){ if(saved[k]) Object.assign(GONGFA_SKILL_CONFIG[k], saved[k]); }); }
+  } catch(e) {}
+}
+function saveGongfaConfig() { localStorage.setItem('xinmo_gongfa_cfg', JSON.stringify(GONGFA_SKILL_CONFIG)); }
+function skillDesc(type) {
+  var c = GONGFA_SKILL_CONFIG[type];
+  if (type === 'heal') return '攻击×' + c.dmgMult + '，回血' + Math.round(c.healPct*100) + '%';
+  if (type === 'slash') return '攻击×' + c.dmgMult + '，暴击+' + c.critBonus + '%';
+  if (type === 'multihit') return c.hits + '连击，每次攻击×' + c.dmgMult;
+  if (type === 'burst') return '攻击×' + c.dmgMult + '，' + Math.round(c.burnChance*100) + '%灼烧';
+  return '';
+}
+function gongfaTypeOf(eq) {
+  var catName = getCatName('gongfa', eq.categoryId);
+  var n = eq.name || '';
+  if (/心法|心|灵/.test(catName + n)) return 'heal';
+  if (/剑|锋/.test(catName + n)) return 'slash';
+  if (/身法|身|影|步/.test(catName + n)) return 'multihit';
+  return 'burst';
+}
+function buildGongfaSkills() {
+  var skills = [];
+  battleState.usedEquips.filter(function(e){ return e.type === 'gongfa'; }).forEach(function(eq) {
+    var type = gongfaTypeOf(eq);
+    var cfg = GONGFA_SKILL_CONFIG[type];
+    skills.push({ type:type, name: eq.name + '·' + cfg.name, cost:cfg.cost, dmgMult:cfg.dmgMult,
+      healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits, burnChance:cfg.burnChance, desc: skillDesc(type) });
+  });
+  return skills.slice(0, 3);
+}
+function renderGongfaSkillConfig() {
+  var container = document.getElementById('gongfaSkillConfig');
+  if (!container) return;
+  var rows = Object.keys(GONGFA_SKILL_CONFIG).map(function(key) {
+    var cfg = GONGFA_SKILL_CONFIG[key];
+    var special = '';
+    if (key === 'heal') special = '<span style="font-size:11px;color:var(--text-dim);">回血%</span><input type="number" min="0" max="100" value="' + Math.round(cfg.healPct*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.healPct=(parseInt(this.value)||0)/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    else if (key === 'slash') special = '<span style="font-size:11px;color:var(--text-dim);">暴击+%</span><input type="number" min="0" max="100" value="' + cfg.critBonus + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.critBonus=parseInt(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    else if (key === 'multihit') special = '<span style="font-size:11px;color:var(--text-dim);">连击数</span><input type="number" min="1" max="5" value="' + cfg.hits + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.hits=parseInt(this.value)||1;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    else if (key === 'burst') special = '<span style="font-size:11px;color:var(--text-dim);">灼烧%</span><input type="number" min="0" max="100" value="' + Math.round(cfg.burnChance*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.burnChance=(parseInt(this.value)||0)/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    return '<div class="skill-config-row"><span class="skill-name">' + cfg.name + '</span><span class="skill-desc">' + skillDesc(key) + '</span>' +
+      '<span style="font-size:11px;color:var(--text-dim);">耗灵</span><input type="number" min="0" max="100" value="' + cfg.cost + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.cost=parseInt(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">' +
+      '<span style="font-size:11px;color:var(--text-dim);">伤害×</span><input type="number" step="0.1" min="0" value="' + cfg.dmgMult + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.dmgMult=parseFloat(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">' +
+      special + '</div>';
+  }).join('');
+  container.innerHTML = rows;
+}
+// ========== 境界修为系统（每1000分钟一境界） ==========
+var REALM_NAMES = ['炼气', '筑基', '金丹', '元婴', '化神', '炼虚', '合体', '大乘', '渡劫', '仙人', '真仙', '金仙', '太乙', '大罗', '道祖'];
+function loadRealmNames() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('xinmo_realms') || 'null');
+    if (saved && saved.length) REALM_NAMES = saved;
+  } catch(e) {}
+}
+function saveRealmNames() { localStorage.setItem('xinmo_realms', JSON.stringify(REALM_NAMES)); }
+function toggleRealmEditor() {
+  var el = document.getElementById('realmEditorHome');
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  if (el.style.display === 'block') {
+    document.getElementById('realmNamesInputHome').value = REALM_NAMES.join('\n');
+  }
+}
+function saveRealmNamesFromHome() {
+  var ta = document.getElementById('realmNamesInputHome');
+  if (!ta) return;
+  var names = ta.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+  if (names.length === 0) names = ['凡人'];
+  REALM_NAMES = names;
+  saveRealmNames();
+  renderRealm();
+  document.getElementById('realmEditorHome').style.display = 'none';
+  showToast('境界名称已保存', 'success');
+}
+function getTotalFocus() {
+  var byDate = {};
+  gameState.history.forEach(function(h) {
+    var d = (h.date || '').slice(0, 10);
+    var mins = h.focusMinutes || 0;
+    if (!byDate[d] || mins > byDate[d]) byDate[d] = mins;
+  });
+  var total = Object.keys(byDate).reduce(function(s, k) { return s + byDate[k]; }, 0);
+  return total + (gameState.bonusFocus || 0);
+}
+function getRealmInfo() {
+  var total = getTotalFocus();
+  var idx = Math.floor(total / 1000);
+  var name = REALM_NAMES[Math.min(idx, REALM_NAMES.length - 1)];
+  var progress = (total % 1000) / 1000;
+  return {
+    idx: idx, name: name, progress: progress, total: total,
+    bonusAtk: idx * 5, bonusHp: idx * 30, bonusSpirit: idx * 10,
+    realmMult: 1 + idx * 0.12
+  };
+}
+function renderRealm() {
+  var el = document.getElementById('realmDisplay');
+  if (!el) return;
+  var editorEl = document.getElementById('realmEditorHome');
+  if (editorEl && editorEl.style.display === 'block') {
+    document.getElementById('realmNamesInputHome').value = REALM_NAMES.join('\n');
+  }
+  var info = getRealmInfo();
+  var nextIdx = Math.min(info.idx + 1, REALM_NAMES.length - 1);
+  var nextName = REALM_NAMES[nextIdx];
+  var remain = 1000 - (info.total % 1000);
+  el.innerHTML =
+    '<div style="text-align:center;margin-bottom:6px;">' +
+      '<div style="font-family:Noto Serif SC,serif;font-size:26px;font-weight:900;color:var(--gold-light);letter-spacing:2px;">' + info.name + '期</div>' +
+      '<div style="font-size:11px;color:var(--text-dim);">第 ' + (info.idx + 1) + ' 境界 · 累计专注 ' + info.total + ' 分钟</div>' +
+    '</div>' +
+    '<div class="realm-progress-bar"><div class="realm-progress-fill" style="width:' + (info.progress * 100) + '%;"></div></div>' +
+    '<div style="font-size:11px;color:var(--text-dim);text-align:center;margin-bottom:6px;">距 ' + nextName + ' 期还需 ' + remain + ' 分钟</div>' +
+    '<div style="font-size:11px;color:var(--jade-light);text-align:center;">境界加成：攻击+' + info.bonusAtk + ' · 生命+' + info.bonusHp + ' · 灵力+' + info.bonusSpirit + '</div>' +
+    '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">反派强度 ×' + info.realmMult.toFixed(2) + '</div>';
+}
+
+// ========== 每日三事 · 心魔碎片 ==========
+var dailyState = { date: '', tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: 0 };
+function loadDaily() {
+  try {
+    var saved = JSON.parse(localStorage.getItem('xinmo_daily') || 'null');
+    var today = new Date().toDateString();
+    if (saved && saved.date === today) {
+      dailyState = saved;
+    } else {
+      dailyState = { date: today, tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: saved ? (saved.fragments || 0) : 0 };
+      saveDaily();
+    }
+  } catch(e) {
+    dailyState = { date: new Date().toDateString(), tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: 0 };
+  }
+}
+function saveDaily() { localStorage.setItem('xinmo_daily', JSON.stringify(dailyState)); }
+function renderDailyTasks() {
+  var el = document.getElementById('dailyTasks');
+  if (!el) return;
+  el.innerHTML = dailyState.tasks.map(function(t, i) {
+    return '<div class="daily-task-row' + (t.done ? ' done' : '') + '">' +
+      '<input type="checkbox" ' + (t.done ? 'checked' : '') + ' onchange="toggleTask(' + i + ')">' +
+      '<input type="text" class="form-input" style="flex:1;" value="' + (t.text || '').replace(/"/g, '&quot;') + '" placeholder="今日核心任务 ' + (i + 1) + '" onchange="updateTaskText(' + i + ', this.value)">' +
+      '</div>';
+  }).join('');
+  var fc = document.getElementById('fragCount');
+  if (fc) fc.textContent = dailyState.fragments + '枚';
+}
+function updateTaskText(idx, val) {
+  dailyState.tasks[idx].text = val;
+  saveDaily();
+}
+function toggleTask(idx) {
+  var t = dailyState.tasks[idx];
+  if (!t.text.trim()) { showToast('先填写任务内容', 'error'); return; }
+  t.done = !t.done;
+  if (t.done) dailyState.fragments++;
+  else dailyState.fragments = Math.max(0, dailyState.fragments - 1);
+  saveDaily();
+  renderDailyTasks();
+  if (t.done) showToast('心魔碎片 +1（共' + dailyState.fragments + '枚）', 'success');
+}
+function craftFragment() {
+  if (dailyState.fragments < 10) { showToast('需要10枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 10;
+  saveDaily();
+  var reward = generateArenaReward(5);
+  reward.name = '心魔·' + reward.name;
+  gameState.equipment[reward.type].push(reward);
+  saveGame();
+  renderDailyTasks();
+  showToast('合成成功：' + reward.name, 'success');
+}
+function challengeHeartDemon() {
+  if (dailyState.fragments < 30) { showToast('需要30枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 30;
+  saveDaily();
+  renderDailyTasks();
+  var realm = getRealmInfo();
+  var heartDemon = {
+    id: 'heart_demon', name: '心魔本体', maxHp: Math.floor(2500 * realm.realmMult), attack: Math.floor(130 * realm.realmMult),
+    image: 'https://aka.doubaocdn.com/s/tUOlUrUx0F', desc: '你内心深处的执念所化，最强之敌。',
+    skill: { name: '心魔侵蚀', type: 'confuse', cooldown: 2, text: '心魔低语，修士心神动摇，招式错乱！' },
+    custom: true,
+  };
+  startBattle(heartDemon, { baseAtk: 55, baseHp: 220, context: 'heartDemon', onWin: onHeartDemonWin, onLose: onHeartDemonLose });
+}
+function onHeartDemonWin(bs) {
+  gameState.bonusFocus = (gameState.bonusFocus || 0) + 500;
+  dailyState.fragments += 20;
+  saveDaily();
+  var reward = { id: genId(), name: '心魔·噬魂', type: 'permanent', categoryId: '', power: 60, crit: 15, effect: '心魔本体的核心所化，噬魂夺魄，攻防一体。', affixes: [{type:'lifesteal',value:20},{type:'execute',value:30},{type:'burn',value:25}], image: '', createdAt: Date.now() };
+  gameState.equipment.permanent.push(reward);
+  saveGame();
+  showBattleOverlay('心魔已灭', '你战胜了内心深处的执念，心魔消散，道行大进！',
+    '<div style="font-size:13px;color:var(--text-secondary);line-height:2;">' +
+    '获得法宝：<b style="color:var(--jade-light);">心魔·噬魂</b>（攻+60 暴+15%）<br>' +
+    '<span class="affix-tag good">吸血20%</span> <span class="affix-tag good">斩杀30%</span> <span class="affix-tag good">灼烧25%</span><br>' +
+    '心魔碎片 <b style="color:var(--cinnabar-light);">+20</b><br>' +
+    '修为 <b style="color:var(--gold-light);">+500分钟</b>（加速境界突破）' +
+    '</div>',
+    [{ label: '返回大殿', action: "navigate('home')", primary: true }]);
+}
+function onHeartDemonLose(bs) {
+  showBattleOverlay('心魔未除', '心魔过于强大，你的执念仍在盘踞。提升境界与法宝后再来。',
+    '<div style="font-size:13px;color:var(--text-secondary);">坚持了 ' + bs.round + ' 回合</div>',
+    [{ label: '返回大殿', action: "navigate('home')", primary: true }, { label: '备战', action: "navigate('prepare')" }]);
+}
+
+// 全局难度系数
+var difficultyMult = 1.0;
+function loadDifficulty() { difficultyMult = parseFloat(localStorage.getItem('xinmo_difficulty')) || 1.0; }
+function saveDifficulty() { localStorage.setItem('xinmo_difficulty', String(difficultyMult)); }
+function setDifficulty(v) {
+  if (isNaN(v) || v <= 0) v = 1.0;
+  difficultyMult = v;
+  saveDifficulty();
+  document.querySelectorAll('.diff-btn[data-diff]').forEach(function(b) { b.classList.toggle('active', parseFloat(b.dataset.diff) === v); });
+  var inp = document.getElementById('customDiffInput');
+  if (inp) { if ([0.7,1.0,1.4,1.8].indexOf(v) < 0) inp.value = v; else inp.value = ''; }
+  updatePreview();
+}
+
+// 状态系统
+function applyStatus(side, status) {
+  const c = battleState[side];
+  c.statuses = c.statuses || [];
+  const existing = c.statuses.find(s => s.type === status.type);
+  if (existing) {
+    existing.value = status.value;
+    existing.duration = Math.max(existing.duration, status.duration);
+  } else {
+    c.statuses.push({ ...status });
+  }
+  renderStatuses();
+}
+function renderStatuses() {
+  const labels = {
+    poison:['中毒','debuff'], burn:['灼烧','debuff'], weaken:['虚弱','debuff'],
+    confuse:['迷乱','debuff'], rage:['激怒','buff'], shield:['灵盾','shield'],
+  };
+  ['player', 'monster'].forEach(side => {
+    const c = battleState[side];
+    const el = document.getElementById(side === 'player' ? 'playerStatuses' : 'monsterStatuses');
+    const statuses = (c.statuses || []).filter(s => labels[s.type]);
+    el.innerHTML = statuses.length === 0 ? '' : statuses.map(s => {
+      const [name, cls] = labels[s.type];
+      return `<span class="status-badge ${cls}">${name}${s.type === 'shield' ? '·' + s.value : (s.duration < 99 ? '·' + s.duration : '')}</span>`;
+    }).join('');
+  });
+}
+function absorbShield(side, dmg) {
+  const sh = (battleState[side].statuses || []).find(s => s.type === 'shield');
+  if (sh) {
+    if (sh.value >= dmg) { sh.value -= dmg; return 0; }
+    const remain = dmg - sh.value; sh.value = 0; return remain;
+  }
+  return dmg;
+}
+function tickStatuses() {
+  if (battleState.finished) return;
+  ['player', 'monster'].forEach(side => {
+    if (battleState.finished) return;
+    const c = battleState[side];
+    (c.statuses || []).forEach(s => {
+      if (s.type === 'poison' || s.type === 'burn') {
+        const dmg = Math.max(1, Math.floor(s.value));
+        c.hp = Math.max(0, c.hp - dmg);
+        showDamage(side, dmg, false);
+        addLog(side === 'player' ? 'monster' : 'player', `${side === 'player' ? '修士' : battleState.monster.name} 受到持续伤害 ${dmg} 点。`);
+      }
+    });
+    c.statuses = (c.statuses || []).map(s => ({ ...s, duration: s.duration - 1 })).filter(s => s.duration > 0);
+    if (side === 'player' && c.hp <= 0) { finishBattle('lose'); return; }
+    if (side === 'monster' && c.hp <= 0) { finishBattle('win'); return; }
+  });
+  updateHpBars();
+  renderStatuses();
+}
+function updateSpiritBar() {
+  const p = battleState.player;
+  document.getElementById('playerSpiritBar').style.width = Math.max(0, p.spirit / p.maxSpirit * 100) + '%';
+  document.getElementById('playerSpiritText').textContent = `灵力 ${Math.floor(p.spirit)}/${p.maxSpirit}`;
+  document.querySelectorAll('.battle-action-btn.skill').forEach(btn => {
+    const cost = parseInt(btn.dataset.cost || '0', 10);
+    btn.disabled = p.spirit < cost;
+  });
+}
+function renderActions() {
+  const container = document.getElementById('battleActions');
+  const p = battleState.player;
+  let html = `
+    <button class="battle-action-btn" onclick="playerAct('basic')">
+      <span class="aa-name">挥剑</span><span class="aa-sub">普通攻击</span>
+    </button>`;
+  battleState.skills.forEach((sk, i) => {
+    html += `
+      <button class="battle-action-btn skill" onclick="playerAct('skill', ${i})" data-cost="${sk.cost}">
+        <span class="aa-name">${sk.name}</span><span class="aa-cost">灵力 ${sk.cost}</span>
+      </button>`;
+  });
+  html += `
+    <button class="battle-action-btn defensive" onclick="playerAct('meditate')">
+      <span class="aa-name">凝神调息</span><span class="aa-sub">回灵 · 凝盾</span>
+    </button>`;
+  container.innerHTML = html;
+  updateSpiritBar();
+}
+function setActionsEnabled(enabled) {
+  const container = document.getElementById('battleActions');
+  if (!container) return;
+  container.querySelectorAll('button').forEach(b => b.disabled = !enabled);
+}
+function showHeal(target, amount) {
+  const combatant = document.getElementById(target === 'player' ? 'playerCombatant' : 'monsterCombatant');
+  const popup = document.createElement('div');
+  popup.className = 'damage-popup';
+  popup.style.color = '#7fc8c8';
+  popup.textContent = '+' + amount;
+  combatant.appendChild(popup);
+  setTimeout(() => { if (popup.parentNode) popup.remove(); }, 1200);
+}
+function startBattle(monsterInput, opts) {
+  opts = opts || {};
+  var monster;
+  if (monsterInput) {
+    monster = typeof monsterInput === 'string' ? getMonsterById(monsterInput) : JSON.parse(JSON.stringify(monsterInput));
+  } else {
+    monster = getMonsterById(prepareState.selectedMonsterId);
+  }
+  if (!monster) { showToast('请先选择对手', 'error'); return; }
+  var baseAtk, baseHp, minutes, note;
+  if (opts.baseAtk != null) {
+    baseAtk = opts.baseAtk;
+    baseHp = opts.baseHp || 200;
+    minutes = opts.focusMinutes || 0;
+    note = opts.note || '';
+  } else {
+    note = document.getElementById('difficultyDesc').value.trim();
+    minutes = parseInt(document.getElementById('focusMinutes').value) || 0;
+    if (minutes <= 0) { showToast('专注时长需大于0，以专注为剑方可斩魔', 'error'); return; }
+    baseAtk = Math.floor(minutes * 0.8);
+    baseHp = Math.floor(100 + minutes * 0.5);
+  }
+  var equipBonus = 0, critBonus = 0;
+  var usedEquips = [];
+  prepareState.selectedGongfa.concat(prepareState.selectedPermanent, prepareState.selectedConsumable).forEach(function(id) {
+    var eq = gameState.equipment.gongfa.concat(gameState.equipment.permanent, gameState.equipment.consumable).find(function(e) { return e.id === id; });
     if (eq) {
       equipBonus += eq.power;
       critBonus += eq.crit || 0;
-      hpBonus += eq.hp || 0;
       usedEquips.push(eq);
     }
   });
-  const totalHp = baseHp + hpBonus;
+  var realm = getRealmInfo();
+  baseAtk += realm.bonusAtk;
+  baseHp += realm.bonusHp;
+  var aff = collectAffixes(usedEquips);
+  var pass = parsePassives(usedEquips);
+  aff.burn = Math.max(aff.burn, Math.round(pass.burnChance * 100));
+  aff.poison = Math.max(aff.poison, Math.round(pass.poisonChance * 100));
+  aff.lifesteal = Math.max(aff.lifesteal, Math.round(pass.lifestealPct * 100));
+  var maxHp = baseHp + aff.hp;
+  var maxSpirit = 100 + aff.spirit + realm.bonusSpirit;
+  var totalMult = difficultyMult * realm.realmMult;
+  if (totalMult !== 1.0) {
+    monster.maxHp = Math.floor(monster.maxHp * totalMult);
+    monster.attack = Math.floor(monster.attack * totalMult);
+  }
+  var monsterSkill = monster.skill || (MONSTER_SKILLS[monster.id] ? JSON.parse(JSON.stringify(MONSTER_SKILLS[monster.id])) : (monster.custom ? JSON.parse(JSON.stringify(DEFAULT_MONSTER_SKILL)) : null));
   battleState = {
-    player: { name: '修士', maxHp: totalHp, hp: totalHp, attack: baseAtk + equipBonus, crit: Math.min(15 + critBonus, 100) },
+    player: {
+      name: '修士', maxHp: maxHp, hp: maxHp, attack: baseAtk + equipBonus, crit: Math.min(15 + critBonus, 100),
+      spirit: maxSpirit, maxSpirit: maxSpirit, statuses: [], affixes: aff, passives: pass,
+    },
     monster: {
       name: monster.name,
       maxHp: monster.maxHp, hp: monster.maxHp, attack: monster.attack,
-      difficulty: monster.label || '', monsterId: monster.id, image: monster.image, desc: monster.desc,
+      difficulty: monster.label || monster.difficulty || '', monsterId: monster.id, image: monster.image, desc: monster.desc,
+      statuses: [], skillUsed: false, cooldownCounter: 0,
+      skill: monsterSkill,
     },
-    round: 0, log: [], usedEquips, focusMinutes: minutes, note,
-    finished: false, result: null,
+    round: 0, log: [], usedEquips: usedEquips, focusMinutes: minutes, note: note,
+    finished: false, result: null, awaitingAction: false,
+    context: opts.context || 'normal',
+    onWin: opts.onWin || null,
+    onLose: opts.onLose || null,
   };
+  if (opts.initialPlayerHp != null) {
+    battleState.player.hp = Math.min(battleState.player.maxHp, Math.max(1, opts.initialPlayerHp));
+  }
+  battleState.skills = buildGongfaSkills();
+  if (aff.shield > 0) applyStatus('player', { type: 'shield', value: aff.shield, duration: 99 });
   navigate('battle');
   initBattleUI();
-  battleTimeouts.push(setTimeout(() => runBattleRound(), 800));
 }
+
 function initBattleUI() {
   battleRunning = true;
   document.getElementById('battleOverlay').style.display = 'none';
@@ -1757,7 +2700,16 @@ function initBattleUI() {
   document.getElementById('playerCombatant').className = 'combatant player';
   document.getElementById('monsterCombatant').className = 'combatant monster';
   updateHpBars();
+  renderActions();
+  renderStatuses();
   addLog('system', `【第1回合】${battleState.monster.name}现身！${battleState.monster.desc}。试炼开始！`);
+  addLog('system', '回合制战斗：挥剑无消耗，施展神通消耗灵力，凝神调息可回灵并凝出灵盾。');
+  if (battleState.monster.skill && battleState.monster.skill.triggerHp === 1.0) {
+    addLog('system', `你隐约察觉 ${battleState.monster.name} 身上弥漫着不祥的气息……`);
+  }
+  battleState.round = 1;
+  battleState.awaitingAction = false;
+  setActionsEnabled(true);
 }
 function updateHpBars() {
   const p = battleState.player, m = battleState.monster;
@@ -1787,63 +2739,263 @@ function clearAllBattleTimeouts() {
   battleTimeouts.forEach(t => clearTimeout(t));
   battleTimeouts = [];
 }
-function runBattleRound() {
-  if (!battleState || battleState.finished) { battleRunning = false; return; }
-  battleState.round++;
-  document.getElementById('roundIndicator').textContent = `第 ${battleState.round} 回合`;
+// 玩家行动
+function playerAct(type, idx) {
+  if (!battleState || battleState.finished || battleState.awaitingAction) return;
+  battleState.awaitingAction = true;
+  setActionsEnabled(false);
   const p = battleState.player, m = battleState.monster;
-  // 玩家攻击
-  const playerCrit = Math.random() * 100 < p.crit;
-  let playerDmg = Math.floor(p.attack * (playerCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
-  m.hp = Math.max(0, m.hp - playerDmg);
-  // 玩家攻击动画
+
+  // 混沌乱神：行动可能失效
+  const confuse = p.statuses.find(s => s.type === 'confuse');
+  if (confuse) {
+    p.statuses = p.statuses.filter(s => s.type !== 'confuse');
+    renderStatuses();
+    const fail = Math.random() < (confuse.value || 0.5);
+    if (fail) {
+      addLog('system', '心神被混沌扰乱，修士招式涣散，白白浪费了一回合！');
+      battleTimeouts.push(setTimeout(() => { if (battleState.finished) return; runMonsterTurn(); }, 900));
+      return;
+    }
+    addLog('system', '修士强定心神，挣脱了混沌迷乱！');
+  }
+
+  let atk = p.attack;
+  const wk = p.statuses.find(s => s.type === 'weaken');
+  if (wk) atk = Math.floor(atk * (1 - wk.value));
+
+  let pDmg = 0, pCrit = false, pSkill = null, healAmount = 0;
+
+  if (type === 'basic') {
+    pCrit = Math.random() * 100 < p.crit;
+    pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+    if (p.passives.dmgBonus > 0) pDmg = Math.floor(pDmg * (1 + p.passives.dmgBonus));
+  } else if (type === 'skill') {
+    const sk = battleState.skills[idx];
+    if (!sk || p.spirit < sk.cost) {
+      addLog('system', `灵力不足，无法施展「${sk ? sk.name : '神通'}」，改以挥剑攻击！`);
+      pCrit = Math.random() * 100 < p.crit;
+      pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+    } else {
+      p.spirit -= sk.cost;
+      updateSpiritBar();
+      pSkill = sk;
+      if (sk.type === 'heal') {
+        healAmount = Math.floor(p.maxHp * (sk.healPct || 0.2));
+        p.hp = Math.min(p.maxHp, p.hp + healAmount);
+        pDmg = Math.floor(atk * (sk.dmgMult || 0.8) * (0.9 + Math.random() * 0.2));
+      } else if (sk.type === 'slash') {
+        pCrit = Math.random() * 100 < Math.min(p.crit + (sk.critBonus || 0), 100);
+        pDmg = Math.floor(atk * sk.dmgMult * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+      } else if (sk.type === 'multihit') {
+        let total = 0, crits = 0;
+        for (let i = 0; i < (sk.hits || 2); i++) {
+          const c = Math.random() * 100 < p.crit;
+          if (c) crits++;
+          total += Math.floor(atk * sk.dmgMult * (c ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        }
+        pDmg = total; pCrit = crits > 0;
+      } else { // burst
+        pCrit = Math.random() * 100 < p.crit;
+        pDmg = Math.floor(atk * sk.dmgMult * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        if ((sk.burnChance || 0) > 0 && Math.random() < sk.burnChance) {
+          applyStatus('monster', { type: 'burn', value: Math.max(4, Math.floor(m.maxHp * 0.03)), duration: 2 });
+          addLog('crit', '神通余威化作烈焰，凶兽被点燃！');
+        }
+      }
+    }
+  } else if (type === 'meditate') {
+    const regain = 35;
+    p.spirit = Math.min(p.maxSpirit, p.spirit + regain);
+    updateSpiritBar();
+    applyStatus('player', { type: 'shield', value: Math.floor(p.maxHp * 0.3) + 20, duration: 2 });
+    addLog('system', pick(MEDITATE_LINES));
+    battleTimeouts.push(setTimeout(() => {
+      if (battleState.finished) return;
+      const playerEl = document.getElementById('playerCombatant');
+      playerEl.classList.add('attacking');
+      battleTimeouts.push(setTimeout(() => playerEl.classList.remove('attacking'), 500));
+      runMonsterTurn();
+    }, 800));
+    return;
+  }
+
+  // 斩杀：目标血量低于阈值时伤害+50%
+  if (p.affixes.execute > 0 && pDmg > 0 && m.hp / m.maxHp <= p.affixes.execute / 100) {
+    pDmg = Math.floor(pDmg * 1.5);
+  }
+  // 连击：普通攻击有几率额外一击
+  let extraHit = false;
+  if (type === 'basic' && p.affixes.multiHit > 0 && Math.random() * 100 < p.affixes.multiHit) {
+    const ed = Math.floor(atk * (0.9 + Math.random() * 0.2));
+    pDmg += ed;
+    extraHit = true;
+  }
+  // 修士出手
+  if (healAmount > 0) showHeal('player', healAmount);
   battleTimeouts.push(setTimeout(() => {
+    if (battleState.finished) return;
     const playerEl = document.getElementById('playerCombatant');
     playerEl.classList.add('attacking');
     battleTimeouts.push(setTimeout(() => playerEl.classList.remove('attacking'), 500));
-  }, 200));
-  // 怪兽受伤
+  }, 150));
   battleTimeouts.push(setTimeout(() => {
     if (battleState.finished) return;
     const monsterEl = document.getElementById('monsterCombatant');
     monsterEl.classList.add('hurt');
     battleTimeouts.push(setTimeout(() => monsterEl.classList.remove('hurt'), 400));
-    showDamage('monster', playerDmg, playerCrit);
+    m.hp = Math.max(0, m.hp - pDmg);
+    showDamage('monster', pDmg, pCrit);
     updateHpBars();
-    if (playerCrit) {
-      addLog('crit', `修士爆发剑气，触发暴击！对 ${m.name} 造成 ${playerDmg} 点伤害！`);
+
+    if (pSkill) {
+      if (pSkill.type === 'heal') {
+        addLog('player', `修士施展「${pSkill.name}」，气海回涌恢复 ${healAmount} 点生命，剑气袭向 ${m.name}，造成 ${pDmg} 点伤害。`);
+      } else if (pSkill.type === 'multihit') {
+        addLog('player', `修士施展「${pSkill.name}」，身化残影连斩两击，对 ${m.name} 共造成 ${pDmg} 点伤害${pCrit ? '，触发暴击！' : '！'}`);
+      } else {
+        addLog('player', `修士施展「${pSkill.name}」，神通显威，对 ${m.name} 造成 ${pDmg} 点伤害${pCrit ? '（暴击！）' : ''}！`);
+      }
     } else {
-      addLog('player', `修士挥剑出击，对 ${m.name} 造成 ${playerDmg} 点伤害。`);
+      const line = pCrit ? pick(PLAYER_CRIT_LINES) : pick(PLAYER_BASIC_LINES);
+      addLog('player', `${line} ${pick(PLAYER_BASIC_HIT).replace('{m}', m.name).replace('{d}', pDmg)}`);
     }
-    if (m.hp <= 0) {
-      finishBattle('win');
-      return;
+
+    if (extraHit) addLog('crit', '身法迅捷，修士追加一击！');
+    // 法宝词条特效
+    const burnChance = (p.affixes.burn || 0) / 100;
+    if (burnChance > 0 && Math.random() < burnChance) {
+      applyStatus('monster', { type: 'burn', value: Math.max(4, Math.floor(m.maxHp * 0.03)), duration: 2 });
+      addLog('crit', '法宝异火喷涌，凶兽被点燃灼烧！');
     }
-    // 怪兽反击
+    const poisonChance = (p.affixes.poison || 0) / 100;
+    if (poisonChance > 0 && Math.random() < poisonChance) {
+      applyStatus('monster', { type: 'poison', value: Math.max(3, Math.floor(m.maxHp * 0.02)), duration: 3 });
+      addLog('crit', '法宝毒煞渗入凶兽体内！');
+    }
+    const lifestealPct = (p.affixes.lifesteal || 0) / 100;
+    if (lifestealPct > 0 && pDmg > 0) {
+      const lh = Math.floor(pDmg * lifestealPct);
+      p.hp = Math.min(p.maxHp, p.hp + lh);
+      addLog('player', `吸星之力涌动，修士恢复 ${lh} 点生命。`);
+    }
+    updateHpBars();
+    renderStatuses();
+    if (m.hp <= 0) { finishBattle('win'); return; }
+    battleTimeouts.push(setTimeout(() => { if (battleState.finished) return; runMonsterTurn(); }, 1000));
+  }, 650));
+}
+
+// 凶兽 AI：决定本回合行动
+function decideMonsterAction() {
+  const m = battleState.monster;
+  const sk = m.skill;
+  if (!sk) return null;
+  if (sk.triggerHp !== undefined) {
+    if (!m.skillUsed && m.hp / m.maxHp <= sk.triggerHp) {
+      m.skillUsed = true;
+      return sk;
+    }
+  }
+  if (sk.cooldown) {
+    if (m.cooldownCounter <= 0) {
+      m.cooldownCounter = sk.cooldown;
+      return sk;
+    }
+    m.cooldownCounter--;
+  }
+  return null;
+}
+function resolveMonsterSkill(sk) {
+  const p = battleState.player, m = battleState.monster;
+  const rage = m.statuses.find(s => s.type === 'rage');
+  const atk = rage ? Math.floor(m.attack * rage.value) : m.attack;
+  if (sk.type === 'enrage') {
+    applyStatus('monster', { type: 'rage', value: sk.atkMult || 1.5, duration: 99 });
+    addLog('monster', `${m.name} 陷入暴虐，攻击力大幅提升！`);
+  } else if (sk.type === 'lifesteal') {
+    const heal = Math.floor(m.maxHp * (sk.healPct || 0.08));
+    m.hp = Math.min(m.maxHp, m.hp + heal);
+    addLog('monster', `${m.name} 吞噬修士气血，恢复 ${heal} 点生命！`);
+  } else if (sk.type === 'heavy') {
+    let dmg = Math.floor(atk * (sk.mult || 1.7) * (0.9 + Math.random() * 0.2));
+    dmg = absorbShield('player', dmg);
+    p.hp = Math.max(0, p.hp - dmg);
+    if (p.affixes.thorns > 0 && dmg > 0) {
+      const td = Math.floor(dmg * p.affixes.thorns / 100);
+      m.hp = Math.max(0, m.hp - td);
+      addLog('player', `护体反伤，${m.name} 受到 ${td} 点反噬！`);
+    }
+    const playerEl = document.getElementById('playerCombatant');
+    playerEl.classList.add('hurt');
+    battleTimeouts.push(setTimeout(() => playerEl.classList.remove('hurt'), 400));
+    showDamage('player', dmg, true);
+    updateHpBars();
+    addLog('crit', `${m.name} 的「${sk.name}」重创修士，造成 ${dmg} 点伤害！`);
+    if (p.hp <= 0) finishBattle('lose');
+  } else if (sk.type === 'weaken') {
+    applyStatus('player', { type: 'weaken', value: sk.reducePct || 0.3, duration: sk.duration || 3 });
+    addLog('monster', `${m.name} 震慑心神，修士攻击力下降 ${Math.round((sk.reducePct || 0.3) * 100)}%（持续${sk.duration || 3}回合）！`);
+  } else if (sk.type === 'confuse') {
+    applyStatus('player', { type: 'confuse', value: sk.failChance || 0.5, duration: 1 });
+    addLog('monster', `${m.name} 施放「混沌乱神」，修士下回合行动可能失效！`);
+  } else if (sk.type === 'poison') {
+    const pd = Math.max(3, Math.floor(p.maxHp * (sk.poisonPct || 0.04)));
+    applyStatus('player', { type: 'poison', value: pd, duration: sk.poisonDuration || 5 });
+    addLog('monster', `${m.name} 的剧毒渗入修士经脉（每回合 ${pd} 点伤害）！`);
+  }
+}
+function runMonsterTurn() {
+  if (!battleState || battleState.finished) return;
+  const p = battleState.player, m = battleState.monster;
+  const action = decideMonsterAction();
+  const monsterEl = document.getElementById('monsterCombatant');
+  monsterEl.classList.add('attacking');
+  battleTimeouts.push(setTimeout(() => monsterEl.classList.remove('attacking'), 500));
+  if (action) {
+    addLog('system', `【${m.name}】${action.text}`);
     battleTimeouts.push(setTimeout(() => {
       if (battleState.finished) return;
-      const monsterAtkEl = document.getElementById('monsterCombatant');
-      monsterAtkEl.classList.add('attacking');
-      battleTimeouts.push(setTimeout(() => monsterAtkEl.classList.remove('attacking'), 500));
-      battleTimeouts.push(setTimeout(() => {
-        if (battleState.finished) return;
-        let monsterDmg = Math.floor(m.attack * (0.9 + Math.random() * 0.2));
-        p.hp = Math.max(0, p.hp - monsterDmg);
-        const playerHurtEl = document.getElementById('playerCombatant');
-        playerHurtEl.classList.add('hurt');
-        battleTimeouts.push(setTimeout(() => playerHurtEl.classList.remove('hurt'), 400));
-        showDamage('player', monsterDmg, false);
-        updateHpBars();
-        addLog('monster', `${m.name} 反扑撕咬，对修士造成 ${monsterDmg} 点伤害。`);
-        if (p.hp <= 0) {
-          finishBattle('lose');
-          return;
-        }
-        // 下一回合
-        battleTimeouts.push(setTimeout(() => runBattleRound(), 1200));
-      }, 400));
+      resolveMonsterSkill(action);
+      afterMonsterTurn();
     }, 700));
-  }, 700));
+  } else {
+    addLog('monster', pick(MONSTER_BASIC_LINES).replace('{m}', m.name));
+    battleTimeouts.push(setTimeout(() => {
+      if (battleState.finished) return;
+      const rage = m.statuses.find(s => s.type === 'rage');
+      const atk = rage ? Math.floor(m.attack * rage.value) : m.attack;
+      let dmg = Math.floor(atk * (0.9 + Math.random() * 0.2));
+      dmg = absorbShield('player', dmg);
+      p.hp = Math.max(0, p.hp - dmg);
+      // 反伤词条
+      if (p.affixes.thorns > 0 && dmg > 0) {
+        const td = Math.floor(dmg * p.affixes.thorns / 100);
+        m.hp = Math.max(0, m.hp - td);
+        addLog('player', `护体反伤，${m.name} 受到 ${td} 点反噬！`);
+      }
+      const playerEl = document.getElementById('playerCombatant');
+      playerEl.classList.add('hurt');
+      battleTimeouts.push(setTimeout(() => playerEl.classList.remove('hurt'), 400));
+      showDamage('player', dmg, false);
+      updateHpBars();
+      addLog('monster', pick(MONSTER_BASIC_HIT).replace('{d}', dmg));
+      if (p.hp <= 0) { finishBattle('lose'); return; }
+      afterMonsterTurn();
+    }, 700));
+  }
+}
+function afterMonsterTurn() {
+  if (battleState.finished) return;
+  tickStatuses();
+  if (battleState.finished) return;
+  const p = battleState.player;
+  p.spirit = Math.min(p.maxSpirit, p.spirit + 30 + (p.affixes.regen || 0));
+  updateSpiritBar();
+  battleState.round++;
+  document.getElementById('roundIndicator').textContent = `第 ${battleState.round} 回合`;
+  battleState.awaitingAction = false;
+  setActionsEnabled(true);
 }
 function finishBattle(result) {
   if (battleState.finished) return;
@@ -1851,28 +3003,38 @@ function finishBattle(result) {
   battleState.result = result;
   battleRunning = false;
   clearAllBattleTimeouts();
+  var isNormal = battleState.context === 'normal';
   // 消耗一次性装备
-  prepareState.selectedConsumable.forEach(id => {
-    const idx = gameState.equipment.consumable.findIndex(e => e.id === id);
+  prepareState.selectedConsumable.forEach(function(id) {
+    var idx = gameState.equipment.consumable.findIndex(function(e) { return e.id === id; });
     if (idx >= 0) gameState.equipment.consumable.splice(idx, 1);
   });
-  // 记录战绩
-  const record = {
-    date: new Date().toISOString(),
-    difficulty: battleState.monster.difficulty,
-    monsterName: battleState.monster.name,
-    focusMinutes: battleState.focusMinutes,
-    rounds: battleState.round,
-    result: result,
-    note: battleState.note || '',
-    equipsUsed: battleState.usedEquips.map(e => e.name),
-  };
-  gameState.history.push(record);
-  saveGame();
-  prepareState.selectedGongfa = [];
-  prepareState.selectedPermanent = [];
-  prepareState.selectedConsumable = [];
-  battleTimeouts.push(setTimeout(() => showBattleResult(result), 800));
+  // 普通战斗记录战绩
+  if (isNormal) {
+    var record = {
+      date: new Date().toISOString(),
+      difficulty: battleState.monster.difficulty,
+      monsterName: battleState.monster.name,
+      focusMinutes: battleState.focusMinutes,
+      rounds: battleState.round,
+      result: result,
+      note: battleState.note || '',
+      equipsUsed: battleState.usedEquips.map(function(e) { return e.name; }),
+    };
+    gameState.history.push(record);
+    saveGame();
+    prepareState.selectedGongfa = [];
+    prepareState.selectedPermanent = [];
+    prepareState.selectedConsumable = [];
+  }
+  // 回调优先（宗门/擂台自定义结算）
+  var cb = (result === 'win' && battleState.onWin) ? battleState.onWin : (result === 'lose' && battleState.onLose ? battleState.onLose : null);
+  if (cb) {
+    var bs = battleState;
+    battleTimeouts.push(setTimeout(function() { cb(bs); }, 800));
+  } else {
+    battleTimeouts.push(setTimeout(function() { showBattleResult(result); }, 800));
+  }
 }
 function showBattleResult(result) {
   const overlay = document.getElementById('battleOverlay');
@@ -1893,13 +3055,465 @@ function showBattleResult(result) {
     <div class="result-stat-row"><span class="label">凶兽</span><span class="value">${m.name}（${m.difficulty || ''}）</span></div>
     <div class="result-stat-row"><span class="label">专注时长</span><span class="value">${battleState.focusMinutes} 分钟</span></div>
     <div class="result-stat-row"><span class="label">总攻击力</span><span class="value">${battleState.player.attack}</span></div>
-    <div class="result-stat-row"><span class="label">生命值</span><span class="value">${battleState.player.maxHp}</span></div>
     <div class="result-stat-row"><span class="label">暴击率</span><span class="value">${battleState.player.crit}%</span></div>
     <div class="result-stat-row"><span class="label">战斗回合</span><span class="value">${battleState.round} 回合</span></div>
     <div class="result-stat-row"><span class="label">使用功法法宝</span><span class="value">${battleState.usedEquips.length > 0 ? battleState.usedEquips.map(e=>e.name).join('、') : '无'}</span></div>
   `;
   overlay.style.display = 'flex';
 }
+// ========== 玩法说明折叠 ==========
+function toggleHelp(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+// ========== 敌人技能预设（宗门/擂台通用） ==========
+const ENEMY_SKILL_PRESETS = {
+  none:      { label: '无技能' },
+  heavy:     { label: '重击', name: '蓄力重击', type: 'heavy', mult: 1.7, cooldown: 3, text: '敌人蓄力重击，地动山摇！' },
+  weaken:    { label: '震慑', name: '气势震慑', type: 'weaken', atkReduction: 0.3, duration: 3, triggerHp: 0.4, once: true, text: '敌人气势震慑，修士攻势锐减！' },
+  confuse:   { label: '乱神', name: '心神扰乱', type: 'confuse', cooldown: 3, text: '敌人扰乱心神，修士招式错乱！' },
+  poison:    { label: '剧毒', name: '剧毒之雾', type: 'poison', dmgPct: 0.04, duration: 5, triggerHp: 1.0, once: true, text: '毒雾弥漫，修士身中剧毒！' },
+  burn:      { label: '烈焰', name: '烈焰焚身', type: 'burn', dmgPct: 0.05, duration: 3, triggerHp: 0.5, once: true, text: '烈焰焚身，修士被灼烧！' },
+  lifesteal: { label: '吞噬', name: '吞噬生机', type: 'lifesteal', healPct: 0.08, triggerHp: 0.5, once: true, text: '敌人吞噬生机，恢复生命！' },
+  enrage:    { label: '狂暴', name: '狂暴', type: 'enrage', atkMult: 1.5, triggerHp: 0.3, once: true, text: '敌人凶性大发，攻击暴涨！' },
+};
+function skillFromPreset(key) {
+  if (!key || key === 'none') return null;
+  const p = ENEMY_SKILL_PRESETS[key];
+  if (!p) return null;
+  const sk = {};
+  Object.keys(p).forEach(function(k) { if (k !== 'label') sk[k] = p[k]; });
+  return sk;
+}
+
+// ========== 宗门系统 ==========
+const DEFAULT_SECTORS = [
+  { id: 'qingyun', name: '青云宗', icon: '⛰️', desc: '正道魁首，剑法通神，以凌厉剑意为尊。',
+    enemies: [
+      { name: '青云外门弟子', maxHp: 320, attack: 28, skillKey: 'none' },
+      { name: '青云内门弟子', maxHp: 520, attack: 42, skillKey: 'heavy' },
+      { name: '青云执法长老', maxHp: 820, attack: 62, skillKey: 'heavy' },
+      { name: '掌门·剑痴', maxHp: 1350, attack: 92, skillKey: 'enrage' },
+    ],
+    reward: { name: '青云剑诀', type: 'gongfa', categoryId: 'cat_jianjue', power: 32, crit: 10, affixes: [{ type: 'execute', value: 25 }, { type: 'multiHit', value: 15 }], effect: '青云宗镇宗剑诀，剑出如山，遇弱则强。' } },
+  { id: 'tianjian', name: '天剑门', icon: '⚔️', desc: '攻伐无双，门下皆为剑中狂客，只求一剑破万法。',
+    enemies: [
+      { name: '天剑门剑客', maxHp: 280, attack: 38, skillKey: 'none' },
+      { name: '天剑门剑狂', maxHp: 480, attack: 55, skillKey: 'enrage' },
+      { name: '天剑门长老', maxHp: 750, attack: 78, skillKey: 'heavy' },
+      { name: '门主·剑无极', maxHp: 1200, attack: 115, skillKey: 'enrage' },
+    ],
+    reward: { name: '天剑秘录', type: 'gongfa', categoryId: 'cat_jianjue', power: 45, crit: 18, affixes: [{ type: 'execute', value: 30 }], effect: '天剑门至高秘录，攻伐之凌厉冠绝天下。' } },
+  { id: 'wandu', name: '万毒谷', icon: '☠️', desc: '毒道至尊，谷中遍地毒物，入谷者九死一生。',
+    enemies: [
+      { name: '万毒谷药童', maxHp: 350, attack: 25, skillKey: 'poison' },
+      { name: '万毒谷弟子', maxHp: 560, attack: 40, skillKey: 'poison' },
+      { name: '万毒谷长老', maxHp: 880, attack: 58, skillKey: 'poison' },
+      { name: '谷主·毒圣', maxHp: 1400, attack: 80, skillKey: 'poison' },
+    ],
+    reward: { name: '万毒真经', type: 'gongfa', categoryId: 'cat_xinfa', power: 20, crit: 5, affixes: [{ type: 'poison', value: 35 }, { type: 'lifesteal', value: 10 }], effect: '万毒谷镇谷真经，淬毒于兵刃，触之即溃。' } },
+  { id: 'liehuo', name: '烈火宗', icon: '🔥', desc: '以火入道，焚尽一切，门下弟子性情暴烈如火。',
+    enemies: [
+      { name: '烈火宗杂役', maxHp: 300, attack: 32, skillKey: 'none' },
+      { name: '烈火宗弟子', maxHp: 500, attack: 48, skillKey: 'burn' },
+      { name: '烈火宗长老', maxHp: 800, attack: 70, skillKey: 'burn' },
+      { name: '宗主·炎尊', maxHp: 1300, attack: 100, skillKey: 'burn' },
+    ],
+    reward: { name: '烈焰心法', type: 'gongfa', categoryId: 'cat_xinfa', power: 25, crit: 8, affixes: [{ type: 'burn', value: 40 }, { type: 'hp', value: 60 }], effect: '烈火宗秘传心法，以烈焰淬炼己身。' } },
+  { id: 'xuanbing', name: '玄冰阁', icon: '❄️', desc: '冰道圣地，寒气彻骨，擅长以冰寒之力冻结敌胆。',
+    enemies: [
+      { name: '玄冰阁侍女', maxHp: 340, attack: 26, skillKey: 'none' },
+      { name: '玄冰阁弟子', maxHp: 540, attack: 44, skillKey: 'weaken' },
+      { name: '玄冰阁长老', maxHp: 860, attack: 64, skillKey: 'confuse' },
+      { name: '阁主·冰皇', maxHp: 1450, attack: 88, skillKey: 'weaken' },
+    ],
+    reward: { name: '玄冰护体诀', type: 'gongfa', categoryId: 'cat_xinfa', power: 18, crit: 5, affixes: [{ type: 'shield', value: 80 }, { type: 'thorns', value: 15 }, { type: 'hp', value: 80 }], effect: '玄冰阁护阁神功，冰盾护体，反噬来敌。' } },
+];
+var sectors = [];
+function loadSectors() {
+  try {
+    var raw = localStorage.getItem('xinmo_sectors');
+    sectors = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_SECTORS));
+  } catch (e) { sectors = JSON.parse(JSON.stringify(DEFAULT_SECTORS)); }
+}
+function saveSectors() { localStorage.setItem('xinmo_sectors', JSON.stringify(sectors)); }
+function getSectorById(id) { return sectors.find(function(s) { return s.id === id; }); }
+
+var sectEditorState = { editingId: null, enemies: [], reward: {} };
+function openSectEditor(sectId) {
+  document.getElementById('sectorDetailPanel').style.display = 'none';
+  document.getElementById('sectEditorPanel').style.display = 'block';
+  if (sectId) {
+    var s = getSectorById(sectId);
+    sectEditorState = { editingId: sectId, enemies: JSON.parse(JSON.stringify(s.enemies)), reward: JSON.parse(JSON.stringify(s.reward || {})) };
+    document.getElementById('sectEditorTitle').textContent = '编辑宗门：' + s.name;
+    document.getElementById('sectEditorName').value = s.name;
+    document.getElementById('sectEditorIcon').value = s.icon || '';
+    document.getElementById('sectEditorDesc').value = s.desc || '';
+    document.getElementById('sectDeleteBtn').style.display = 'inline-block';
+  } else {
+    sectEditorState = { editingId: null, enemies: [{ name: '宗门弟子', maxHp: 300, attack: 30, skillKey: 'none' }], reward: { name: '宗门秘宝', type: 'gongfa', power: 20, crit: 5, affixes: [], effect: '' } };
+    document.getElementById('sectEditorTitle').textContent = '新增宗门';
+    document.getElementById('sectEditorName').value = '';
+    document.getElementById('sectEditorIcon').value = '🏯';
+    document.getElementById('sectEditorDesc').value = '';
+    document.getElementById('sectDeleteBtn').style.display = 'none';
+  }
+  var r = sectEditorState.reward;
+  document.getElementById('sectRewardName').value = r.name || '';
+  document.getElementById('sectRewardType').value = r.type || 'gongfa';
+  document.getElementById('sectRewardPower').value = r.power || 0;
+  document.getElementById('sectRewardCrit').value = r.crit || 0;
+  document.getElementById('sectRewardEffect').value = r.effect || '';
+  renderSectEnemyList();
+}
+function closeSectEditor() {
+  document.getElementById('sectEditorPanel').style.display = 'none';
+  renderSects();
+}
+function renderSectEnemyList() {
+  var container = document.getElementById('sectEnemyList');
+  if (!container) return;
+  container.innerHTML = sectEditorState.enemies.map(function(e, i) {
+    return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap;">' +
+      '<input type="text" class="form-input" style="flex:1;min-width:120px;" value="' + e.name + '" onchange="sectEditorState.enemies[' + i + '].name=this.value" placeholder="名称">' +
+      '<input type="number" class="form-input" style="width:80px;" value="' + e.maxHp + '" onchange="sectEditorState.enemies[' + i + '].maxHp=parseInt(this.value)||0" placeholder="血量" min="1">' +
+      '<input type="number" class="form-input" style="width:80px;" value="' + e.attack + '" onchange="sectEditorState.enemies[' + i + '].attack=parseInt(this.value)||0" placeholder="攻击" min="0">' +
+      '<select class="form-select" style="width:100px;" onchange="sectEditorState.enemies[' + i + '].skillKey=this.value">' +
+      Object.entries(ENEMY_SKILL_PRESETS).map(function(ent) { return '<option value="' + ent[0] + '"' + (e.skillKey === ent[0] ? ' selected' : '') + '>' + ent[1].label + '</option>'; }).join('') +
+      '</select>' +
+      '<button class="btn btn-ghost btn-sm" onclick="removeSectEnemy(' + i + ')">删</button>' +
+    '</div>';
+  }).join('');
+}
+function addSectEnemy() {
+  sectEditorState.enemies.push({ name: '宗门弟子', maxHp: 300, attack: 30, skillKey: 'none' });
+  renderSectEnemyList();
+}
+function removeSectEnemy(idx) {
+  sectEditorState.enemies.splice(idx, 1);
+  renderSectEnemyList();
+}
+function saveSect() {
+  var name = document.getElementById('sectEditorName').value.trim();
+  if (!name) { showToast('请填写宗门名称', 'error'); return; }
+  if (sectEditorState.enemies.length === 0) { showToast('至少添加一个敌人', 'error'); return; }
+  var reward = {
+    name: document.getElementById('sectRewardName').value.trim() || '宗门秘宝',
+    type: document.getElementById('sectRewardType').value,
+    power: parseInt(document.getElementById('sectRewardPower').value) || 0,
+    crit: parseInt(document.getElementById('sectRewardCrit').value) || 0,
+    effect: document.getElementById('sectRewardEffect').value.trim(),
+    affixes: [],
+  };
+  var data = {
+    name: name, icon: document.getElementById('sectEditorIcon').value.trim() || '🏯',
+    desc: document.getElementById('sectEditorDesc').value.trim(),
+    enemies: sectEditorState.enemies.filter(function(e) { return e.name && e.maxHp > 0; }),
+    reward: reward,
+  };
+  if (sectEditorState.editingId) {
+    var s = getSectorById(sectEditorState.editingId);
+    Object.assign(s, data);
+  } else {
+    data.id = 'sect_' + Date.now();
+    sectors.push(data);
+  }
+  saveSectors();
+  closeSectEditor();
+  showToast('宗门已保存', 'success');
+}
+function deleteSect() {
+  if (!sectEditorState.editingId) return;
+  if (!confirm('确定删除此宗门？通关记录也将清除。')) return;
+  sectors = sectors.filter(function(s) { return s.id !== sectEditorState.editingId; });
+  var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
+  delete cleared[sectEditorState.editingId];
+  localStorage.setItem('xinmo_sector_cleared', JSON.stringify(cleared));
+  saveSectors();
+  closeSectEditor();
+  showToast('宗门已删除', 'success');
+}
+
+function renderSects() {
+  var grid = document.getElementById('sectorGrid');
+  if (!grid) return;
+  var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
+  grid.innerHTML = sectors.map(function(s) {
+    var isCleared = cleared[s.id];
+    return '<div class="sector-card ' + (isCleared ? 'cleared' : '') + '" onclick="showSectDetail(\'' + s.id + '\')">' +
+      '<div class="sector-icon">' + (s.icon || '🏯') + '</div>' +
+      '<div class="sector-name">' + s.name + (isCleared ? ' <span style="font-size:11px;color:var(--jade-light);">已通关</span>' : '') + '</div>' +
+      '<div class="sector-desc">' + (s.desc || '') + '</div>' +
+      '<div class="sector-meta"><span>' + s.enemies.length + ' 连战</span><span>奖励：' + (s.reward ? s.reward.name : '—') + '</span></div>' +
+      '<div class="sector-progress"><div class="sector-progress-bar" style="width:' + (isCleared ? 100 : 0) + '%"></div></div>' +
+    '</div>';
+  }).join('');
+}
+function showSectDetail(sectId) {
+  var s = getSectorById(sectId);
+  if (!s) return;
+  document.getElementById('sectorDetailPanel').style.display = 'block';
+  document.getElementById('sectEditorPanel').style.display = 'none';
+  document.getElementById('sectorDetailTitle').textContent = s.icon + ' ' + s.name;
+  var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
+  var isCleared = cleared[s.id];
+  var html = '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;line-height:1.7;">' + (s.desc || '') + '</div>';
+  html += '<div style="font-size:13px;font-weight:600;color:var(--gold-light);margin-bottom:8px;">挑战路线（' + s.enemies.length + '连战）</div>';
+  html += '<div style="margin-bottom:14px;">';
+  s.enemies.forEach(function(e, i) {
+    var skLabel = (e.skillKey && e.skillKey !== 'none' && ENEMY_SKILL_PRESETS[e.skillKey]) ? ENEMY_SKILL_PRESETS[e.skillKey].label : '';
+    html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;">' +
+      '<span>' + (i + 1) + '. ' + e.name + (skLabel ? ' <span style="color:var(--cinnabar-light);">[' + skLabel + ']</span>' : '') + '</span>' +
+      '<span style="color:var(--text-dim);">血' + e.maxHp + ' 攻' + e.attack + '</span></div>';
+  });
+  html += '</div>';
+  if (s.reward) {
+    html += '<div style="font-size:13px;font-weight:600;color:var(--gold-light);margin-bottom:6px;">通关奖励</div>';
+    html += '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">';
+    html += '<b style="color:var(--jade-light);">' + s.reward.name + '</b>（' + (s.reward.type === 'gongfa' ? '功法' : s.reward.type === 'permanent' ? '永久法宝' : '消耗法宝') + '）攻+' + s.reward.power + ' 暴+' + s.reward.crit + '%';
+    if (s.reward.affixes && s.reward.affixes.length > 0) {
+      html += '<br>' + s.reward.affixes.map(function(a) { return '<span class="affix-tag good">' + affixText(a) + '</span>'; }).join('');
+    }
+    if (s.reward.effect) html += '<br><span style="color:var(--text-dim);">' + s.reward.effect + '</span>';
+    html += '</div>';
+  }
+  html += '<div style="display:flex;gap:10px;">';
+  html += '<button class="btn btn-primary" onclick="startSectChallenge(\'' + s.id + '\')">' + (isCleared ? '再次挑战' : '开始挑战') + '</button>';
+  html += '<button class="btn btn-ghost" onclick="openSectEditor(\'' + s.id + '\')">编辑宗门</button>';
+  html += '</div>';
+  document.getElementById('sectorDetailContent').innerHTML = html;
+}
+function closeSectDetail() {
+  document.getElementById('sectorDetailPanel').style.display = 'none';
+}
+
+var sectRun = null;
+function startSectChallenge(sectId) {
+  var s = getSectorById(sectId);
+  if (!s || s.enemies.length === 0) { showToast('宗门数据异常', 'error'); return; }
+  sectRun = { sectId: sectId, enemyIndex: 0, playerHp: null, rewardGiven: false };
+  runNextSectBattle();
+}
+function runNextSectBattle() {
+  var s = getSectorById(sectRun.sectId);
+  var enemy = s.enemies[sectRun.enemyIndex];
+  var monsterObj = {
+    id: 'sect_' + s.id + '_' + sectRun.enemyIndex,
+    name: enemy.name, maxHp: enemy.maxHp, attack: enemy.attack,
+    image: 'https://aka.doubaocdn.com/s/tUOlUrUx0F',
+    skill: skillFromPreset(enemy.skillKey),
+  };
+  startBattle(monsterObj, {
+    context: 'sect', baseAtk: 55, baseHp: 220,
+    initialPlayerHp: sectRun.playerHp,
+    onWin: onSectBattleWin,
+    onLose: onSectBattleLose,
+  });
+}
+function onSectBattleWin(bs) {
+  var s = getSectorById(sectRun.sectId);
+  sectRun.playerHp = bs.player.hp;
+  sectRun.enemyIndex++;
+  if (sectRun.enemyIndex >= s.enemies.length) {
+    var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
+    cleared[s.id] = true;
+    localStorage.setItem('xinmo_sector_cleared', JSON.stringify(cleared));
+    if (s.reward && !sectRun.rewardGiven) {
+      var eq = { id: genId(), name: s.reward.name, type: s.reward.type, categoryId: s.reward.categoryId || '', power: s.reward.power, crit: s.reward.crit, effect: s.reward.effect || '', affixes: JSON.parse(JSON.stringify(s.reward.affixes || [])), image: '', createdAt: Date.now() };
+      gameState.equipment[eq.type].push(eq);
+      saveGame();
+      sectRun.rewardGiven = true;
+    }
+    showSectVictory(s, bs);
+  } else {
+    showSectIntermission(s, bs);
+  }
+}
+function onSectBattleLose(bs) {
+  var s = getSectorById(sectRun.sectId);
+  showBattleOverlay('挑战失败', '你倒在了' + s.name + '第' + (sectRun.enemyIndex + 1) + '关「' + s.enemies[sectRun.enemyIndex].name + '」面前。道行尚浅，改日再来。',
+    '<div style="font-size:13px;color:var(--text-secondary);">坚持了 ' + bs.round + ' 回合</div>',
+    [{ label: '返回宗门', action: "navigate('sect')" }, { label: '返回大殿', action: "navigate('home')" }]);
+  sectRun = null;
+}
+function showSectIntermission(s, bs) {
+  var next = s.enemies[sectRun.enemyIndex];
+  var isBoss = sectRun.enemyIndex === s.enemies.length - 1;
+  showBattleOverlay('连战连胜', '已击败 ' + sectRun.enemyIndex + '/' + s.enemies.length + ' 名敌人，灵力已回满。',
+    '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
+      '剩余生命：<b style="color:var(--jade-light);">' + bs.player.hp + '/' + bs.player.maxHp + '</b><br>' +
+      '下一个对手：<b style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';">' + (isBoss ? '【BOSS】' : '') + next.name + '</b>（血' + next.maxHp + ' 攻' + next.attack + '）' +
+    '</div>',
+    [{ label: '继续挑战', action: 'runNextSectBattle()', primary: true }, { label: '放弃撤退', action: "navigate('sect')" }]);
+}
+function showSectVictory(s, bs) {
+  showBattleOverlay('宗门通关', '你已连胜' + s.enemies.length + '场，征服了' + s.name + '！',
+    '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
+      '总回合数：' + bs.round + '<br>' +
+      '剩余生命：' + bs.player.hp + '/' + bs.player.maxHp + '<br>' +
+      (s.reward ? '<b style="color:var(--jade-light);">获得法宝：' + s.reward.name + '</b>' : '') +
+    '</div>',
+    [{ label: '返回宗门', action: "navigate('sect')", primary: true }, { label: '返回大殿', action: "navigate('home')" }]);
+  sectRun = null;
+}
+
+// ========== 擂台系统 ==========
+var arenaStats = { best: 0, total: 0, rewards: 0 };
+var arenaRun = null;
+function loadArenaStats() {
+  try {
+    var raw = localStorage.getItem('xinmo_arena');
+    arenaStats = raw ? JSON.parse(raw) : { best: 0, total: 0, rewards: 0 };
+  } catch (e) { arenaStats = { best: 0, total: 0, rewards: 0 }; }
+}
+function saveArenaStats() { localStorage.setItem('xinmo_arena', JSON.stringify(arenaStats)); }
+function renderArena() {
+  document.getElementById('arenaBest').textContent = arenaStats.best;
+  document.getElementById('arenaTotal').textContent = arenaStats.total;
+  document.getElementById('arenaRewards').textContent = arenaStats.rewards;
+  if (arenaRun) {
+    document.getElementById('arenaRunPanel').style.display = 'block';
+    document.getElementById('arenaCurrentRound').textContent = arenaRun.round;
+    document.getElementById('arenaCurrentHp').textContent = arenaRun.playerHp != null ? arenaRun.playerHp : '--';
+    var next = arenaRun.nextEnemy;
+    document.getElementById('arenaNextEnemy').textContent = next ? next.name : '--';
+    document.getElementById('arenaRunBanner').textContent = '第 ' + arenaRun.round + ' 轮' + (next && next.elite ? ' · 精英凶兽' : '');
+  } else {
+    document.getElementById('arenaRunPanel').style.display = 'none';
+  }
+}
+function generateArenaEnemy(round) {
+  var baseMonsters = gameState.monsters.filter(function(m) { return !m.custom; });
+  var pool = baseMonsters.length > 0 ? baseMonsters : [{ name: '凶兽', maxHp: 300, attack: 30, image: 'https://aka.doubaocdn.com/s/tUOlUrUx0F' }];
+  var base = pool[Math.floor(Math.random() * pool.length)];
+  var hpScale = Math.pow(1.12, round - 1);
+  var atkScale = Math.pow(1.10, round - 1);
+  var isElite = round % 3 === 0;
+  var hp = Math.floor(base.maxHp * hpScale * (isElite ? 1.5 : 1));
+  var atk = Math.floor(base.attack * atkScale * (isElite ? 1.3 : 1));
+  var skillKey = 'none';
+  if (isElite || round >= 5) {
+    var keys = ['heavy', 'weaken', 'confuse', 'poison', 'burn', 'enrage', 'lifesteal'];
+    skillKey = keys[Math.floor(Math.random() * keys.length)];
+  }
+  return {
+    id: 'arena_' + round,
+    name: (isElite ? '精英·' : '') + base.name,
+    maxHp: hp, attack: atk, image: base.image,
+    skill: skillFromPreset(skillKey),
+    elite: isElite,
+  };
+}
+function startArena() {
+  arenaRun = { round: 1, playerHp: null, rewardsThisRun: 0 };
+  arenaRun.nextEnemy = generateArenaEnemy(1);
+  arenaStats.total++;
+  saveArenaStats();
+  startArenaBattle();
+}
+function startArenaBattle() {
+  var enemy = arenaRun.nextEnemy;
+  startBattle(enemy, {
+    context: 'arena', baseAtk: 55, baseHp: 220,
+    initialPlayerHp: arenaRun.playerHp,
+    onWin: onArenaBattleWin,
+    onLose: onArenaBattleLose,
+  });
+}
+function onArenaBattleWin(bs) {
+  arenaRun.playerHp = bs.player.hp;
+  if (arenaRun.round % 5 === 0) {
+    var reward = generateArenaReward(arenaRun.round);
+    gameState.equipment[reward.type].push(reward);
+    saveGame();
+    arenaRun.rewardsThisRun++;
+    arenaStats.rewards++;
+    saveArenaStats();
+    showToast('获得法宝：' + reward.name, 'success');
+  }
+  if (arenaRun.round > arenaStats.best) {
+    arenaStats.best = arenaRun.round;
+    saveArenaStats();
+  }
+  arenaRun.round++;
+  arenaRun.nextEnemy = generateArenaEnemy(arenaRun.round);
+  renderArena();
+  var next = arenaRun.nextEnemy;
+  showBattleOverlay('第 ' + (arenaRun.round - 1) + ' 轮胜利', '凶兽已除，灵力回满。',
+    '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
+      '剩余生命：<b style="color:var(--jade-light);">' + bs.player.hp + '/' + bs.player.maxHp + '</b><br>' +
+      '下一轮：<b style="color:' + (next.elite ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';">' + (next.elite ? '【精英】' : '') + next.name + '</b>（血' + next.maxHp + ' 攻' + next.attack + '）<br>' +
+      '本轮已获法宝：' + arenaRun.rewardsThisRun + ' 件' +
+    '</div>',
+    [{ label: '继续挑战', action: 'startArenaBattle()', primary: true }, { label: '领取奖励撤退', action: 'arenaRetreat()' }]);
+}
+function onArenaBattleLose(bs) {
+  if (arenaRun.round > arenaStats.best) {
+    arenaStats.best = arenaRun.round;
+    saveArenaStats();
+  }
+  showBattleOverlay('擂台败北', '你在第 ' + arenaRun.round + ' 轮倒下了。',
+    '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
+      '本次坚持：' + arenaRun.round + ' 轮<br>' +
+      '获得法宝：' + arenaRun.rewardsThisRun + ' 件<br>' +
+      '历史最高：' + arenaStats.best + ' 轮' +
+    '</div>',
+    [{ label: '返回擂台', action: "navigate('arena')", primary: true }, { label: '返回大殿', action: "navigate('home')" }]);
+  arenaRun = null;
+}
+function arenaRetreat() {
+  if (!arenaRun) return;
+  showBattleOverlay('安全撤退', '你从擂台全身而退。',
+    '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
+      '本次坚持：' + (arenaRun.round - 1) + ' 轮<br>' +
+      '获得法宝：' + arenaRun.rewardsThisRun + ' 件' +
+    '</div>',
+    [{ label: '返回擂台', action: "navigate('arena')", primary: true }, { label: '返回大殿', action: "navigate('home')" }]);
+  arenaRun = null;
+}
+function generateArenaReward(round) {
+  var names = ['玄铁令', '聚灵珠', '龙鳞护符', '血玉扳指', '太清符', '九幽印', '月华露', '天罡石'];
+  var types = ['permanent', 'gongfa', 'consumable'];
+  var affixPool = ['hp', 'spirit', 'regen', 'lifesteal', 'burn', 'poison', 'execute', 'thorns', 'shield', 'multiHit'];
+  var numAffixes = Math.min(3, 1 + Math.floor(round / 5));
+  var affixes = [];
+  var used = {};
+  for (var i = 0; i < numAffixes; i++) {
+    var key;
+    do { key = affixPool[Math.floor(Math.random() * affixPool.length)]; } while (used[key]);
+    used[key] = true;
+    var val = key === 'hp' ? 30 + Math.floor(Math.random() * 50) + round * 2
+      : key === 'spirit' ? 15 + Math.floor(Math.random() * 20)
+      : key === 'regen' ? 3 + Math.floor(Math.random() * 5)
+      : key === 'shield' ? 40 + Math.floor(Math.random() * 40)
+      : 10 + Math.floor(Math.random() * 25);
+    affixes.push({ type: key, value: val });
+  }
+  return {
+    id: genId(), name: names[Math.floor(Math.random() * names.length)],
+    type: types[Math.floor(Math.random() * types.length)], categoryId: '',
+    power: 10 + Math.floor(Math.random() * 20) + Math.floor(round / 3),
+    crit: Math.floor(Math.random() * 12),
+    effect: '擂台第' + round + '轮战利品',
+    affixes: affixes, image: '', createdAt: Date.now(),
+  };
+}
+
+function showBattleOverlay(title, subtitle, statsHtml, buttons) {
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSubtitle').textContent = subtitle;
+  document.getElementById('resultStats').innerHTML = statsHtml || '';
+  var actions = document.querySelector('.result-actions');
+  actions.innerHTML = buttons.map(function(b) {
+    return '<button class="btn ' + (b.primary ? 'btn-primary' : 'btn-ghost') + '" onclick="' + b.action + '">' + b.label + '</button>';
+  }).join('');
+  document.getElementById('battleOverlay').style.display = 'flex';
+}
+
+// ========== 专注计时 ==========
 // ---------- 背包页（含分类管理）----------
 function renderInventory() {
   renderCategoryManager();
@@ -1981,10 +3595,10 @@ function renderInventoryGrid() {
       </div>
       <div class="inventory-card-stats">
         <span class="inventory-card-stat power">攻击 +${eq.power}</span>
-        ${eq.hp ? `<span class="inventory-card-stat hp">生命 +${eq.hp}</span>` : ''}
         <span class="inventory-card-stat crit">暴击 +${eq.crit}%</span>
       </div>
       <div class="inventory-card-effect">${eq.effect || '—'}</div>
+      ${(eq.affixes && eq.affixes.length > 0) ? `<div class="affix-list">${eq.affixes.map(a => `<span class="affix-tag good">${affixText(a)}</span>`).join('')}</div>` : ''}
       <div class="inventory-card-actions">
         <button class="btn btn-ghost btn-sm" data-action="edit-equip" data-equip-id="${eq.id}">编辑</button>
         <button class="btn btn-danger btn-sm" data-action="del-equip" data-equip-id="${eq.id}">销毁</button>
@@ -1999,7 +3613,6 @@ function toggleAddForm() {
     editingEquipId = null;
     document.getElementById('newEquipName').value = '';
     document.getElementById('newEquipPower').value = '10';
-    document.getElementById('newEquipHp').value = '0';
     document.getElementById('newEquipCrit').value = '0';
     document.getElementById('newEquipEffect').value = '';
     document.getElementById('addFormTitle').textContent = '锻造新法宝';
@@ -2009,6 +3622,9 @@ function toggleAddForm() {
     document.getElementById('equipImageInput').value = '';
     document.getElementById('equipImagePreview').style.display = 'none';
     document.getElementById('equipImagePreview').innerHTML = '';
+    editingAffixes = [];
+    populateAffixTypeSelect();
+    renderEquipAffixEditor();
     updateNewEquipCategoryOptions();
   }
 }
@@ -2021,7 +3637,6 @@ function updateNewEquipCategoryOptions() {
 function addEquipment() {
   const name = document.getElementById('newEquipName').value.trim();
   const power = parseInt(document.getElementById('newEquipPower').value) || 0;
-  const hp = parseInt(document.getElementById('newEquipHp').value) || 0;
   const crit = parseInt(document.getElementById('newEquipCrit').value) || 0;
   const effect = document.getElementById('newEquipEffect').value.trim();
   const type = document.querySelector('input[name="equipType"]:checked')?.value || 'gongfa';
@@ -2043,18 +3658,18 @@ function addEquipment() {
       }
       target.eq.name = name;
       target.eq.power = power;
-      target.eq.hp = hp;
       target.eq.crit = crit;
       target.eq.effect = effect;
       target.eq.categoryId = categoryId;
       target.eq.image = equipImageData || '';
+      target.eq.affixes = JSON.parse(JSON.stringify(editingAffixes));
       saveGame();
       showToast(`法宝「${name}」已更新`, 'success');
     }
     editingEquipId = null;
   } else {
     // 新增模式
-    const eq = { id: genId(), name, type, categoryId, power, hp, crit, effect, image: equipImageData || '', createdAt: Date.now() };
+    const eq = { id: genId(), name, type, categoryId, power, crit, effect, image: equipImageData || '', affixes: JSON.parse(JSON.stringify(editingAffixes)), createdAt: Date.now() };
     gameState.equipment[type].push(eq);
     saveGame();
     showToast(`法宝「${name}」锻造完成`, 'success');
@@ -2086,7 +3701,6 @@ function editEquipment(id) {
   form.style.display = 'block';
   document.getElementById('newEquipName').value = eq.name;
   document.getElementById('newEquipPower').value = eq.power;
-  document.getElementById('newEquipHp').value = eq.hp || 0;
   document.getElementById('newEquipCrit').value = eq.crit;
   document.getElementById('newEquipEffect').value = eq.effect || '';
   // 设置类型单选
@@ -2096,6 +3710,9 @@ function editEquipment(id) {
   });
   updateNewEquipCategoryOptions();
   document.getElementById('newEquipCategory').value = eq.categoryId || '';
+  editingAffixes = eq.affixes ? JSON.parse(JSON.stringify(eq.affixes)) : [];
+  populateAffixTypeSelect();
+  renderEquipAffixEditor();
   // 回显图片
   equipImageData = eq.image || '';
   document.getElementById('equipImageInput').value = '';
@@ -2143,78 +3760,16 @@ function renderHistory() {
     `;
   }).join('');
 }
-// ---------- 存档备份（导出/导入） ----------
-let saveModalMode = 'export';
-function exportSave() {
-  try {
-    const json = JSON.stringify(gameState);
-    const b64 = btoa(unescape(encodeURIComponent(json)));
-    openSaveModal('export', b64);
-  } catch(e) {
-    showToast('导出失败：' + e, 'error');
-  }
-}
-function showImportModal() {
-  openSaveModal('import', '');
-}
-function openSaveModal(mode, text) {
-  saveModalMode = mode;
-  document.getElementById('saveModalTitle').textContent = mode === 'export' ? '导出存档' : '导入存档';
-  document.getElementById('saveModalHint').textContent = mode === 'export'
-    ? '复制下面的字符，粘贴到备忘录或文件传输助手保存，它就是你的存档备份。'
-    : '把之前导出的存档字符粘贴到下面的框里，确认后覆盖当前进度。';
-  document.getElementById('saveModalText').value = text;
-  document.getElementById('saveModalPrimary').textContent = mode === 'export' ? '复制' : '确认导入';
-  document.getElementById('saveModal').style.display = 'flex';
-}
-function closeSaveModal() {
-  document.getElementById('saveModal').style.display = 'none';
-}
-function saveModalPrimaryAction() {
-  if (saveModalMode === 'import') confirmImport();
-  else copySaveText();
-}
-function copySaveText() {
-  const ta = document.getElementById('saveModalText');
-  if (!ta.value) { showToast('没有可复制的内容', 'error'); return; }
-  ta.select();
-  ta.setSelectionRange(0, ta.value.length);
-  let ok = false;
-  try { ok = document.execCommand('copy'); } catch(e) {}
-  if (!ok && navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(ta.value).then(() => {
-      showToast('已复制，请粘贴到备忘录保存', 'success');
-    }).catch(() => {
-      showToast('自动复制失败，请长按字符手动复制', 'error');
-    });
-    return;
-  }
-  if (ok) showToast('已复制，请粘贴到备忘录保存', 'success');
-  else showToast('自动复制失败，请长按字符手动复制', 'error');
-}
-function confirmImport() {
-  const raw = document.getElementById('saveModalText').value.trim();
-  if (!raw) { showToast('请先粘贴存档字符', 'error'); return; }
-  try {
-    const json = decodeURIComponent(escape(atob(raw)));
-    const data = JSON.parse(json);
-    if (!data || typeof data !== 'object' || !data.categories || !data.equipment || !data.monsters || !data.history) {
-      showToast('存档格式不正确，请检查粘贴的内容是否完整', 'error');
-      return;
-    }
-    if (!confirm('导入会覆盖当前进度，确定继续吗？')) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    showToast('存档导入成功，正在恢复……', 'success');
-    closeSaveModal();
-    setTimeout(() => location.reload(), 600);
-  } catch(e) {
-    showToast('存档解析失败，字符可能不完整或已损坏', 'error');
-  }
-}
 // ---------- 初始化 ----------
 function init() {
   document.getElementById('navDate').textContent = formatDate();
   loadSave();
+  loadGongfaConfig();
+  loadDifficulty();
+  loadRealmNames();
+  loadDaily();
+  loadSectors();
+  loadArenaStats();
   navigate('home');
 }
 document.addEventListener('DOMContentLoaded', init);
