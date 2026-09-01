@@ -2013,7 +2013,7 @@ function renderHome() {
   const total = gameState.history.length;
   const wins = gameState.history.filter(h => h.result === 'win').length;
   const winRate = total > 0 ? Math.round(wins / total * 100) : 0;
-  const totalFocus = gameState.history.reduce((s, h) => s + (h.focusMinutes || 0), 0);
+  const totalFocus = getTotalFocus();
   const gongfaCount = gameState.equipment.gongfa.length;
   const permCount = gameState.equipment.permanent.length;
   const consCount = gameState.equipment.consumable.length;
@@ -4198,9 +4198,9 @@ function finishBattle(result) {
       var cultReward = mReq >= 120 ? 30 : mReq >= 90 ? 20 : mReq >= 60 ? 15 : mReq >= 30 ? 10 : 5;
       if (!gameState.fragments) gameState.fragments = 0;
       gameState.fragments += fragReward;
-      // 修为经验（累计到总专注时长）
-      if (!gameState.totalFocus) gameState.totalFocus = 0;
-      gameState.totalFocus += cultReward;
+      // 修为经验（累计到总专注时长，按天去重后计入境界）
+      if (!gameState.bonusFocus) gameState.bonusFocus = 0;
+      gameState.bonusFocus += cultReward;
       // 小概率掉落法宝
       var dropEquip = null;
       if (Math.random() < 0.15 && mReq >= 30) {
