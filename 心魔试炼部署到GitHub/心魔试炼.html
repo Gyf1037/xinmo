@@ -2743,7 +2743,7 @@ function onHeartDemonLose(bs) {
 }
 
 // ========== 专注计时器 ==========
-var timerState = { mode: 'countdown', running: false, seconds: 0, targetSeconds: 0, interval: null };
+var timerState = { mode: 'countdown', running: false, seconds: 0, targetSeconds: 0, interval: null, startTime: 0, accumulated: 0 };
 function getTodayStr() { return new Date().toISOString().slice(0, 10); }
 function getTodayFocus() {
   if (!gameState.focusSessions) gameState.focusSessions = [];
@@ -2794,30 +2794,39 @@ function startTimer() {
   if (timerState.mode === 'countdown') {
     var mins = parseInt(document.getElementById('timerMinutes').value) || 0;
     if (mins <= 0) { showToast('请设定倒计时时长（分钟）', 'error'); return; }
-    if (timerState.seconds === 0) timerState.seconds = mins * 60;
-    timerState.targetSeconds = mins * 60;
+    if (timerState.accumulated === 0 && timerState.seconds === 0) timerState.targetSeconds = mins * 60;
+    else if (timerState.targetSeconds === 0) timerState.targetSeconds = mins * 60;
   }
   timerState.running = true;
+  timerState.startTime = Date.now();
   document.getElementById('timerStartBtn').textContent = '暂停';
+  if (timerState.interval) { clearInterval(timerState.interval); }
   timerState.interval = setInterval(timerTick, 1000);
-  updateTimerDisplay();
+  saveTimerState();
+  timerTick();
 }
 function pauseTimer() {
+  if (timerState.running) {
+    timerState.accumulated += Math.floor((Date.now() - timerState.startTime) / 1000);
+  }
   timerState.running = false;
   document.getElementById('timerStartBtn').textContent = '继续';
   if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
+  saveTimerState();
   updateTimerDisplay();
 }
 function timerTick() {
+  if (!timerState.running) return;
+  var elapsed = timerState.accumulated + Math.floor((Date.now() - timerState.startTime) / 1000);
   if (timerState.mode === 'countdown') {
-    timerState.seconds--;
+    timerState.seconds = Math.max(0, timerState.targetSeconds - elapsed);
     if (timerState.seconds <= 0) {
       timerState.seconds = 0;
       finishTimer();
       return;
     }
   } else {
-    timerState.seconds++;
+    timerState.seconds = elapsed;
   }
   updateTimerDisplay();
 }
@@ -2826,20 +2835,112 @@ function finishTimer() {
   timerState.running = false;
   var minutes = timerState.mode === 'countdown'
     ? Math.round(timerState.targetSeconds / 60)
-    : Math.round(timerState.seconds / 60);
+    : Math.round(timerState.accumulated / 60);
   recordFocusSession(minutes);
+  timerState.accumulated = 0;
+  timerState.seconds = 0;
+  timerState.startTime = 0;
   document.getElementById('timerStartBtn').textContent = '开始';
+  saveTimerState();
   updateTimerDisplay();
   showToast('专注完成！今日累计 ' + getTodayFocus() + ' 分钟', 'success');
   if (timerState.mode === 'countdown') {
     try { var audio = new AudioContext(); var osc = audio.createOscillator(); var gain = audio.createGain(); osc.connect(gain); gain.connect(audio.destination); osc.frequency.value = 880; gain.gain.value = 0.3; osc.start(); setTimeout(function(){ osc.stop(); audio.close(); }, 500); } catch(e) {}
   }
 }
+
+// ===== 计时器持久化（退出网页继续计时） =====
+function saveTimerState() {
+  try {
+    localStorage.setItem('xm_timer', JSON.stringify({
+      mode: timerState.mode,
+      running: timerState.running,
+      startTime: timerState.startTime,
+      accumulated: timerState.accumulated,
+      targetSeconds: timerState.targetSeconds,
+      seconds: timerState.seconds
+    }));
+  } catch(e) {}
+}
+function restoreTimerState() {
+  try {
+    var s = JSON.parse(localStorage.getItem('xm_timer') || 'null');
+    if (!s) return;
+    timerState.mode = s.mode || 'countdown';
+    timerState.accumulated = s.accumulated || 0;
+    timerState.targetSeconds = s.targetSeconds || 0;
+    timerState.seconds = s.seconds || 0;
+    if (s.running && s.startTime > 0) {
+      // 页面关闭期间时间继续流逝
+      var elapsed = timerState.accumulated + Math.floor((Date.now() - s.startTime) / 1000);
+      if (timerState.mode === 'countdown') {
+        timerState.seconds = Math.max(0, timerState.targetSeconds - elapsed);
+        if (timerState.seconds <= 0) {
+          // 倒计时已在后台结束
+          timerState.accumulated = timerState.targetSeconds;
+          timerState.running = false;
+          finishTimer();
+          return;
+        }
+      } else {
+        timerState.seconds = elapsed;
+      }
+      timerState.running = true;
+      timerState.startTime = Date.now();
+      timerState.accumulated = elapsed; // 把已过时间并入accumulated，重新从0开始计
+      timerState.interval = setInterval(timerTick, 1000);
+      var btn = document.getElementById('timerStartBtn');
+      if (btn) btn.textContent = '暂停';
+    }
+    updateTimerDisplay();
+  } catch(e) {}
+}
+function saveBookTimerState() {
+  try {
+    localStorage.setItem('xm_booktimer', JSON.stringify({
+      running: bookTimerState.running,
+      startTime: bookTimerState.startTime,
+      accumulated: bookTimerState.accumulated,
+      seconds: bookTimerState.seconds,
+      currentBossId: bookTimerState.currentBossId
+    }));
+  } catch(e) {}
+}
+function restoreBookTimerState() {
+  try {
+    var s = JSON.parse(localStorage.getItem('xm_booktimer') || 'null');
+    if (!s) return;
+    bookTimerState.accumulated = s.accumulated || 0;
+    bookTimerState.currentBossId = s.currentBossId || 'ming1';
+    if (s.running && s.startTime > 0) {
+      var elapsed = bookTimerState.accumulated + Math.floor((Date.now() - s.startTime) / 1000);
+      bookTimerState.accumulated = elapsed;
+      bookTimerState.seconds = elapsed;
+      bookTimerState.running = true;
+      bookTimerState.startTime = Date.now();
+      bookTimerState.interval = setInterval(function() {
+        if (!bookTimerState.running) return;
+        bookTimerState.seconds = bookTimerState.accumulated + Math.floor((Date.now() - bookTimerState.startTime) / 1000);
+        var el = document.getElementById('bookTimerDisplay');
+        if (el) el.textContent = formatTime(bookTimerState.seconds);
+      }, 1000);
+      var btn = document.getElementById('bookTimerStartBtn');
+      if (btn) btn.textContent = '暂停';
+      var disp = document.getElementById('bookTimerDisplay');
+      if (disp) { disp.classList.add('running'); disp.textContent = formatTime(bookTimerState.seconds); }
+    } else {
+      bookTimerState.seconds = bookTimerState.accumulated;
+    }
+  } catch(e) {}
+}
 function resetTimer() {
+  if (timerState.running) {
+    timerState.accumulated += Math.floor((Date.now() - timerState.startTime) / 1000);
+  }
   if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
   // 正计时：重置时记录本次专注时长
-  if (timerState.mode === 'countup' && timerState.seconds > 0) {
-    var mins = Math.round(timerState.seconds / 60);
+  if (timerState.mode === 'countup' && timerState.accumulated > 0) {
+    var mins = Math.round(timerState.accumulated / 60);
     if (mins > 0) {
       recordFocusSession(mins);
       showToast('已记录专注 ' + mins + ' 分钟（今日共' + getTodayFocus() + '分钟）', 'success');
@@ -2847,7 +2948,11 @@ function resetTimer() {
   }
   timerState.running = false;
   timerState.seconds = 0;
+  timerState.accumulated = 0;
+  timerState.startTime = 0;
+  timerState.targetSeconds = 0;
   document.getElementById('timerStartBtn').textContent = '开始';
+  saveTimerState();
   updateTimerDisplay();
 }
 // 正计时暂停不记录，重置时才记录本次专注时长
@@ -2935,7 +3040,7 @@ const DUNGEON_REWARDS = {
   shuihan:  { name:'水寒', type:'gongfa', categoryId:'cat_jianjue', power:22, crit:8, effect:'秦时明月剑谱，高渐离佩剑，风萧萧兮易水寒。', affixes:[{type:'hp',value:50},{type:'freeze',value:15},{type:'reflect',value:10}], image:'' },
 };
 
-var bookTimerState = { running:false, seconds:0, interval:null, currentBossId:'ming1' };
+var bookTimerState = { running:false, seconds:0, interval:null, currentBossId:'ming1', startTime:0, accumulated:0 };
 
 function getBookRead(bossId) {
   if (!gameState.dungeonRead) gameState.dungeonRead = {};
@@ -3320,8 +3425,36 @@ function renderBookDungeon() {
 
 function updateBookReadDisplay() {
   var bossId = document.getElementById('bookReadSelect')?.value || bookTimerState.currentBossId;
+  // 切换了不同BOSS：先记录当前阅读时间，再重置
+  if (bossId !== bookTimerState.currentBossId && bookTimerState.currentBossId) {
+    if (bookTimerState.running) {
+      bookTimerState.accumulated += Math.floor((Date.now() - bookTimerState.startTime) / 1000);
+    }
+    var mins = Math.round(bookTimerState.accumulated / 60);
+    if (mins > 0) {
+      addBookRead(bookTimerState.currentBossId, mins);
+    }
+    if (bookTimerState.interval) { clearInterval(bookTimerState.interval); bookTimerState.interval = null; }
+    bookTimerState.running = false;
+    bookTimerState.seconds = 0;
+    bookTimerState.accumulated = 0;
+    bookTimerState.startTime = 0;
+    var btn = document.getElementById('bookTimerStartBtn');
+    if (btn) btn.textContent = '开始阅读';
+    var disp = document.getElementById('bookTimerDisplay');
+    if (disp) { disp.classList.remove('running'); disp.textContent = '00:00'; }
+    saveBookTimerState();
+  }
   bookTimerState.currentBossId = bossId;
-  var boss = BOOK_MING_BOSSES.find(function(b){ return b.id === bossId; });
+  // 兼容自定义副本BOSS
+  var boss = null;
+  if (BOOK_MING_BOSSES) boss = BOOK_MING_BOSSES.find(function(b){ return b.id === bossId; });
+  if (!boss && gameState.customBookBosses) {
+    for (var bid in gameState.customBookBosses) {
+      var found = gameState.customBookBosses[bid].find(function(b){ return b.id === bossId; });
+      if (found) { boss = found; break; }
+    }
+  }
   if (!boss) return;
   var read = getBookRead(bossId);
   var el = document.getElementById('bookReadProgress');
@@ -3338,32 +3471,53 @@ function toggleBookTimer() {
 }
 function startBookTimer() {
   bookTimerState.running = true;
+  bookTimerState.startTime = Date.now();
   document.getElementById('bookTimerStartBtn').textContent = '暂停';
   document.getElementById('bookTimerDisplay').classList.add('running');
+  if (bookTimerState.interval) { clearInterval(bookTimerState.interval); }
   bookTimerState.interval = setInterval(function() {
-    bookTimerState.seconds++;
+    if (!bookTimerState.running) return;
+    bookTimerState.seconds = bookTimerState.accumulated + Math.floor((Date.now() - bookTimerState.startTime) / 1000);
     var el = document.getElementById('bookTimerDisplay');
     if (el) el.textContent = formatTime(bookTimerState.seconds);
   }, 1000);
+  saveBookTimerState();
+  // 立即刷新一次
+  bookTimerState.seconds = bookTimerState.accumulated;
+  var el0 = document.getElementById('bookTimerDisplay');
+  if (el0) el0.textContent = formatTime(bookTimerState.seconds);
 }
 function pauseBookTimer() {
+  if (bookTimerState.running) {
+    bookTimerState.accumulated += Math.floor((Date.now() - bookTimerState.startTime) / 1000);
+  }
   bookTimerState.running = false;
   document.getElementById('bookTimerStartBtn').textContent = '继续';
   document.getElementById('bookTimerDisplay').classList.remove('running');
   if (bookTimerState.interval) { clearInterval(bookTimerState.interval); bookTimerState.interval = null; }
+  saveBookTimerState();
 }
 function resetBookTimer() {
+  if (bookTimerState.running) {
+    bookTimerState.accumulated += Math.floor((Date.now() - bookTimerState.startTime) / 1000);
+  }
   if (bookTimerState.interval) { clearInterval(bookTimerState.interval); bookTimerState.interval = null; }
-  var mins = Math.round(bookTimerState.seconds / 60);
+  var mins = Math.round(bookTimerState.accumulated / 60);
   if (mins > 0) {
     addBookRead(bookTimerState.currentBossId, mins);
-    showToast('已记录阅读 ' + mins + ' 分钟到 ' + BOOK_MING_BOSSES.find(function(b){return b.id===bookTimerState.currentBossId;}).vol, 'success');
+    var bossInfo = getBookBosses(bookTimerState.currentBossId.split('_').slice(0,-1).join('_')) || [];
+    var volName = '';
+    if (BOOK_MING_BOSSES) { var bm = BOOK_MING_BOSSES.find(function(b){return b.id===bookTimerState.currentBossId;}); if (bm) volName = bm.vol; }
+    showToast('已记录阅读 ' + mins + ' 分钟' + (volName ? '到 ' + volName : ''), 'success');
   }
   bookTimerState.running = false;
   bookTimerState.seconds = 0;
+  bookTimerState.accumulated = 0;
+  bookTimerState.startTime = 0;
   document.getElementById('bookTimerStartBtn').textContent = '开始阅读';
   document.getElementById('bookTimerDisplay').classList.remove('running');
   document.getElementById('bookTimerDisplay').textContent = '00:00';
+  saveBookTimerState();
   renderBookDungeon();
 }
 
@@ -4831,6 +4985,11 @@ function init() {
   loadSectors();
   loadArenaStats();
   navigate('home');
+  // 恢复后台计时（退出网页后时间继续走）
+  setTimeout(function() {
+    restoreTimerState();
+    restoreBookTimerState();
+  }, 300);
 }
 document.addEventListener('DOMContentLoaded', init);
 // ---------- PWA：Service Worker 注册（离线可用 + 全屏安装）----------
