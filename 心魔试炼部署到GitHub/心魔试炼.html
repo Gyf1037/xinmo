@@ -3088,7 +3088,8 @@ const DUNGEON_REWARDS = {
 var bookTimerState = { running:false, seconds:0, interval:null, currentBossId:'ming1', startTime:0, accumulated:0 };
 
 // ===== 功法修炼升级系统 =====
-var cultivationState = { activeId: null, startTime: 0, interval: null };
+var cultivationState = { activeId: null, startTime: 0, interval: null, autoStopTimer: null };
+var CULTIVATION_SESSION_LIMIT = 50; // 每次修炼上限50分钟
 function getGongfaUpgradeReq(level) {
   if ((level || 1) >= 5) return Infinity; // 5级满级
   return (level || 1) * 100; // 1级升2级需100分钟，2升3需200...
@@ -3117,20 +3118,35 @@ function startGongfaCultivation(id) {
   cultivationState.activeId = id;
   cultivationState.startTime = Date.now();
   if (cultivationState.interval) { clearInterval(cultivationState.interval); }
+  if (cultivationState.autoStopTimer) { clearTimeout(cultivationState.autoStopTimer); }
   cultivationState.interval = setInterval(function() {
     if (!cultivationState.activeId) return;
+    // 检查是否达到50分钟上限
+    var elapsed = (Date.now() - cultivationState.startTime) / 60000;
+    if (elapsed >= CULTIVATION_SESSION_LIMIT) {
+      stopGongfaCultivation();
+      showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
+      return;
+    }
     renderInventoryGrid();
   }, 1000);
+  // 兜底：50分钟后强制停止（防止interval被清理）
+  cultivationState.autoStopTimer = setTimeout(function() {
+    if (cultivationState.activeId) {
+      stopGongfaCultivation();
+      showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
+    }
+  }, CULTIVATION_SESSION_LIMIT * 60000);
   saveCultivationState();
   renderInventoryGrid();
-  showToast('开始修炼「' + (gameState.equipment.gongfa.find(function(g){return g.id===id;})||{}).name + '」', 'success');
+  showToast('开始修炼「' + (gameState.equipment.gongfa.find(function(g){return g.id===id;})||{}).name + '」（单次上限50分钟）', 'success');
 }
 function stopGongfaCultivation() {
   if (!cultivationState.activeId) return;
   var id = cultivationState.activeId;
   var eq = gameState.equipment.gongfa.find(function(g){ return g.id === id; });
   if (eq) {
-    var minutes = Math.floor((Date.now() - cultivationState.startTime) / 60000);
+    var minutes = Math.min(Math.floor((Date.now() - cultivationState.startTime) / 60000), CULTIVATION_SESSION_LIMIT);
     if (minutes > 0) {
       eq.cultivation = (eq.cultivation || 0) + minutes;
       showToast('「' + eq.name + '」修炼+' + minutes + '分钟', 'success');
@@ -3139,6 +3155,7 @@ function stopGongfaCultivation() {
   cultivationState.activeId = null;
   cultivationState.startTime = 0;
   if (cultivationState.interval) { clearInterval(cultivationState.interval); cultivationState.interval = null; }
+  if (cultivationState.autoStopTimer) { clearTimeout(cultivationState.autoStopTimer); cultivationState.autoStopTimer = null; }
   saveCultivationState();
   saveGame();
   renderInventoryGrid();
@@ -3172,18 +3189,39 @@ function restoreCultivationState() {
     if (!s || !s.activeId || !s.startTime) return;
     var eq = gameState.equipment.gongfa.find(function(g){ return g.id === s.activeId; });
     if (!eq) return;
-    // 后台修炼时长结算
+    // 后台修炼时长结算（最多算50分钟）
     var minutes = Math.floor((Date.now() - s.startTime) / 60000);
-    if (minutes > 0) {
-      eq.cultivation = (eq.cultivation || 0) + minutes;
+    var capped = Math.min(minutes, CULTIVATION_SESSION_LIMIT);
+    if (capped > 0) {
+      eq.cultivation = (eq.cultivation || 0) + capped;
       saveGame();
+    }
+    if (minutes >= CULTIVATION_SESSION_LIMIT) {
+      // 已超50分钟，自动停止，不恢复计时
+      cultivationState.activeId = null;
+      cultivationState.startTime = 0;
+      localStorage.removeItem('xm_cultivation');
+      showToast('上次修炼已满50分钟，已自动结算停止', 'success');
+      return;
     }
     cultivationState.activeId = s.activeId;
     cultivationState.startTime = Date.now(); // 重新计时
     cultivationState.interval = setInterval(function() {
       if (!cultivationState.activeId) return;
+      var elapsed = (Date.now() - cultivationState.startTime) / 60000;
+      if (elapsed >= CULTIVATION_SESSION_LIMIT) {
+        stopGongfaCultivation();
+        showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
+        return;
+      }
       renderInventoryGrid();
     }, 1000);
+    cultivationState.autoStopTimer = setTimeout(function() {
+      if (cultivationState.activeId) {
+        stopGongfaCultivation();
+        showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
+      }
+    }, CULTIVATION_SESSION_LIMIT * 60000);
   } catch(e) {}
 }
 
@@ -5038,7 +5076,7 @@ function renderInventoryGrid() {
       cultHtml = '<div style="margin-top:8px;padding:8px;background:rgba(212,175,55,0.06);border-radius:6px;border:1px solid rgba(212,175,55,0.15);">' +
         '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">' +
         '<span style="color:var(--gold-light);">第' + lv + '重' + (lv >= 5 ? '（满级）' : '') + '</span>' +
-        '<span style="color:var(--text-dim);">' + liveMin + '/' + req + '分钟</span></div>' +
+        '<span style="color:var(--text-dim);">' + liveMin + '/' + req + '分钟' + (isActive ? '（本次' + Math.min(Math.floor((Date.now()-cultivationState.startTime)/60000), CULTIVATION_SESSION_LIMIT) + '/50）' : '') + '</span></div>' +
         '<div style="height:4px;background:rgba(0,0,0,0.3);border-radius:2px;overflow:hidden;margin-bottom:6px;">' +
         '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));transition:width 0.3s;"></div></div>' +
         '<div style="display:flex;gap:4px;">' +
