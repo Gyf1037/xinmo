@@ -1025,7 +1025,7 @@ input, textarea, select { font-family: inherit; outline: none; }
         </div>
         <div id="realmDisplay"></div>
         <div id="realmEditorHome" style="display:none;margin-top:12px;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;">
-          <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">境界名称（每行一个，从低到高，每1000分钟突破）</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">境界名称（每行一个，从低到高，每1500分钟突破）</div>
           <textarea class="form-textarea" id="realmNamesInputHome" rows="3" style="font-size:12px;"></textarea>
           <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="saveRealmNamesFromHome()">保存境界名</button>
         </div>
@@ -1106,8 +1106,8 @@ input, textarea, select { font-family: inherit; outline: none; }
             <div style="margin-top:10px;">
               <div onclick="toggleHelp('monsterRewardHelp')" style="cursor:pointer;font-size:12px;color:var(--gold-light);font-weight:600;margin-bottom:6px;">▸ 凶兽战利品说明</div>
               <div id="monsterRewardHelp" class="help-content" style="display:none;font-size:11px;color:var(--text-secondary);line-height:1.8;margin-top:6px;padding:10px;background:rgba(212,175,55,0.05);border-radius:6px;border:1px solid rgba(212,175,55,0.15);">
-                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">心魔碎片</b>：简单+6 / 普通+12 / 困难+20 / 高阶+25~30</div>
-                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">修为经验</b>：简单+5分钟 / 普通+10 / 困难+15 / 高阶+20~30分钟（计入总修为，助于境界突破）</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">心魔碎片</b>：简单+3 / 普通+5 / 困难+8 / 高阶+10~12</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">修为经验</b>：简单+3分钟 / 普通+6 / 困难+10 / 高阶+15~20分钟（计入总修为，助于境界突破）</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">法宝掉落</b>：普通及以上难度15%概率掉落（护心镜、嗜血幡、破甲锥、凝神香）</div>
                 <div style="color:var(--jade-light);">解锁条件：凶兽需今日专注时长达标方可挑战，未解锁也可点✎编辑属性。</div>
               </div>
@@ -2204,7 +2204,17 @@ function updatePreview() {
   var usedEquips = [];
   prepareState.selectedGongfa.concat(prepareState.selectedPermanent, prepareState.selectedConsumable).forEach(function(id) {
     var eq = gameState.equipment.gongfa.concat(gameState.equipment.permanent, gameState.equipment.consumable).find(function(e) { return e.id === id; });
-    if (eq) { equipBonus += eq.power; critBonus += eq.crit || 0; usedEquips.push(eq); }
+    if (eq) {
+      if (eq.type === 'gongfa') {
+        var lb = getGongfaLevelBonus(eq);
+        equipBonus += Math.floor(eq.power * lb.atkMult);
+        critBonus += (eq.crit || 0) + lb.critAdd;
+      } else {
+        equipBonus += eq.power;
+        critBonus += eq.crit || 0;
+      }
+      usedEquips.push(eq);
+    }
   });
   var realmInfo = getRealmInfo();
   var aff = collectAffixes(usedEquips);
@@ -2598,7 +2608,7 @@ function renderGongfaSkillConfig() {
   }).join('');
   container.innerHTML = rows;
 }
-// ========== 境界修为系统（每1000分钟一境界） ==========
+// ========== 境界修为系统（每1500分钟一境界） ==========
 var REALM_NAMES = ['炼气', '筑基', '金丹', '元婴', '化神', '炼虚', '合体', '大乘', '渡劫', '仙人', '真仙', '金仙', '太乙', '大罗', '道祖'];
 function loadRealmNames() {
   try {
@@ -2638,13 +2648,19 @@ function getTotalFocus() {
   if (gameState.focusSessions) {
     total += gameState.focusSessions.reduce(function(s, f) { return s + (f.minutes || 0); }, 0);
   }
+  // 功法修炼时长并入总修为
+  if (gameState.equipment && gameState.equipment.gongfa) {
+    gameState.equipment.gongfa.forEach(function(g) {
+      total += (g.cultivation || 0);
+    });
+  }
   return total + (gameState.bonusFocus || 0);
 }
 function getRealmInfo() {
   var total = getTotalFocus();
-  var idx = Math.floor(total / 1000);
+  var idx = Math.floor(total / 1500);
   var name = REALM_NAMES[Math.min(idx, REALM_NAMES.length - 1)];
-  var progress = (total % 1000) / 1000;
+  var progress = (total % 1500) / 1500;
   return {
     idx: idx, name: name, progress: progress, total: total,
     bonusAtk: idx * 5, bonusHp: idx * 30, bonusSpirit: idx * 10,
@@ -2661,7 +2677,7 @@ function renderRealm() {
   var info = getRealmInfo();
   var nextIdx = Math.min(info.idx + 1, REALM_NAMES.length - 1);
   var nextName = REALM_NAMES[nextIdx];
-  var remain = 1000 - (info.total % 1000);
+  var remain = 1500 - (info.total % 1500);
   el.innerHTML =
     '<div style="text-align:center;margin-bottom:6px;">' +
       '<div style="font-family:Noto Serif SC,serif;font-size:26px;font-weight:900;color:var(--gold-light);letter-spacing:2px;">' + info.name + '期</div>' +
@@ -3070,6 +3086,106 @@ const DUNGEON_REWARDS = {
 };
 
 var bookTimerState = { running:false, seconds:0, interval:null, currentBossId:'ming1', startTime:0, accumulated:0 };
+
+// ===== 功法修炼升级系统 =====
+var cultivationState = { activeId: null, startTime: 0, interval: null };
+function getGongfaUpgradeReq(level) {
+  if ((level || 1) >= 5) return Infinity; // 5级满级
+  return (level || 1) * 100; // 1级升2级需100分钟，2升3需200...
+}
+function getGongfaLevelBonus(eq) {
+  var lv = eq.level || 1;
+  return { atkMult: 1 + (lv - 1) * 0.15, critAdd: (lv - 1) * 2 };
+}
+function getGongfaCultivation(eq) {
+  return eq.cultivation || 0;
+}
+function toggleGongfaCultivation(id) {
+  var eq = gameState.equipment.gongfa.find(function(g){ return g.id === id; });
+  if (!eq) return;
+  // 如果正在修炼其他功法，先停止
+  if (cultivationState.activeId && cultivationState.activeId !== id) {
+    stopGongfaCultivation();
+  }
+  if (cultivationState.activeId === id) {
+    stopGongfaCultivation();
+  } else {
+    startGongfaCultivation(id);
+  }
+}
+function startGongfaCultivation(id) {
+  cultivationState.activeId = id;
+  cultivationState.startTime = Date.now();
+  if (cultivationState.interval) { clearInterval(cultivationState.interval); }
+  cultivationState.interval = setInterval(function() {
+    if (!cultivationState.activeId) return;
+    renderInventoryGrid();
+  }, 1000);
+  saveCultivationState();
+  renderInventoryGrid();
+  showToast('开始修炼「' + (gameState.equipment.gongfa.find(function(g){return g.id===id;})||{}).name + '」', 'success');
+}
+function stopGongfaCultivation() {
+  if (!cultivationState.activeId) return;
+  var id = cultivationState.activeId;
+  var eq = gameState.equipment.gongfa.find(function(g){ return g.id === id; });
+  if (eq) {
+    var minutes = Math.floor((Date.now() - cultivationState.startTime) / 60000);
+    if (minutes > 0) {
+      eq.cultivation = (eq.cultivation || 0) + minutes;
+      showToast('「' + eq.name + '」修炼+' + minutes + '分钟', 'success');
+    }
+  }
+  cultivationState.activeId = null;
+  cultivationState.startTime = 0;
+  if (cultivationState.interval) { clearInterval(cultivationState.interval); cultivationState.interval = null; }
+  saveCultivationState();
+  saveGame();
+  renderInventoryGrid();
+}
+function upgradeGongfa(id) {
+  var eq = gameState.equipment.gongfa.find(function(g){ return g.id === id; });
+  if (!eq) return;
+  var lv = eq.level || 1;
+  if (lv >= 5) { showToast('已达5重满级', 'error'); return; }
+  var req = getGongfaUpgradeReq(lv);
+  var cult = getGongfaCultivation(eq);
+  if (cult < req) { showToast('还需修炼' + (req - cult) + '分钟方可突破', 'error'); return; }
+  eq.level = lv + 1;
+  eq.cultivation = cult - req; // 剩余时长保留
+  saveGame();
+  renderInventoryGrid();
+  updatePreview();
+  showToast('「' + eq.name + '」突破至' + (lv+1) + '重！攻击+15%，暴击+2%', 'success');
+}
+function saveCultivationState() {
+  try {
+    localStorage.setItem('xm_cultivation', JSON.stringify({
+      activeId: cultivationState.activeId,
+      startTime: cultivationState.startTime
+    }));
+  } catch(e) {}
+}
+function restoreCultivationState() {
+  try {
+    var s = JSON.parse(localStorage.getItem('xm_cultivation') || 'null');
+    if (!s || !s.activeId || !s.startTime) return;
+    var eq = gameState.equipment.gongfa.find(function(g){ return g.id === s.activeId; });
+    if (!eq) return;
+    // 后台修炼时长结算
+    var minutes = Math.floor((Date.now() - s.startTime) / 60000);
+    if (minutes > 0) {
+      eq.cultivation = (eq.cultivation || 0) + minutes;
+      saveGame();
+    }
+    cultivationState.activeId = s.activeId;
+    cultivationState.startTime = Date.now(); // 重新计时
+    cultivationState.interval = setInterval(function() {
+      if (!cultivationState.activeId) return;
+      renderInventoryGrid();
+    }, 1000);
+  } catch(e) {}
+}
 
 function getBookRead(bossId) {
   if (!gameState.dungeonRead) gameState.dungeonRead = {};
@@ -3800,8 +3916,14 @@ function startBattle(monsterInput, opts) {
   prepareState.selectedGongfa.concat(prepareState.selectedPermanent, prepareState.selectedConsumable).forEach(function(id) {
     var eq = gameState.equipment.gongfa.concat(gameState.equipment.permanent, gameState.equipment.consumable).find(function(e) { return e.id === id; });
     if (eq) {
-      equipBonus += eq.power;
-      critBonus += eq.crit || 0;
+      if (eq.type === 'gongfa') {
+        var lb = getGongfaLevelBonus(eq);
+        equipBonus += Math.floor(eq.power * lb.atkMult);
+        critBonus += (eq.crit || 0) + lb.critAdd;
+      } else {
+        equipBonus += eq.power;
+        critBonus += eq.crit || 0;
+      }
       usedEquips.push(eq);
     }
   });
@@ -4194,10 +4316,11 @@ function finishBattle(result) {
     battleState.rewards = null;
     if (result === 'win') {
       var mReq = battleState.monster.reqMinutes || 0;
-      var fragReward = mReq >= 120 ? 30 : mReq >= 90 ? 25 : mReq >= 60 ? 20 : mReq >= 30 ? 12 : 6;
-      var cultReward = mReq >= 120 ? 30 : mReq >= 90 ? 20 : mReq >= 60 ? 15 : mReq >= 30 ? 10 : 5;
-      if (!gameState.fragments) gameState.fragments = 0;
-      gameState.fragments += fragReward;
+      var fragReward = mReq >= 120 ? 12 : mReq >= 90 ? 10 : mReq >= 60 ? 8 : mReq >= 30 ? 5 : 3;
+      var cultReward = mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3;
+      if (!dailyState.fragments) dailyState.fragments = 0;
+      dailyState.fragments += fragReward;
+      saveDaily();
       // 修为经验（累计到总专注时长，按天去重后计入境界）
       if (!gameState.bonusFocus) gameState.bonusFocus = 0;
       gameState.bonusFocus += cultReward;
@@ -4897,27 +5020,53 @@ function renderInventoryGrid() {
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">法宝空空，点击右上角锻造新法宝</div>';
     return;
   }
-  grid.innerHTML = list.map(eq => `
-    <div class="inventory-card">
-      <div class="inventory-card-head">
-        <div class="inventory-card-thumb">${equipThumbHtml(eq)}</div>
-        <div class="inventory-card-title">
-          <div class="inventory-card-name">${eq.name}</div>
-          <span class="inventory-card-cat">${getCatName(eq.type, eq.categoryId)}</span>
-        </div>
-      </div>
-      <div class="inventory-card-stats">
-        <span class="inventory-card-stat power">攻击 +${eq.power}</span>
-        <span class="inventory-card-stat crit">暴击 +${eq.crit}%</span>
-      </div>
-      <div class="inventory-card-effect">${eq.effect || '—'}</div>
-      ${(eq.affixes && eq.affixes.length > 0) ? `<div class="affix-list">${eq.affixes.map(a => `<span class="affix-tag good">${affixText(a)}</span>`).join('')}</div>` : ''}
-      <div class="inventory-card-actions">
-        <button class="btn btn-ghost btn-sm" data-action="edit-equip" data-equip-id="${eq.id}">编辑</button>
-        <button class="btn btn-danger btn-sm" data-action="del-equip" data-equip-id="${eq.id}">销毁</button>
-      </div>
-    </div>
-  `).join('');
+  grid.innerHTML = list.map(eq => {
+    var isGongfa = eq.type === 'gongfa';
+    var lv = eq.level || 1;
+    var lvBonus = isGongfa ? getGongfaLevelBonus(eq) : {atkMult:1, critAdd:0};
+    var dispAtk = isGongfa ? Math.floor(eq.power * lvBonus.atkMult) : eq.power;
+    var dispCrit = isGongfa ? (eq.crit || 0) + lvBonus.critAdd : (eq.crit || 0);
+    // 功法修炼UI
+    var cultHtml = '';
+    if (isGongfa) {
+      var cult = getGongfaCultivation(eq);
+      var req = getGongfaUpgradeReq(lv);
+      var isActive = cultivationState.activeId === eq.id;
+      var liveMin = isActive ? cult + Math.floor((Date.now() - cultivationState.startTime) / 60000) : cult;
+      var pct = Math.min(100, Math.floor(liveMin / req * 100));
+      var canUp = liveMin >= req && lv < 5;
+      cultHtml = '<div style="margin-top:8px;padding:8px;background:rgba(212,175,55,0.06);border-radius:6px;border:1px solid rgba(212,175,55,0.15);">' +
+        '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">' +
+        '<span style="color:var(--gold-light);">第' + lv + '重' + (lv >= 5 ? '（满级）' : '') + '</span>' +
+        '<span style="color:var(--text-dim);">' + liveMin + '/' + req + '分钟</span></div>' +
+        '<div style="height:4px;background:rgba(0,0,0,0.3);border-radius:2px;overflow:hidden;margin-bottom:6px;">' +
+        '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));transition:width 0.3s;"></div></div>' +
+        '<div style="display:flex;gap:4px;">' +
+        '<button class="btn ' + (isActive ? 'btn-danger' : 'btn-primary') + ' btn-sm" style="flex:1;font-size:11px;padding:4px;" onclick="toggleGongfaCultivation(\'' + eq.id + '\')">' + (isActive ? '停止修炼' : '开始修炼') + '</button>' +
+        (canUp ? '<button class="btn btn-primary btn-sm" style="flex:1;font-size:11px;padding:4px;background:var(--cinnabar);" onclick="upgradeGongfa(\'' + eq.id + '\')">突破</button>' : '') +
+        '</div></div>';
+    }
+    return '<div class="inventory-card">' +
+      '<div class="inventory-card-head">' +
+        '<div class="inventory-card-thumb">' + equipThumbHtml(eq) + '</div>' +
+        '<div class="inventory-card-title">' +
+          '<div class="inventory-card-name">' + eq.name + (isGongfa ? ' <span style="font-size:11px;color:var(--gold-light);">Lv.' + lv + '</span>' : '') + '</div>' +
+          '<span class="inventory-card-cat">' + getCatName(eq.type, eq.categoryId) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="inventory-card-stats">' +
+        '<span class="inventory-card-stat power">攻击 +' + dispAtk + (isGongfa && lv > 1 ? ' <span style="font-size:9px;color:var(--jade-light);">(基础' + eq.power + ')</span>' : '') + '</span>' +
+        '<span class="inventory-card-stat crit">暴击 +' + dispCrit + '%</span>' +
+      '</div>' +
+      '<div class="inventory-card-effect">' + (eq.effect || '—') + '</div>' +
+      ((eq.affixes && eq.affixes.length > 0) ? '<div class="affix-list">' + eq.affixes.map(function(a){ return '<span class="affix-tag good">' + affixText(a) + '</span>'; }).join('') + '</div>' : '') +
+      cultHtml +
+      '<div class="inventory-card-actions">' +
+        '<button class="btn btn-ghost btn-sm" data-action="edit-equip" data-equip-id="' + eq.id + '">编辑</button>' +
+        '<button class="btn btn-danger btn-sm" data-action="del-equip" data-equip-id="' + eq.id + '">销毁</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 function toggleAddForm() {
   const form = document.getElementById('addEquipForm');
@@ -5097,6 +5246,7 @@ function init() {
   setTimeout(function() {
     restoreTimerState();
     restoreBookTimerState();
+    restoreCultivationState();
   }, 300);
 }
 document.addEventListener('DOMContentLoaded', init);
