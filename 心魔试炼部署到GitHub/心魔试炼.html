@@ -1094,6 +1094,12 @@ input, textarea, select { font-family: inherit; outline: none; }
         </button>
         <div id="letGoStatus" style="font-size:10px;color:var(--text-dim);margin-top:4px;"></div>
       </div>
+      <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(194,59,34,0.2);text-align:center;">
+        <button class="btn" id="bloodCharBtn" onclick="bloodChar()" style="background:linear-gradient(135deg,#8B0000 0%,#4a0000 100%);color:#fff;padding:8px 20px;font-size:13px;font-weight:700;border:1px solid rgba(255,80,80,0.4);border-radius:8px;cursor:pointer;">
+          🩸 血字 · 在心魔笼罩下爬出
+        </button>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">每完成一次，直接获得1枚铸字石</div>
+      </div>
     </div>
     <div class="stats-grid" id="homeStats"></div>
     <div class="panel" style="padding:14px 16px;">
@@ -1834,6 +1840,22 @@ function loadSave() {
   gameState.dungeonRead = data?.dungeonRead || {};
   gameState.dungeonCleared = data?.dungeonCleared || {};
   gameState.seededGongfa = !!data?.seededGongfa;
+  // 新字段从存档恢复
+  gameState.enlightenCount = data?.enlightenCount || 0;
+  gameState.enlightenStreak = data?.enlightenStreak || 0;
+  gameState.enlightenDate = data?.enlightenDate || '';
+  gameState.letGoCount = data?.letGoCount || 0;
+  gameState.lastLetGoTime = data?.lastLetGoTime || 0;
+  gameState.fragmentTaskCount = data?.fragmentTaskCount || 0;
+  gameState.hardWinCount = data?.hardWinCount || 0;
+  gameState.stoneImages = data?.stoneImages || {};
+  gameState.swordStones = data?.swordStones || 0;
+  gameState.swordInscriptions = data?.swordInscriptions || [];
+  gameState.bloodCharCount = data?.bloodCharCount || 0;
+  gameState.customBooks = data?.customBooks || {};
+  gameState.customBookBosses = data?.customBookBosses || {};
+  gameState.customBookInfo = data?.customBookInfo || {};
+  gameState.customFolders = data?.customFolders || [];
   // 兼容旧存档：补上缺失的类型数组
   ['gongfa', 'permanent', 'consumable'].forEach(t => {
     if (!Array.isArray(gameState.categories[t])) gameState.categories[t] = [];
@@ -2227,13 +2249,14 @@ function renderSwordWall() {
       var d = new Date(ins.date);
       var dateStr = d.getFullYear() + '.' + (d.getMonth()+1) + '.' + d.getDate();
       html += '<div style="text-align:center;margin-bottom:20px;cursor:pointer;" onclick="viewInscription(\'' + ins.id + '\')">';
-      html += '<div style="display:inline-block;padding:14px 20px;background:linear-gradient(135deg,rgba(60,50,30,0.8),rgba(40,35,20,0.9));border:1px solid rgba(212,175,55,0.4);border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.4);">';
+      html += '<div style="display:inline-block;padding:18px 24px;background:linear-gradient(160deg,#3a3530 0%,#2a2520 40%,#1f1c18 100%);border:2px solid #5a4f40;border-radius:4px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.6),0 4px 16px rgba(0,0,0,0.5),inset 0 -1px 0 rgba(255,220,150,0.08);position:relative;">';
+      html += '<div style="position:absolute;top:-6px;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#5a4f40 0px,#5a4f40 18px,#2a2520 18px,#2a2520 24px);border-radius:2px 2px 0 0;"></div>';
       if (ins.image) {
-        html += '<img src="' + ins.image + '" style="max-width:200px;max-height:120px;border-radius:4px;object-fit:cover;display:block;margin:0 auto;">';
+        html += '<img src="' + ins.image + '" style="max-width:200px;max-height:120px;border-radius:3px;object-fit:cover;display:block;margin:0 auto;border:1px solid #5a4f40;">';
       } else {
-        html += '<div style="font-size:22px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4);">' + ins.text + '</div>';
+        html += '<div style="font-size:22px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4),inset 0 -1px 0 rgba(0,0,0,0.8);">' + ins.text + '</div>';
       }
-      html += '<div style="font-size:10px;color:var(--text-dim);margin-top:6px;">' + dateStr + '</div>';
+      html += '<div style="font-size:10px;color:#8a7a60;margin-top:8px;font-family:monospace;">' + dateStr + ' 刻</div>';
       html += '</div></div>';
     });
   }
@@ -3021,6 +3044,26 @@ function updateLetGoUI() {
     btn.textContent = '🧘 觉察内耗？点此放下';
     status.innerHTML = '已放下 <b style="color:var(--gold-light);">' + count + '</b>/5 次（灵魂宝石进度）';
   }
+}
+
+// ---------- 血字：在心魔笼罩下爬出 ----------
+function bloodChar() {
+  if (!confirm('你正被心魔笼罩，万念俱灰。\n\n是否咬牙从泥泞中爬出？\n（完成后直接获得1枚铸字石）')) return;
+  gameState.swordStones = Math.min(3, (gameState.swordStones || 0) + 1);
+  gameState.bloodCharCount = (gameState.bloodCharCount || 0) + 1;
+  saveGame();
+  if (typeof renderRealm === 'function') renderRealm();
+  // 自定义全屏寄语
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;';
+  overlay.onclick = function() { document.body.removeChild(overlay); };
+  overlay.innerHTML =
+    '<div style="font-size:16px;color:#c23b22;letter-spacing:6px;margin-bottom:24px;">🩸 血 字 已 成</div>' +
+    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:28px;">你从心魔的泥沼中爬出，以血为墨，刻下不屈。</div>' +
+    '<div style="font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;font-size:28px;color:var(--gold);letter-spacing:6px;text-align:center;line-height:2.2;text-shadow:0 0 20px rgba(212,175,55,0.4);">此刻所行是知行<br>此心安处是吾乡</div>' +
+    '<div style="font-size:12px;color:var(--jade-light);margin-top:32px;">铸字石 +1（累计' + gameState.bloodCharCount + '次血字）</div>' +
+    '<div style="font-size:11px;color:var(--text-dim);margin-top:40px;">点击任意处继续</div>';
+  document.body.appendChild(overlay);
 }
 
 function updateEnlightenUI() {
@@ -4098,8 +4141,6 @@ function editBookInFolder(bookId) {
   document.getElementById('newBookVolumes').value = bosses.length;
   document.getElementById('newBookReadReq').value = bosses.length > 0 ? bosses[0].readReq : 120;
   document.getElementById('newBookDifficulty').value = book.difficulty || 'normal';
-  document.getElementById('newBookRewardType').value = book.rewardType || (bosses.length > 0 && bosses[0].rewardType ? bosses[0].rewardType : 'fragment');
-  document.getElementById('newBookRewardDesc').value = bosses.length > 0 && bosses[0].rewardDesc ? bosses[0].rewardDesc : '';
   // 填充BOSS名称列表（带奖励信息）
   var defaultRewardType = book.rewardType || 'fragment';
   var REWARD_TYPE_CN = {fire:'异火', sword:'名剑', fragment:'碎片', cultivation:'修为', equip:'法宝', consumable:'消耗法宝', ultimate:'终极', random:'随机'};
@@ -5892,6 +5933,10 @@ function init() {
   loadDaily();
   loadSectors();
   loadArenaStats();
+  // 关闭所有编辑表单（防止刷新后残留）
+  var _cf = document.getElementById('createBookForm'); if (_cf) _cf.style.display = 'none';
+  var _ff = document.getElementById('createFolderForm'); if (_ff) _ff.style.display = 'none';
+  currentEditingBookId = null;
   navigate('home');
   // 恢复后台计时（退出网页后时间继续走）
   setTimeout(function() {
