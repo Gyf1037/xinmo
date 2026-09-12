@@ -930,7 +930,7 @@ input, textarea, select { font-family: inherit; outline: none; }
     <a class="nav-link" data-view="inventory" onclick="navigate('inventory')">法宝背包</a>
     <a class="nav-link" data-view="history" onclick="navigate('history')">战绩录</a>
     <a class="nav-link" data-view="dungeon" onclick="navigate('dungeon')">副本秘境</a>
-    <a class="nav-link" data-view="arena" onclick="navigate('arena')">无尽擂台</a>
+    <a class="nav-link" data-view="swordwall" onclick="navigate('swordwall')">剑气长城</a>
   </div>
   <div class="nav-date" id="navDate"></div>
 </nav>
@@ -1057,15 +1057,45 @@ input, textarea, select { font-family: inherit; outline: none; }
           <button class="btn btn-primary btn-sm" id="timerStartBtn" onclick="toggleTimer()">开始</button>
           <button class="btn btn-ghost btn-sm" onclick="resetTimer()">重置</button>
         </div>
+        <!-- 闹铃提醒开关 -->
+        <div style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--text-dim);">
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+            <input type="checkbox" id="alarmEnabled" checked style="accent-color:var(--gold);width:14px;height:14px;"> 专注结束闹铃
+          </label>
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+            <input type="checkbox" id="enlightenAlarmEnabled" checked style="accent-color:var(--gold);width:14px;height:14px;"> 今日证道提醒
+          </label>
+        </div>
+      </div>
+    </div>
+    <!-- 证道面板（独立框） -->
+    <div class="panel" style="margin-bottom:24px;padding:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div class="panel-title" style="font-size:15px;margin-bottom:0;">断念证道</div>
+        <div style="text-align:right;">
+          <div style="font-size:28px;font-weight:900;color:var(--purple);font-family:Noto Serif SC,serif;" id="enlightenTotalCount">0</div>
+          <div style="font-size:10px;color:var(--text-dim);">累计证道</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="enlightenBtn" onclick="enlighten()" style="background:linear-gradient(135deg,var(--purple) 0%,var(--purple-dark) 100%);flex-shrink:0;padding:10px 28px;font-size:15px;font-weight:700;">
+          🌙 今日证道
+        </button>
+        <div style="flex:1;min-width:150px;">
+          <div id="enlightenStatus" style="font-size:12px;color:var(--text-dim);line-height:1.6;"></div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:var(--text-dim);line-height:1.6;">
+        每日证道一次可获随机消耗法宝 · 每提升1级需5次证道 · 今日未证道扣1次 · 连续7天有额外奖励
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,167,38,0.2);text-align:center;">
+        <button class="btn" id="letGoBtn" onclick="letGo()" style="background:linear-gradient(135deg,#FFA726 0%,#E65100 100%);color:#fff;padding:8px 20px;font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">
+          🧘 觉察内耗？点此放下
+        </button>
+        <div id="letGoStatus" style="font-size:10px;color:var(--text-dim);margin-top:4px;"></div>
       </div>
     </div>
     <div class="stats-grid" id="homeStats"></div>
-    <div class="recent-battles">
-      <div class="panel">
-        <div class="panel-title">近期战报</div>
-        <div class="battle-list" id="recentBattles"></div>
-      </div>
-    </div>
     <div class="panel" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div class="panel-title" style="font-size:14px;margin-bottom:0;">存档管理</div>
@@ -1147,8 +1177,11 @@ input, textarea, select { font-family: inherit; outline: none; }
                 <input type="text" class="form-input" id="newMonsterDesc" placeholder="例如：青丘九尾，魅惑众生">
               </div>
               <div class="form-group">
-                <label class="form-label">图片URL（可选，留空用默认图）</label>
-                <input type="text" class="form-input" id="newMonsterImage" placeholder="https://...">
+                <label class="form-label">凶兽图片（可上传相册图片）</label>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input type="text" class="form-input" id="newMonsterImage" placeholder="留空用默认图" style="flex:1;">
+                  <button class="btn btn-ghost btn-sm" type="button" onclick="uploadMonsterImage()" style="flex-shrink:0;">📷</button>
+                </div>
               </div>
               <div style="text-align:right;display:flex;gap:10px;justify-content:flex-end;">
                 <button class="btn btn-ghost btn-sm" type="button" onclick="toggleMonsterForm()">取消</button>
@@ -1158,8 +1191,10 @@ input, textarea, select { font-family: inherit; outline: none; }
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">今日专注时长（分钟）</label>
-              <input type="number" class="form-input" id="focusMinutes" placeholder="今日专注分钟数" min="0" value="0">
+              <label class="form-label">今日专注时长（自动取自专注计时）</label>
+              <div style="padding:10px 14px;background:rgba(10,10,20,0.6);border:1px solid var(--border-gold);border-radius:8px;color:var(--jade-light);font-size:16px;font-weight:700;text-align:center;">
+                <span id="focusMinutesDisplay">0</span> 分钟
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">专注凭证截图（可选）</label>
@@ -1437,6 +1472,22 @@ input, textarea, select { font-family: inherit; outline: none; }
       </div>
       <div class="dungeon-grid" id="dungeonList"></div>
     </div>
+    <!-- 无尽擂台入口 -->
+    <div class="panel" style="margin-top:16px;padding:16px;cursor:pointer;" onclick="navigate('arena')">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:32px;">⚔️</div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:700;color:var(--gold-light);">无尽擂台</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">连续挑战凶兽，层数越高奖励越丰厚</div>
+        </div>
+        <div style="color:var(--text-dim);font-size:18px;">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 剑气长城页 ========== -->
+  <div id="view-swordwall" class="view">
+    <div id="swordwallContent"></div>
   </div>
 
   <!-- ========== 副本文件夹详情页 ========== -->
@@ -1543,6 +1594,20 @@ input, textarea, select { font-family: inherit; outline: none; }
     </div>
     <!-- 七卷BOSS列表 -->
     <div id="bookBossList"></div>
+  </div>
+
+  <!-- ========== 无限战争页 ========== -->
+  <div id="view-infinity" class="view">
+    <div class="panel" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div class="panel-title" style="margin-bottom:0;">💎 无限战争</div>
+        <button class="btn btn-ghost btn-sm" onclick="navigate('dungeon')">← 返回副本列表</button>
+      </div>
+      <div style="font-size:12px;color:var(--text-dim);line-height:1.8;">
+        集齐六颗无限宝石，召唤无限手套。每颗宝石绑定一种现实修行行为，自动记录进度，无需手动操作。
+      </div>
+    </div>
+    <div id="infinityContent"></div>
   </div>
 
   <!-- ========== 宗门试炼页 ========== -->
@@ -1700,6 +1765,17 @@ let gameState = {
   monsters: [],
   history: [],
   seededGongfa: false,
+  enlightenCount: 0,
+  enlightenReq: 1,
+  // 无限战争
+  letGoCount: 0,
+  lastLetGoTime: 0,
+  fragmentTaskCount: 0,
+  hardWinCount: 0,
+  stoneImages: {},
+  // 剑气长城
+  swordStones: 0,
+  swordInscriptions: [],
 };
 let prepareState = {
   selectedMonsterId: 'm1',
@@ -1993,6 +2069,8 @@ function navigate(view) {
   document.querySelectorAll('.nav-link').forEach(l => {
     l.classList.toggle('active', l.dataset.view === view);
   });
+  if (view === 'swordwall') renderSwordWall();
+  if (view === 'infinity') renderInfinityWar();
   if (view === 'home') renderHome();
   if (view === 'prepare') renderPrepare();
   if (view === 'inventory') renderInventory();
@@ -2023,23 +2101,7 @@ function renderHome() {
     <div class="stat-card"><div class="stat-value">${totalFocus}</div><div class="stat-label">累计专注(分钟)</div></div>
     <div class="stat-card"><div class="stat-value">${gongfaCount + permCount + consCount}</div><div class="stat-label">功法法宝</div></div>
   `;
-  const recent = gameState.history.slice(-5).reverse();
-  const container = document.getElementById('recentBattles');
-  if (recent.length === 0) {
-    container.innerHTML = '<div class="empty-state">尚未开启试炼，点击上方按钮开始第一场战斗</div>';
-  } else {
-    container.innerHTML = recent.map(h => {
-      return `
-        <div class="battle-item">
-          <div class="battle-result ${h.result}">${h.result === 'win' ? '胜' : '败'}</div>
-          <div class="battle-info">
-            <div class="battle-name">${h.monsterName || '凶兽'} · ${h.note || '无备注'}</div>
-            <div class="battle-meta">${formatDateShort(h.date)} · ${h.difficulty || ''} · 专注${h.focusMinutes}分 · ${h.rounds}回合</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
+  updateEnlightenUI();
 }
 // ---------- 备战页渲染 ----------
 function renderPrepare() {
@@ -2097,6 +2159,168 @@ function editMonster(id) {
   document.getElementById('newMonsterDesc').value = m.desc || '';
   document.getElementById('newMonsterImage').value = m.image || '';
   form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function uploadMonsterImage() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    compressImage(file, function(dataUrl) {
+      document.getElementById('newMonsterImage').value = dataUrl;
+      showToast('图片已选择', 'success');
+    });
+  };
+  input.click();
+}
+
+// ---------- 剑气长城 ----------
+function renderSwordWall() {
+  var container = document.getElementById('swordwallContent');
+  if (!container) return;
+  var stones = gameState.swordStones || 0;
+  var inscriptions = gameState.swordInscriptions || [];
+  var html = '';
+
+  // 顶部面板
+  html += '<div class="panel" style="margin-bottom:16px;">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+  html += '<div class="panel-title" style="margin-bottom:0;">🏔️ 剑气长城</div>';
+  html += '<div style="text-align:right;">';
+  html += '<div style="font-size:18px;font-weight:900;color:var(--gold);font-family:Noto Serif SC,serif;">' + stones + ' 🔷</div>';
+  html += '<div style="font-size:10px;color:var(--text-dim);">铸字石（最多3）</div>';
+  html += '</div></div>';
+  html += '<div style="font-size:12px;color:var(--text-dim);line-height:1.8;">';
+  html += '连续证道7天可获1枚铸字石，用它在长城上刻下一句诗。一句最多7字（五言/七言），点击石刻可放大观看。';
+  html += '</div>';
+  html += '</div>';
+
+  // 刻字按钮
+  if (stones > 0) {
+    html += '<div style="text-align:center;margin-bottom:16px;">';
+    html += '<button class="btn btn-primary" onclick="showCarveForm()" style="background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dim) 100%);color:#1a1a1a;padding:10px 28px;font-size:15px;font-weight:700;">✍️ 刻字（消耗1枚铸字石）</button>';
+    html += '</div>';
+  }
+
+  // 刻字输入框（默认隐藏）
+  html += '<div class="panel" id="carveForm" style="display:none;margin-bottom:16px;padding:16px;">';
+  html += '<div class="panel-title" style="font-size:14px;margin-bottom:12px;">刻字入墙</div>';
+  html += '<div class="form-group">';
+  html += '<label class="form-label">刻下诗句（最多7字）</label>';
+  html += '<input type="text" class="form-input" id="carveText" maxlength="7" placeholder="例如：道阻且长" style="font-size:18px;text-align:center;font-family:Noto Serif SC,serif;letter-spacing:4px;">';
+  html += '</div>';
+  html += '<div class="form-group">';
+  html += '<label class="form-label">或上传石刻图片（二选一）</label>';
+  html += '<div style="display:flex;gap:8px;align-items:center;">';
+  html += '<button class="btn btn-ghost btn-sm" type="button" onclick="uploadCarveImage()" style="flex:1;">📷 从相册选择图片</button>';
+  html += '</div>';
+  html += '<div id="carveImgPreview" style="display:none;margin-top:8px;text-align:center;"></div>';
+  html += '</div>';
+  html += '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;">';
+  html += '<button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'carveForm\').style.display=\'none\'">取消</button>';
+  html += '<button class="btn btn-primary btn-sm" onclick="doCarve()">刻入石墙</button>';
+  html += '</div></div>';
+
+  // 石墙
+  html += '<div style="background:linear-gradient(180deg,#1a1a2e 0%,#0f0f1a 100%);border:2px solid rgba(212,175,55,0.3);border-radius:12px;padding:24px 16px;min-height:200px;">';
+  html += '<div style="text-align:center;font-size:12px;color:var(--text-dim);margin-bottom:20px;letter-spacing:8px;">— 剑 气 长 城 —</div>';
+
+  if (inscriptions.length === 0) {
+    html += '<div style="text-align:center;padding:40px 20px;color:var(--text-dim);font-size:13px;line-height:2;">';
+    html += '长城之上，还无字迹。<br>连续证道7天，获铸字石一枚，<br>刻下你心中的那句诗。';
+    html += '</div>';
+  } else {
+    // 倒序显示
+    var reversed = inscriptions.slice().reverse();
+    reversed.forEach(function(ins) {
+      var d = new Date(ins.date);
+      var dateStr = d.getFullYear() + '.' + (d.getMonth()+1) + '.' + d.getDate();
+      html += '<div style="text-align:center;margin-bottom:20px;cursor:pointer;" onclick="viewInscription(\'' + ins.id + '\')">';
+      html += '<div style="display:inline-block;padding:14px 20px;background:linear-gradient(135deg,rgba(60,50,30,0.8),rgba(40,35,20,0.9));border:1px solid rgba(212,175,55,0.4);border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.4);">';
+      if (ins.image) {
+        html += '<img src="' + ins.image + '" style="max-width:200px;max-height:120px;border-radius:4px;object-fit:cover;display:block;margin:0 auto;">';
+      } else {
+        html += '<div style="font-size:22px;font-weight:900;color:var(--gold);font-family:Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4);">' + ins.text + '</div>';
+      }
+      html += '<div style="font-size:10px;color:var(--text-dim);margin-top:6px;">' + dateStr + '</div>';
+      html += '</div></div>';
+    });
+  }
+  html += '</div>';
+
+  // 统计
+  html += '<div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text-dim);">已刻 ' + inscriptions.length + ' 句</div>';
+
+  container.innerHTML = html;
+}
+
+function showCarveForm() {
+  document.getElementById('carveForm').style.display = 'block';
+  document.getElementById('carveText').focus();
+}
+
+var carveImageData = '';
+function uploadCarveImage() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    compressImage(file, function(dataUrl) {
+      carveImageData = dataUrl;
+      var preview = document.getElementById('carveImgPreview');
+      preview.style.display = 'block';
+      preview.innerHTML = '<img src="' + dataUrl + '" style="max-width:150px;max-height:100px;border-radius:6px;border:1px solid var(--gold);">';
+    });
+  };
+  input.click();
+}
+function doCarve() {
+  var text = document.getElementById('carveText').value.trim();
+  if (!text && !carveImageData) { showToast('请输入刻字或上传图片', 'error'); return; }
+  if (text && text.length > 7) { showToast('最多7个字', 'error'); return; }
+  if ((gameState.swordStones || 0) < 1) { showToast('铸字石不足', 'error'); return; }
+  gameState.swordStones -= 1;
+  if (!gameState.swordInscriptions) gameState.swordInscriptions = [];
+  var ins = { id: 'ins_' + Date.now(), date: new Date().toISOString() };
+  if (carveImageData) {
+    ins.image = carveImageData;
+    ins.text = text || '石刻';
+  } else {
+    ins.text = text;
+  }
+  gameState.swordInscriptions.push(ins);
+  carveImageData = '';
+  saveGame();
+  renderSwordWall();
+  showToast('已刻入剑气长城', 'success');
+  playAlarmSound();
+}
+
+function viewInscription(insId) {
+  var ins = (gameState.swordInscriptions || []).find(function(x) { return x.id === insId; });
+  if (!ins) return;
+  var d = new Date(ins.date);
+  var dateStr = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
+  // 全屏大字弹窗
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;';
+  overlay.onclick = function() { document.body.removeChild(overlay); };
+  var middleHtml;
+  if (ins.image) {
+    middleHtml = '<img src="' + ins.image + '" style="max-width:90vw;max-height:60vh;border-radius:8px;box-shadow:0 0 40px rgba(212,175,55,0.4);">' +
+      (ins.text && ins.text !== '石刻' ? '<div style="font-size:28px;font-weight:700;color:var(--gold);font-family:Noto Serif SC,serif;letter-spacing:8px;margin-top:20px;text-shadow:0 0 20px rgba(212,175,55,0.5);">' + ins.text + '</div>' : '');
+  } else {
+    middleHtml = '<div style="font-size:64px;font-weight:900;color:var(--gold);font-family:Noto Serif SC,serif;letter-spacing:12px;text-shadow:0 0 30px rgba(212,175,55,0.6);">' + ins.text + '</div>';
+  }
+  overlay.innerHTML =
+    '<div style="font-size:14px;color:var(--text-dim);letter-spacing:6px;margin-bottom:20px;">剑 气 长 城</div>' +
+    middleHtml +
+    '<div style="font-size:12px;color:var(--text-dim);margin-top:30px;">' + dateStr + ' 刻</div>' +
+    '<div style="font-size:11px;color:var(--text-dim);margin-top:40px;">点击关闭</div>';
+  document.body.appendChild(overlay);
 }
 function saveMonster() {
   const name = document.getElementById('newMonsterName').value.trim();
@@ -2197,7 +2421,9 @@ function togglePrepareEquip(type, id) {
   updatePreview();
 }
 function updatePreview() {
-  var minutes = parseInt(document.getElementById('focusMinutes').value) || 0;
+  var minutes = getTodayFocus();
+  var fmd = document.getElementById('focusMinutesDisplay');
+  if (fmd) fmd.textContent = minutes;
   var baseAtk = Math.floor(minutes * 0.8);
   var baseHp = Math.floor(100 + minutes * 0.5);
   var equipBonus = 0, critBonus = 0;
@@ -2410,9 +2636,7 @@ document.addEventListener('click', (e) => {
     return;
   }
 });
-document.addEventListener('input', (e) => {
-  if (e.target.id === 'focusMinutes') updatePreview();
-});
+
 // 专注截图上传
 document.getElementById('screenshotUpload').addEventListener('click', (e) => {
   if (e.target.tagName !== 'INPUT') document.getElementById('screenshotInput').click();
@@ -2623,6 +2847,7 @@ function toggleRealmEditor() {
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
   if (el.style.display === 'block') {
     document.getElementById('realmNamesInputHome').value = REALM_NAMES.join('\n');
+
   }
 }
 function saveRealmNamesFromHome() {
@@ -2634,17 +2859,11 @@ function saveRealmNamesFromHome() {
   saveRealmNames();
   renderRealm();
   document.getElementById('realmEditorHome').style.display = 'none';
-  showToast('境界名称已保存', 'success');
+  showToast('境界设置已保存', 'success');
 }
 function getTotalFocus() {
-  var byDate = {};
-  gameState.history.forEach(function(h) {
-    var d = (h.date || '').slice(0, 10);
-    var mins = h.focusMinutes || 0;
-    if (!byDate[d] || mins > byDate[d]) byDate[d] = mins;
-  });
-  var total = Object.keys(byDate).reduce(function(s, k) { return s + byDate[k]; }, 0);
-  // 计时器专注时长全部累加（不每日去重，因为是独立的专注记录）
+  var total = 0;
+  // 专注计时器记录的时长全部累加（唯一来源，不重复累计history）
   if (gameState.focusSessions) {
     total += gameState.focusSessions.reduce(function(s, f) { return s + (f.minutes || 0); }, 0);
   }
@@ -2658,13 +2877,25 @@ function getTotalFocus() {
 }
 function getRealmInfo() {
   var total = getTotalFocus();
-  var idx = Math.floor(total / 1500);
+  var focusIdx = Math.floor(total / 1500);
+  // 第N级需N*5次证道：1级5次，2级10次，3级15次...
+  var maxRealmByEnlighten = Math.floor((gameState.enlightenCount || 0) / 5);
+  var idx = Math.min(focusIdx, maxRealmByEnlighten);
   var name = REALM_NAMES[Math.min(idx, REALM_NAMES.length - 1)];
   var progress = (total % 1500) / 1500;
+  var pendingEnlighten = focusIdx > idx;
+  // 下一级还需多少证道
+  var nextLevelEnlightenReq = (idx + 1) * 5;
+  var enlightenNeeded = Math.max(0, nextLevelEnlightenReq - (gameState.enlightenCount || 0));
   return {
     idx: idx, name: name, progress: progress, total: total,
     bonusAtk: idx * 5, bonusHp: idx * 30, bonusSpirit: idx * 10,
-    realmMult: 1 + idx * 0.12
+    realmMult: 1 + idx * 0.12,
+    focusIdx: focusIdx,
+    pendingEnlighten: pendingEnlighten,
+    enlightenCount: gameState.enlightenCount || 0,
+    enlightenNeeded: enlightenNeeded,
+    enlightenStreak: gameState.enlightenStreak || 0
   };
 }
 function renderRealm() {
@@ -2678,6 +2909,11 @@ function renderRealm() {
   var nextIdx = Math.min(info.idx + 1, REALM_NAMES.length - 1);
   var nextName = REALM_NAMES[nextIdx];
   var remain = 1500 - (info.total % 1500);
+  var enlightenHtml = '';
+  if (info.pendingEnlighten) {
+    var needEnlighten = (info.idx + 1) * info.enlightenReq - info.enlightenCount;
+    enlightenHtml = '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">⏳ 专注已足，还需证道 ' + needEnlighten + ' 次方可突破</div>';
+  }
   el.innerHTML =
     '<div style="text-align:center;margin-bottom:6px;">' +
       '<div style="font-family:Noto Serif SC,serif;font-size:26px;font-weight:900;color:var(--gold-light);letter-spacing:2px;">' + info.name + '期</div>' +
@@ -2686,11 +2922,190 @@ function renderRealm() {
     '<div class="realm-progress-bar"><div class="realm-progress-fill" style="width:' + (info.progress * 100) + '%;"></div></div>' +
     '<div style="font-size:11px;color:var(--text-dim);text-align:center;margin-bottom:6px;">距 ' + nextName + ' 期还需 ' + remain + ' 分钟</div>' +
     '<div style="font-size:11px;color:var(--jade-light);text-align:center;">境界加成：攻击+' + info.bonusAtk + ' · 生命+' + info.bonusHp + ' · 灵力+' + info.bonusSpirit + '</div>' +
-    '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">反派强度 ×' + info.realmMult.toFixed(2) + '</div>';
+    '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">反派强度 ×' + info.realmMult.toFixed(2) + '</div>' +
+    '<div style="font-size:10px;color:var(--purple);text-align:center;margin-top:2px;">证道 ' + info.enlightenCount + ' 次' + (info.pendingEnlighten ? '（还需' + info.enlightenNeeded + '次突破）' : '') + '</div>' +
+    enlightenHtml;
+}
+
+// ===== 证道系统 =====
+var ENLIGHTEN_REWARDS = [
+  { name:'护心镜', type:'consumable', power:0, crit:0, effect:'使用后获得30点护盾。', affixes:[{type:'shield',value:30}] },
+  { name:'回灵散', type:'consumable', power:0, crit:0, effect:'使用后恢复50点灵力。', affixes:[{type:'spiritRegen',value:50}] },
+  { name:'暴血符', type:'consumable', power:0, crit:0, effect:'使用后下次攻击伤害翻倍。', affixes:[{type:'execute',value:50}] },
+  { name:'金刚符', type:'consumable', power:0, crit:0, effect:'使用后获得50点护盾。', affixes:[{type:'shield',value:50}] },
+  { name:'吸血膏', type:'consumable', power:0, crit:0, effect:'使用后3回合内攻击吸血10%。', affixes:[{type:'lifesteal',value:10}] },
+  { name:'破甲锥', type:'consumable', power:0, crit:0, effect:'使用后下次攻击无视敌人防御。', affixes:[{type:'execute',value:20}] },
+];
+
+function enlighten() {
+  if (dailyState.enlightenedToday) {
+    showToast('今日已证道，明日再来', 'error');
+    return;
+  }
+  if (!confirm('今日是否已成功断念、专注向道？\n\n证道后将获得一件随机消耗法宝，每日仅可一次。\n连续证道7天可获额外奖励。')) return;
+  dailyState.enlightenedToday = true;
+  gameState.enlightenCount = (gameState.enlightenCount || 0) + 1;
+  // 连续天数：检查昨天是否证道
+  var today = getTodayStr();
+  var yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (gameState.enlightenDate === yesterday) {
+    gameState.enlightenStreak = (gameState.enlightenStreak || 0) + 1;
+  } else {
+    gameState.enlightenStreak = 1;
+  }
+  gameState.enlightenDate = today;
+  saveDaily();
+  saveGame();
+  // 随机奖励
+  var reward = ENLIGHTEN_REWARDS[Math.floor(Math.random() * ENLIGHTEN_REWARDS.length)];
+  reward.id = 'enlighten_' + Date.now();
+  reward.categoryId = '';
+  reward.image = '';
+  if (!gameState.equipment.consumable) gameState.equipment.consumable = [];
+  gameState.equipment.consumable.push(JSON.parse(JSON.stringify(reward)));
+  // 连续7天额外奖励
+  var streakReward = '';
+  if (gameState.enlightenStreak % 7 === 0) {
+    // 额外奖励：10碎片+随机法宝+1铸字石
+    dailyState.fragments = (dailyState.fragments || 0) + 10;
+    var bonusReward = ENLIGHTEN_REWARDS[Math.floor(Math.random() * ENLIGHTEN_REWARDS.length)];
+    bonusReward.id = 'streak_' + Date.now();
+    bonusReward.categoryId = '';
+    bonusReward.image = '';
+    gameState.equipment.consumable.push(JSON.parse(JSON.stringify(bonusReward)));
+    // 铸字石
+    gameState.swordStones = Math.min(3, (gameState.swordStones || 0) + 1);
+    streakReward = ' · 连续' + gameState.enlightenStreak + '天！10碎片+' + bonusReward.name + '+1铸字石';
+    saveDaily();
+  }
+  saveGame();
+  updateEnlightenUI();
+  renderRealm();
+  showToast('证道成功！获得「' + reward.name + '」' + streakReward, 'success');
+  playAlarmSound();
+}
+
+// ---------- 放下内耗（灵魂宝石） ----------
+const LET_GO_QUOTES = [
+  '回到当下，这一秒才是真实的',
+  '想太多没用，做就对了',
+  '焦虑是想未来，后悔是想过去，你只拥有现在',
+  '一念放下，万般自在',
+  '你不是你的念头，你是觉察念头的人',
+  '念头来来去去，你只需要回到呼吸',
+  '别让脑子在脑子里演戏，回到现实',
+  '这一刻的平静，比想太多有用一万倍'
+];
+function letGo() {
+  var now = Date.now();
+  var cd = gameState.lastLetGoTime || 0;
+  var elapsed = (now - cd) / 1000;
+  if (elapsed < 600) {
+    var remain = Math.ceil((600 - elapsed) / 60);
+    showToast('刚放下不久，' + remain + '分钟后可再放下', 'error');
+    return;
+  }
+  gameState.letGoCount = (gameState.letGoCount || 0) + 1;
+  gameState.lastLetGoTime = now;
+  saveGame();
+  var quote = LET_GO_QUOTES[Math.floor(Math.random() * LET_GO_QUOTES.length)];
+  showToast('🧘 ' + quote + '（' + gameState.letGoCount + '/5）', 'success');
+  updateLetGoUI();
+  playAlarmSound();
+}
+function updateLetGoUI() {
+  var btn = document.getElementById('letGoBtn');
+  var status = document.getElementById('letGoStatus');
+  if (!btn || !status) return;
+  var count = gameState.letGoCount || 0;
+  var cd = gameState.lastLetGoTime || 0;
+  var elapsed = (Date.now() - cd) / 1000;
+  if (elapsed < 600) {
+    var remain = Math.ceil((600 - elapsed) / 60);
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.textContent = '🧘 冷却中 ' + remain + 'min';
+    status.innerHTML = '已放下 <b style="color:var(--gold-light);">' + count + '</b>/5 次（灵魂宝石进度）';
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.textContent = '🧘 觉察内耗？点此放下';
+    status.innerHTML = '已放下 <b style="color:var(--gold-light);">' + count + '</b>/5 次（灵魂宝石进度）';
+  }
+}
+
+function updateEnlightenUI() {
+  var btn = document.getElementById('enlightenBtn');
+  var status = document.getElementById('enlightenStatus');
+  var totalEl = document.getElementById('enlightenTotalCount');
+  if (totalEl) totalEl.textContent = gameState.enlightenCount || 0;
+  if (!btn || !status) return;
+  var streak = gameState.enlightenStreak || 0;
+  var nextRealm = (getRealmInfo().idx + 1) * 5;
+  var need = Math.max(0, nextRealm - (gameState.enlightenCount || 0));
+  if (dailyState.enlightenedToday) {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.textContent = '✓ 今日已证道';
+    status.innerHTML = '连续 <b style="color:var(--gold-light);">' + streak + '</b> 天 · 距下一境界还需 <b style="color:var(--purple);">' + need + '</b> 次证道';
+    status.style.color = 'var(--jade-light)';
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.textContent = '🌙 今日证道';
+    status.innerHTML = '今日尚未证道 · 连续 <b style="color:var(--gold-light);">' + streak + '</b> 天 · 未证道将扣1次证道并重置连续记录';
+    status.style.color = 'var(--cinnabar-light)';
+  }
+  updateLetGoUI();
+}
+
+// ===== 闹铃提醒 =====
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+function playAlarmSound() {
+  // 多音节闹铃声
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var notes = [880, 660, 880, 660, 880, 660];
+    notes.forEach(function(freq, i) {
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      gain.gain.value = 0.3;
+      osc.start(ctx.currentTime + i * 0.3);
+      osc.stop(ctx.currentTime + i * 0.3 + 0.25);
+    });
+  } catch(e) {}
+}
+
+function showNotification(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      new Notification(title, { body: body, icon: '' });
+    } catch(e) {}
+  }
+}
+
+function checkEnlightenReminder() {
+  if (dailyState.enlightenedToday) return;
+  var cb = document.getElementById('enlightenAlarmEnabled');
+  if (cb && !cb.checked) return;
+  var hour = new Date().getHours();
+  // 晚上20点后如果还没证道，提醒一次
+  if (hour >= 20) {
+    showNotification('心魔试炼 · 证道提醒', '今日尚未证道，点击证道按钮断念修行');
+    showToast('🌙 今日尚未证道，别忘了断念修行', 'success');
+  }
 }
 
 // ========== 每日三事 · 心魔碎片 ==========
-var dailyState = { date: '', tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: 0 };
+var dailyState = { date: '', tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: 0, enlightenedToday: false };
 function loadDaily() {
   try {
     var saved = JSON.parse(localStorage.getItem('xinmo_daily') || 'null');
@@ -2698,8 +3113,21 @@ function loadDaily() {
     if (saved && saved.date === today) {
       dailyState = saved;
     } else {
-      dailyState = { date: today, tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: saved ? (saved.fragments || 0) : 0 };
+      // 新的一天：检查昨天是否证道，未证道则扣1次并重置连续
+      var yesterday = new Date(Date.now() - 86400000).toDateString();
+      var prevEnlightened = saved && saved.enlightenedToday;
+      if (prevEnlightened && saved.date === yesterday) {
+        // 昨天证道了，连续天数保持
+      } else {
+        // 昨天没证道，扣1次证道，重置连续
+        if (gameState.enlightenCount > 0) {
+          gameState.enlightenCount = Math.max(0, gameState.enlightenCount - 1);
+        }
+        gameState.enlightenStreak = 0;
+      }
+      dailyState = { date: today, tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: saved ? (saved.fragments || 0) : 0, enlightenedToday: false };
       saveDaily();
+      saveGame();
     }
   } catch(e) {
     dailyState = { date: new Date().toDateString(), tasks: [{text:'',done:false},{text:'',done:false},{text:'',done:false}], fragments: 0 };
@@ -2726,8 +3154,13 @@ function toggleTask(idx) {
   var t = dailyState.tasks[idx];
   if (!t.text.trim()) { showToast('先填写任务内容', 'error'); return; }
   t.done = !t.done;
-  if (t.done) dailyState.fragments++;
-  else dailyState.fragments = Math.max(0, dailyState.fragments - 1);
+  if (t.done) {
+    dailyState.fragments++;
+    gameState.fragmentTaskCount = (gameState.fragmentTaskCount || 0) + 1;
+  } else {
+    dailyState.fragments = Math.max(0, dailyState.fragments - 1);
+    gameState.fragmentTaskCount = Math.max(0, (gameState.fragmentTaskCount || 0) - 1);
+  }
   saveDaily();
   renderDailyTasks();
   if (t.done) showToast('心魔碎片 +1（共' + dailyState.fragments + '枚）', 'success');
@@ -3040,10 +3473,168 @@ const DUNGEON_FOLDERS = [
     items: [
       { id: 'sect_main', name: '宗门大殿', icon: '🏯', desc: '进入宗门试炼。', type: 'sect' }
     ]
+  },
+  {
+    id: 'infinity', name: '无限战争', icon: '💎', desc: '集齐六颗无限宝石，召唤无限手套。',
+    items: [
+      { id: 'infinity_main', name: '无限手套', icon: '🧤', desc: '六颗宝石，等你收集。', type: 'infinity' }
+    ]
   }
 ];
 // 兼容旧引用
 const DUNGEONS = DUNGEON_FOLDERS.reduce(function(arr, f) { return arr.concat(f.items); }, []);
+
+// ---------- 无限战争 · 六颗无限宝石 ----------
+const INFINITY_STONES = [
+  { id: 'space',   name: '空间宝石', color: '#4FC3F7', icon: '🔵', desc: '宇宙魔方，掌控空间', goal: 5000,    goalText: '累计专注5000分钟',  type: 'focus',     atkMult: 0.10, critAdd: 0,  hpBonus: 0,    lifesteal: 0,    shield: 0 },
+  { id: 'reality', name: '现实宝石', color: '#EF5350', icon: '🔴', desc: '以太粒子，扭曲现实', goal: 40,      goalText: '累计完成心魔碎片任务40次', type: 'fragTask', atkMult: 0.10, critAdd: 0,  hpBonus: 0,    lifesteal: 0,    shield: 0 },
+  { id: 'power',   name: '力量宝石', color: '#AB47BC', icon: '🟣', desc: '灵球，毁灭之力',     goal: 50,      goalText: '困难及以上难度击败凶兽50次', type: 'hardWin', atkMult: 0.10, critAdd: 3,  hpBonus: 0,    lifesteal: 0,    shield: 0 },
+  { id: 'mind',    name: '心灵宝石', color: '#FFEE58', icon: '🟡', desc: '洛基权杖，操控心智', goal: 14,      goalText: '连续14天成功证道', type: 'streak',   atkMult: 0.10, critAdd: 0,  hpBonus: 0,    lifesteal: 0,    shield: 0 },
+  { id: 'time',    name: '时间宝石', color: '#66BB6A', icon: '🟢', desc: '阿戈摩托之眼，操控时间', goal: 2000, goalText: '阅读+功法修炼合计2000分钟', type: 'readCult', atkMult: 0.10, critAdd: 0,  hpBonus: 0,    lifesteal: 5,    shield: 0 },
+  { id: 'soul',    name: '灵魂宝石', color: '#FFA726', icon: '🟠', desc: '沃米尔之石，牺牲之石', goal: 5,       goalText: '放下精神内耗5次', type: 'letGo',    atkMult: 0.10, critAdd: 0,  hpBonus: 0,    lifesteal: 0,    shield: 10 },
+];
+
+// 读取某颗宝石当前进度
+function getStoneProgress(stone) {
+  switch (stone.type) {
+    case 'focus':    return getTotalFocus();
+    case 'fragTask': return gameState.fragmentTaskCount || 0;
+    case 'hardWin':  return gameState.hardWinCount || 0;
+    case 'streak':   return gameState.enlightenStreak || 0;
+    case 'readCult': {
+      var readMin = 0;
+      try {
+        var bt = JSON.parse(localStorage.getItem('xm_booktimer') || '{}');
+        readMin = bt.totalMinutes || 0;
+      } catch(e) {}
+      var cultMin = 0;
+      try {
+        var ct = JSON.parse(localStorage.getItem('xm_cultivation') || '{}');
+        cultMin = ct.totalMinutes || 0;
+      } catch(e) {}
+      return readMin + cultMin;
+    }
+    case 'letGo':    return gameState.letGoCount || 0;
+    default: return 0;
+  }
+}
+
+function isStoneObtained(stone) {
+  return getStoneProgress(stone) >= stone.goal;
+}
+
+function getStoneBonus() {
+  var bonus = { atkMult: 0, critAdd: 0, hpBonus: 0, lifesteal: 0, shield: 0, obtained: 0, total: 6 };
+  INFINITY_STONES.forEach(function(s) {
+    if (isStoneObtained(s)) {
+      bonus.atkMult += s.atkMult;
+      bonus.critAdd += s.critAdd;
+      bonus.hpBonus += s.hpBonus;
+      bonus.lifesteal += s.lifesteal;
+      bonus.shield += s.shield;
+      bonus.obtained++;
+    }
+  });
+  // 集齐六颗：无限手套额外加成
+  if (bonus.obtained >= 6) {
+    bonus.atkMult += 0.20;
+    bonus.critAdd += 7;
+    bonus.hpBonus += 500;
+    bonus.lifesteal += 10;
+    bonus.isGauntlet = true;
+  }
+  return bonus;
+}
+
+// 无限战争面板渲染
+function renderInfinityWar() {
+  var container = document.getElementById('infinityContent');
+  if (!container) return;
+  var bonus = getStoneBonus();
+  var html = '';
+
+  // 无限手套状态
+  var gauntletText;
+  if (bonus.isGauntlet) {
+    gauntletText = '<div style="text-align:center;padding:16px;background:linear-gradient(135deg,rgba(255,215,0,0.15),rgba(255,100,0,0.1));border:1px solid var(--gold);border-radius:12px;margin-bottom:16px;">' +
+      '<div style="font-size:36px;margin-bottom:4px;">🧤✨</div>' +
+      '<div style="font-size:16px;font-weight:900;color:var(--gold);font-family:Noto Serif SC,serif;">无限手套已集齐！</div>' +
+      '<div style="font-size:11px;color:var(--text-dim);margin-top:4px;">全属性加成：攻击+' + Math.round(bonus.atkMult*100) + '% · 暴击+' + bonus.critAdd + '% · 生命+' + bonus.hpBonus + ' · 吸血+' + bonus.lifesteal + '%</div>' +
+    '</div>';
+  } else {
+    gauntletText = '<div style="text-align:center;padding:12px;background:rgba(255,255,255,0.03);border:1px dashed rgba(212,175,55,0.3);border-radius:12px;margin-bottom:16px;">' +
+      '<div style="font-size:28px;margin-bottom:4px;">🧤</div>' +
+      '<div style="font-size:13px;color:var(--text-dim);">已收集 ' + bonus.obtained + ' / 6 颗宝石</div>' +
+    '</div>';
+  }
+  html += gauntletText;
+
+  // 六颗宝石
+  html += '<div style="display:grid;grid-template-columns:1fr;gap:10px;">';
+  INFINITY_STONES.forEach(function(stone) {
+    var progress = getStoneProgress(stone);
+    var obtained = progress >= stone.goal;
+    var pct = Math.min(100, Math.round(progress / stone.goal * 100));
+    var stoneImg = (gameState.stoneImages && gameState.stoneImages[stone.id]) ? gameState.stoneImages[stone.id] : '';
+    var stoneIcon = stoneImg
+      ? '<img src="' + stoneImg + '" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid ' + stone.color + ';">'
+      : '<div style="width:48px;height:48px;border-radius:50%;background:' + stone.color + ';opacity:' + (obtained ? '1' : '0.25') + ';display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:' + (obtained ? '0 0 16px ' + stone.color : 'none') + ';">' + stone.icon + '</div>';
+
+    var bonusText = obtained
+      ? '攻击+' + Math.round(stone.atkMult*100) + '%' + (stone.critAdd ? ' 暴击+' + stone.critAdd + '%' : '') + (stone.hpBonus ? ' 生命+' + stone.hpBonus : '') + (stone.lifesteal ? ' 吸血+' + stone.lifesteal + '%' : '') + (stone.shield ? ' 护盾+' + stone.shield + '%' : '')
+      : '未获得';
+
+    html += '<div style="display:flex;gap:12px;align-items:center;padding:12px;background:rgba(255,255,255,0.03);border-radius:10px;border-left:3px solid ' + (obtained ? stone.color : 'rgba(255,255,255,0.1)') + ';">' +
+      stoneIcon +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+          '<span style="font-size:14px;font-weight:700;color:' + (obtained ? stone.color : 'var(--text-secondary)') + ';">' + stone.name + (obtained ? ' ✓' : '') + '</span>' +
+          '<span style="font-size:10px;color:var(--text-dim);">' + bonusText + '</span>' +
+        '</div>' +
+        '<div style="font-size:11px;color:var(--text-dim);margin-top:2px;">' + stone.desc + ' · ' + stone.goalText + '</div>' +
+        '<div style="margin-top:6px;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">' +
+          '<div style="height:100%;width:' + pct + '%;background:' + stone.color + ';border-radius:3px;transition:width 0.3s;"></div>' +
+        '</div>' +
+        '<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">' + progress + ' / ' + stone.goal + ' (' + pct + '%)</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px;">' +
+        '<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px;" onclick="uploadStoneImage(\'' + stone.id + '\')">图片</button>' +
+      '</div>' +
+    '</div>';
+  });
+  html += '</div>';
+
+  // 已获得宝石总加成
+  if (bonus.obtained > 0 && !bonus.isGauntlet) {
+    html += '<div style="margin-top:12px;padding:10px;background:rgba(255,215,0,0.08);border-radius:8px;font-size:11px;color:var(--gold-light);text-align:center;">' +
+      '当前宝石总加成：攻击+' + Math.round(bonus.atkMult*100) + '%' +
+      (bonus.critAdd ? ' · 暴击+' + bonus.critAdd + '%' : '') +
+      (bonus.hpBonus ? ' · 生命+' + bonus.hpBonus : '') +
+      (bonus.lifesteal ? ' · 吸血+' + bonus.lifesteal + '%' : '') +
+      '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+// 宝石图片上传
+function uploadStoneImage(stoneId) {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    compressImage(file, function(dataUrl) {
+      if (!gameState.stoneImages) gameState.stoneImages = {};
+      gameState.stoneImages[stoneId] = dataUrl;
+      saveGame();
+      renderInfinityWar();
+      showToast('宝石图片已更新', 'success');
+    });
+  };
+  input.click();
+}
 
 // 明朝那些事儿七卷BOSS
 const BOOK_MING_BOSSES = [
@@ -3319,6 +3910,7 @@ function renderDungeonFolder() {
 function enterBookDungeon(bookId) {
   currentBookId = bookId;
   if (bookId === 'sect_main') { navigate('sect'); return; }
+  if (bookId === 'infinity_main') { navigate('infinity'); renderInfinityWar(); return; }
   navigate('dungeon-book');
   renderBookDungeon();
 }
@@ -3944,8 +4536,8 @@ function startBattle(monsterInput, opts) {
     note = opts.note || '';
   } else {
     note = document.getElementById('difficultyDesc').value.trim();
-    minutes = parseInt(document.getElementById('focusMinutes').value) || 0;
-    if (minutes <= 0) { showToast('专注时长需大于0，以专注为剑方可斩魔', 'error'); return; }
+    minutes = getTodayFocus();
+    if (minutes <= 0) { showToast('今日专注时长为0，请先在试炼大殿开始专注计时', 'error'); return; }
     baseAtk = Math.floor(minutes * 0.8);
     baseHp = Math.floor(100 + minutes * 0.5);
   }
@@ -3968,11 +4560,17 @@ function startBattle(monsterInput, opts) {
   var realm = getRealmInfo();
   baseAtk += realm.bonusAtk;
   baseHp += realm.bonusHp;
+  // 无限宝石加成
+  var stoneBonus = getStoneBonus();
+  baseAtk = Math.floor(baseAtk * (1 + stoneBonus.atkMult));
+  baseHp += stoneBonus.hpBonus;
+  critBonus += stoneBonus.critAdd;
   var aff = collectAffixes(usedEquips);
   var pass = parsePassives(usedEquips);
   aff.burn = Math.max(aff.burn, Math.round(pass.burnChance * 100));
   aff.poison = Math.max(aff.poison, Math.round(pass.poisonChance * 100));
-  aff.lifesteal = Math.max(aff.lifesteal, Math.round(pass.lifestealPct * 100));
+  aff.lifesteal = Math.max(aff.lifesteal, Math.round(pass.lifestealPct * 100), stoneBonus.lifesteal);
+  aff.shield = Math.max(aff.shield || 0, stoneBonus.shield);
   var maxHp = baseHp + aff.hp;
   var maxSpirit = 100 + aff.spirit + realm.bonusSpirit;
   var totalMult = difficultyMult * realm.realmMult;
@@ -4358,6 +4956,8 @@ function finishBattle(result) {
       var cultReward = mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3;
       if (!dailyState.fragments) dailyState.fragments = 0;
       dailyState.fragments += fragReward;
+      // 力量宝石：困难及以上（reqMinutes>=60）胜利计数
+      if (mReq >= 60) gameState.hardWinCount = (gameState.hardWinCount || 0) + 1;
       saveDaily();
       // 修为经验（累计到总专注时长，按天去重后计入境界）
       if (!gameState.bonusFocus) gameState.bonusFocus = 0;
