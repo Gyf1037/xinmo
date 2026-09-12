@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="心魔试炼">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap">
 <style>
 /* ========== 全局变量与重置 ========== */
 :root {
@@ -1540,25 +1540,15 @@ input, textarea, select { font-family: inherit; outline: none; }
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">BOSS名称（每行一个，对应每卷；留空自动生成）</label>
-          <textarea class="form-input" id="newBookBossNames" rows="3" placeholder="第一卷BOSS&#10;第二卷BOSS&#10;第三卷BOSS" style="resize:vertical;"></textarea>
+          <label class="form-label">BOSS名称（每行一个，用空格分隔：BOSS名 奖励类型 奖励描述）</label>
+          <textarea class="form-input" id="newBookBossNames" rows="4" placeholder="朱元璋 异火 青莲地心火&#10;朱棣 名剑 巨阙&#10;王振 碎片" style="resize:vertical;font-size:11px;"></textarea>
+          <div style="font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.6;">
+            奖励类型可选：异火、名剑、碎片、修为、法宝、消耗法宝、终极<br>
+            不填奖励类型则默认随机法宝。
+          </div>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">通关奖励类型</label>
-          <select class="form-select" id="newBookRewardType" style="width:120px;">
-            <option value="equip">法宝</option>
-            <option value="fragment" selected>心魔碎片</option>
-            <option value="cultivation">修为</option>
-            <option value="mixed">综合奖励</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">奖励描述（可选）</label>
-          <input type="text" class="form-input" id="newBookRewardDesc" placeholder="例如：随机高阶法宝+50碎片">
-        </div>
-      </div>
+
       <div style="text-align:right;display:flex;gap:8px;justify-content:flex-end;">
         <button class="btn btn-ghost" onclick="hideCreateBookForm()">取消</button>
         <button class="btn btn-primary" id="submitBookBtn" onclick="createBookInFolder()">创建</button>
@@ -2241,7 +2231,7 @@ function renderSwordWall() {
       if (ins.image) {
         html += '<img src="' + ins.image + '" style="max-width:200px;max-height:120px;border-radius:4px;object-fit:cover;display:block;margin:0 auto;">';
       } else {
-        html += '<div style="font-size:22px;font-weight:900;color:var(--gold);font-family:Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4);">' + ins.text + '</div>';
+        html += '<div style="font-size:22px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4);">' + ins.text + '</div>';
       }
       html += '<div style="font-size:10px;color:var(--text-dim);margin-top:6px;">' + dateStr + '</div>';
       html += '</div></div>';
@@ -2296,7 +2286,6 @@ function doCarve() {
   saveGame();
   renderSwordWall();
   showToast('已刻入剑气长城', 'success');
-  playAlarmSound();
 }
 
 function viewInscription(insId) {
@@ -2311,9 +2300,9 @@ function viewInscription(insId) {
   var middleHtml;
   if (ins.image) {
     middleHtml = '<img src="' + ins.image + '" style="max-width:90vw;max-height:60vh;border-radius:8px;box-shadow:0 0 40px rgba(212,175,55,0.4);">' +
-      (ins.text && ins.text !== '石刻' ? '<div style="font-size:28px;font-weight:700;color:var(--gold);font-family:Noto Serif SC,serif;letter-spacing:8px;margin-top:20px;text-shadow:0 0 20px rgba(212,175,55,0.5);">' + ins.text + '</div>' : '');
+      (ins.text && ins.text !== '石刻' ? '<div style="font-size:28px;font-weight:700;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:8px;margin-top:20px;text-shadow:0 0 20px rgba(212,175,55,0.5);">' + ins.text + '</div>' : '');
   } else {
-    middleHtml = '<div style="font-size:64px;font-weight:900;color:var(--gold);font-family:Noto Serif SC,serif;letter-spacing:12px;text-shadow:0 0 30px rgba(212,175,55,0.6);">' + ins.text + '</div>';
+    middleHtml = '<div style="font-size:64px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:12px;text-shadow:0 0 30px rgba(212,175,55,0.6);">' + ins.text + '</div>';
   }
   overlay.innerHTML =
     '<div style="font-size:14px;color:var(--text-dim);letter-spacing:6px;margin-bottom:20px;">剑 气 长 城</div>' +
@@ -3991,11 +3980,27 @@ function createBookInFolder() {
   var volumes = parseInt(document.getElementById('newBookVolumes').value) || 5;
   var readReq = parseInt(document.getElementById('newBookReadReq').value) || 120;
   var difficulty = document.getElementById('newBookDifficulty').value || 'normal';
-  // 多行BOSS名称
+  // 多行BOSS名称，支持格式：BOSS名|奖励类型|奖励描述
   var bossNamesRaw = document.getElementById('newBookBossNames').value.trim();
-  var customBossNames = bossNamesRaw ? bossNamesRaw.split('\n').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : [];
-  var rewardType = document.getElementById('newBookRewardType').value || 'fragment';
-  var rewardDesc = document.getElementById('newBookRewardDesc').value.trim();
+  var customBossLines = bossNamesRaw ? bossNamesRaw.split('\n').map(function(s){ return s.trim(); }).filter(function(s){ return s; }) : [];
+  // 中文奖励类型映射
+  var REWARD_TYPE_MAP = {
+    '异火': 'fire', '名剑': 'sword', '碎片': 'fragment', '修为': 'cultivation',
+    '法宝': 'equip', '消耗法宝': 'consumable', '终极': 'ultimate', '随机': 'equip',
+    'fire': 'fire', 'sword': 'sword', 'fragment': 'fragment', 'cultivation': 'cultivation',
+    'equip': 'equip', 'ultimate': 'ultimate', 'random': 'equip'
+  };
+  var customBossData = customBossLines.map(function(line) {
+    var parts = line.split(/\s+/);
+    var rt = (parts[1] || '').trim();
+    return {
+      name: parts[0].trim(),
+      rewardType: REWARD_TYPE_MAP[rt] || rt || null,
+      rewardDesc: (parts[2] || '').trim() || null
+    };
+  });
+  var rewardType = 'equip';
+  var rewardDesc = '';
   var folderId = currentDungeonFolder;
   if (!folderId) return;
   var diffMult = { easy: 0.6, normal: 1.0, hard: 1.5, hell: 2.2 };
@@ -4016,7 +4021,8 @@ function createBookInFolder() {
     var hp = Math.floor((500 + i * 150) * mult);
     var atk = Math.floor((40 + i * 10) * mult);
     // BOSS名称：优先用户输入的第i个，其次自动生成
-    var bossName = customBossNames[i] || autoBossNames[i % autoBossNames.length];
+    var bossData = customBossData[i] || {};
+    var bossName = bossData.name || autoBossNames[i % autoBossNames.length];
     var bossId = oldBosses[i] ? oldBosses[i].id : bookId + '_' + (i+1);
     bosses.push({
       id: bossId,
@@ -4027,8 +4033,8 @@ function createBookInFolder() {
       attack: atk,
       skill: { name: '凶兽之力', type: 'normal', cooldown: 3, text: '造成普通攻击伤害' },
       desc: '难度：' + (diffNames[difficulty] || '普通') + '，阅读' + readReq + '分钟后可挑战',
-      rewardType: rewardType,
-      rewardDesc: rewardDesc || '',
+      rewardType: bossData.rewardType || rewardType,
+      rewardDesc: bossData.rewardDesc || rewardDesc || '',
       difficulty: difficulty
     });
   }
@@ -4094,8 +4100,15 @@ function editBookInFolder(bookId) {
   document.getElementById('newBookDifficulty').value = book.difficulty || 'normal';
   document.getElementById('newBookRewardType').value = book.rewardType || (bosses.length > 0 && bosses[0].rewardType ? bosses[0].rewardType : 'fragment');
   document.getElementById('newBookRewardDesc').value = bosses.length > 0 && bosses[0].rewardDesc ? bosses[0].rewardDesc : '';
-  // 填充BOSS名称列表
-  document.getElementById('newBookBossNames').value = bosses.map(function(b){ return b.name; }).join('\n');
+  // 填充BOSS名称列表（带奖励信息）
+  var defaultRewardType = book.rewardType || 'fragment';
+  var REWARD_TYPE_CN = {fire:'异火', sword:'名剑', fragment:'碎片', cultivation:'修为', equip:'法宝', consumable:'消耗法宝', ultimate:'终极', random:'随机'};
+  document.getElementById('newBookBossNames').value = bosses.map(function(b){
+    var line = b.name;
+    if (b.rewardType && b.rewardType !== defaultRewardType) line += ' ' + (REWARD_TYPE_CN[b.rewardType] || b.rewardType);
+    if (b.rewardDesc) line += ' ' + b.rewardDesc;
+    return line;
+  }).join('\n');
   document.getElementById('createBookForm').style.display = 'block';
   document.getElementById('createBookForm').scrollIntoView({ behavior: 'smooth' });
 }
