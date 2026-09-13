@@ -3550,16 +3550,16 @@ function getStoneProgress(stone) {
     case 'hardWin':  return gameState.hardWinCount || 0;
     case 'streak':   return gameState.enlightenStreak || 0;
     case 'readCult': {
+      // 阅读时长：从dungeonRead累加所有BOSS阅读分钟
       var readMin = 0;
-      try {
-        var bt = JSON.parse(localStorage.getItem('xm_booktimer') || '{}');
-        readMin = bt.totalMinutes || 0;
-      } catch(e) {}
+      if (gameState.dungeonRead) {
+        for (var k in gameState.dungeonRead) readMin += gameState.dungeonRead[k] || 0;
+      }
+      // 功法修炼时长：从所有功法的cultivation字段累加
       var cultMin = 0;
-      try {
-        var ct = JSON.parse(localStorage.getItem('xm_cultivation') || '{}');
-        cultMin = ct.totalMinutes || 0;
-      } catch(e) {}
+      if (gameState.equipment && gameState.equipment.gongfa) {
+        gameState.equipment.gongfa.forEach(function(g) { cultMin += g.cultivation || 0; });
+      }
       return readMin + cultMin;
     }
     case 'letGo':    return gameState.letGoCount || 0;
@@ -4674,6 +4674,7 @@ function startBattle(monsterInput, opts) {
       name: monster.name,
       maxHp: monster.maxHp, hp: monster.maxHp, attack: monster.attack,
       difficulty: monster.label || monster.difficulty || '', monsterId: monster.id, image: monster.image, desc: monster.desc,
+      reqMinutes: monster.reqMinutes || 0,
       statuses: [], skillUsed: false, cooldownCounter: 0,
       skill: monsterSkill,
     },
@@ -5965,9 +5966,14 @@ function init() {
   loadDaily();
   loadSectors();
   loadArenaStats();
+  // 同步难度按钮状态
+  setDifficulty(difficultyMult);
   // 关闭所有编辑表单（防止刷新后残留）
-  var _cf = document.getElementById('createBookForm'); if (_cf) _cf.style.display = 'none';
-  var _ff = document.getElementById('createFolderForm'); if (_ff) _ff.style.display = 'none';
+  var _forms = ['createBookForm','createFolderForm','monsterForm','newEquipForm','gongfaSkillConfig','realmEditorHome','pasteImportArea','carveForm'];
+  _forms.forEach(function(fid) {
+    var el = document.getElementById(fid);
+    if (el) el.style.display = 'none';
+  });
   currentEditingBookId = null;
   navigate('home');
   // 恢复后台计时（退出网页后时间继续走）
