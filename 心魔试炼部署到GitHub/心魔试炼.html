@@ -1852,6 +1852,10 @@ function loadSave() {
   gameState.swordStones = data?.swordStones || 0;
   gameState.swordInscriptions = data?.swordInscriptions || [];
   gameState.bloodCharCount = data?.bloodCharCount || 0;
+  gameState.todayCultivation = data?.todayCultivation || null;
+  gameState.todayBookRead = data?.todayBookRead || null;
+  gameState.inscriptionAtkBonus = data?.inscriptionAtkBonus || 0;
+  gameState.inscriptionHpBonus = data?.inscriptionHpBonus || 0;
   gameState.customBooks = data?.customBooks || {};
   gameState.customBookBosses = data?.customBookBosses || {};
   gameState.customBookInfo = data?.customBookInfo || {};
@@ -2305,10 +2309,13 @@ function doCarve() {
     ins.text = text;
   }
   gameState.swordInscriptions.push(ins);
+  // 刻字战力加成：每刻一字，攻击+3、生命+50
+  gameState.inscriptionAtkBonus = (gameState.inscriptionAtkBonus || 0) + 3;
+  gameState.inscriptionHpBonus = (gameState.inscriptionHpBonus || 0) + 50;
   carveImageData = '';
   saveGame();
   renderSwordWall();
-  showToast('已刻入剑气长城', 'success');
+  showToast('已刻入剑气长城 · 攻击+3 生命+50', 'success');
 }
 
 function viewInscription(insId) {
@@ -2456,9 +2463,9 @@ function updatePreview() {
   });
   var realmInfo = getRealmInfo();
   var aff = collectAffixes(usedEquips);
-  var totalAtk = baseAtk + equipBonus + realmInfo.bonusAtk;
+  var totalAtk = baseAtk + equipBonus + realmInfo.bonusAtk + (gameState.inscriptionAtkBonus || 0);
   var totalCrit = Math.min(15 + critBonus, 100);
-  var totalHp = baseHp + aff.hp + realmInfo.bonusHp;
+  var totalHp = baseHp + aff.hp + realmInfo.bonusHp + (gameState.inscriptionHpBonus || 0);
   document.getElementById('previewBaseAtk').textContent = baseAtk;
   document.getElementById('previewEquipBonus').textContent = '+' + equipBonus;
   document.getElementById('previewTotalAtk').textContent = totalAtk;
@@ -3250,9 +3257,18 @@ function getTodayStr() { return new Date().toISOString().slice(0, 10); }
 function getTodayFocus() {
   if (!gameState.focusSessions) gameState.focusSessions = [];
   var today = getTodayStr();
-  return gameState.focusSessions.reduce(function(s, f) {
+  var base = gameState.focusSessions.reduce(function(s, f) {
     return s + (f.date === today ? (f.minutes || 0) : 0);
   }, 0);
+  // 今日功法修炼时长
+  if (gameState.todayCultivation && gameState.todayCultivation.date === today) {
+    base += gameState.todayCultivation.minutes || 0;
+  }
+  // 今日阅读时长
+  if (gameState.todayBookRead && gameState.todayBookRead.date === today) {
+    base += gameState.todayBookRead.minutes || 0;
+  }
+  return base;
 }
 function recordFocusSession(minutes) {
   if (minutes <= 0) return;
@@ -3772,6 +3788,12 @@ function stopGongfaCultivation() {
     var minutes = Math.min(Math.floor((Date.now() - cultivationState.startTime) / 60000), CULTIVATION_SESSION_LIMIT);
     if (minutes > 0) {
       eq.cultivation = (eq.cultivation || 0) + minutes;
+      // 记录今日修炼时长（计入开启试炼的战力）
+      var today = getTodayStr();
+      if (!gameState.todayCultivation || gameState.todayCultivation.date !== today) {
+        gameState.todayCultivation = { date: today, minutes: 0 };
+      }
+      gameState.todayCultivation.minutes = (gameState.todayCultivation.minutes || 0) + minutes;
       showToast('「' + eq.name + '」修炼+' + minutes + '分钟', 'success');
     }
   }
@@ -3855,6 +3877,12 @@ function getBookRead(bossId) {
 function addBookRead(bossId, minutes) {
   if (!gameState.dungeonRead) gameState.dungeonRead = {};
   gameState.dungeonRead[bossId] = (gameState.dungeonRead[bossId] || 0) + minutes;
+  // 记录今日阅读时长（计入开启试炼的战力）
+  var today = getTodayStr();
+  if (!gameState.todayBookRead || gameState.todayBookRead.date !== today) {
+    gameState.todayBookRead = { date: today, minutes: 0 };
+  }
+  gameState.todayBookRead.minutes = (gameState.todayBookRead.minutes || 0) + minutes;
   saveGame();
 }
 function isBookBossCleared(bossId) {
@@ -4572,9 +4600,10 @@ function startBattle(monsterInput, opts) {
   opts = opts || {};
   var monster;
   if (monsterInput) {
-    monster = typeof monsterInput === 'string' ? getMonsterById(monsterInput) : JSON.parse(JSON.stringify(monsterInput));
+    var rawMonster = typeof monsterInput === 'string' ? getMonsterById(monsterInput) : monsterInput;
+    monster = JSON.parse(JSON.stringify(rawMonster));
   } else {
-    monster = getMonsterById(prepareState.selectedMonsterId);
+    monster = JSON.parse(JSON.stringify(getMonsterById(prepareState.selectedMonsterId)));
   }
   if (!monster) { showToast('请先选择对手', 'error'); return; }
   // 凶兽专注门槛检查（从备战表单启动时）
@@ -4619,6 +4648,9 @@ function startBattle(monsterInput, opts) {
   baseAtk = Math.floor(baseAtk * (1 + stoneBonus.atkMult));
   baseHp += stoneBonus.hpBonus;
   critBonus += stoneBonus.critAdd;
+  // 刻字加成
+  baseAtk += gameState.inscriptionAtkBonus || 0;
+  baseHp += gameState.inscriptionHpBonus || 0;
   var aff = collectAffixes(usedEquips);
   var pass = parsePassives(usedEquips);
   aff.burn = Math.max(aff.burn, Math.round(pass.burnChance * 100));
