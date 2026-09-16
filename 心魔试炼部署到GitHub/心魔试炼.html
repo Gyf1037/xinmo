@@ -146,12 +146,20 @@ input, textarea, select { font-family: inherit; outline: none; }
   border-radius: 50%;
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
 }
-.nav-links { display: flex; gap: 4px; }
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
 .nav-link {
-  padding: 8px 16px; border-radius: 6px;
-  color: var(--text-secondary); font-size: 14px;
+  padding: 6px 10px; border-radius: 6px;
+  color: var(--text-secondary); font-size: 13px;
   background: transparent; transition: all 0.25s;
-  text-decoration: none; cursor: pointer;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+@media (max-width: 768px) {
+  .top-nav { padding: 0 8px; height: auto; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; gap: 4px; }
+  .nav-brand { font-size: 15px; letter-spacing: 1px; }
+  .nav-brand::before { width: 18px; height: 18px; }
+  .nav-links { width: 100%; order: 3; gap: 2px; }
+  .nav-link { padding: 5px 8px; font-size: 12px; }
+  .nav-date { display: none; }
 }
 .nav-link:hover { color: var(--gold-light); background: rgba(212, 175, 55, 0.08); }
 .nav-link.active { color: var(--gold-light); background: rgba(212, 175, 55, 0.12); box-shadow: inset 0 -2px 0 var(--gold); }
@@ -929,7 +937,7 @@ input, textarea, select { font-family: inherit; outline: none; }
     <a class="nav-link active" data-view="home" onclick="navigate('home')">试炼大殿</a>
     <a class="nav-link" data-view="prepare" onclick="navigate('prepare')">开启试炼</a>
     <a class="nav-link" data-view="inventory" onclick="navigate('inventory')">法宝背包</a>
-    <a class="nav-link" data-view="beast" onclick="navigate('beast')">神兽</a>
+    <a class="nav-link" data-view="beast" onclick="navigate('beast')">神兽阁</a>
     <a class="nav-link" data-view="history" onclick="navigate('history')">战绩录</a>
     <a class="nav-link" data-view="dungeon" onclick="navigate('dungeon')">副本秘境</a>
     <a class="nav-link" data-view="swordwall" onclick="navigate('swordwall')">剑气长城</a>
@@ -1140,6 +1148,13 @@ input, textarea, select { font-family: inherit; outline: none; }
             <textarea class="form-textarea" id="difficultyDesc" placeholder=""></textarea>
           </div>
             <div class="form-group">
+              <label class="form-label">凶兽副本</label>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <select class="form-input" id="monsterGroupSelect" style="flex:1;min-width:120px;" onchange="switchMonsterGroup(this.value)"></select>
+                <button class="btn btn-ghost btn-sm" onclick="addMonsterGroup()">+新建副本</button>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="form-label">选择试炼凶兽（可自定义）</label>
               <div class="difficulty-selector" id="monsterSelector"></div>
             </div>
@@ -1191,6 +1206,16 @@ input, textarea, select { font-family: inherit; outline: none; }
               <div class="form-group">
                 <label class="form-label">描述（可选）</label>
                 <input type="text" class="form-input" id="newMonsterDesc" placeholder="例如：青丘九尾，魅惑众生">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">碎片奖励（覆盖默认）</label>
+                  <input type="number" class="form-input" id="newMonsterFragReward" placeholder="留空按难度算" min="0">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">修为奖励分钟（覆盖默认）</label>
+                  <input type="number" class="form-input" id="newMonsterCultReward" placeholder="留空按难度算" min="0">
+                </div>
               </div>
               <div class="form-group">
                 <label class="form-label">凶兽图片（可上传相册图片）</label>
@@ -1779,12 +1804,29 @@ const DEFAULT_MONSTERS = [
   { id:'m6', name:'相柳',   label:'地狱', maxHp:2600, attack:190, reqMinutes:180, desc:'九头蛇身，毒泽千里',     image:'https://aka.doubaocdn.com/s/nVu89uZgvN' },
 ];
 const DEFAULT_MONSTER_IMAGE = 'https://aka.doubaocdn.com/s/uXKUSDTAi2';
+// 凶兽副本分组
+const DEFAULT_MONSTER_GROUPS = [
+  { id: 'shanhai', name: '山海经', icon: '🐉', desc: '上古凶兽，经典六档', builtin: true, monsterIds: ['m1','m2','m3','m4','m5','m6'] },
+  { id: 'chenglong', name: '成龙历险记', icon: '🀄', desc: '八大恶魔，圣主领衔', builtin: true, monsterIds: [] },
+];
+const DEFAULT_CHENGLONG_BOSSES = [
+  { id:'dl1', name:'波刚',   label:'山之恶魔', maxHp:800,  attack:60,  reqMinutes:30,  desc:'山之恶魔，体型巨大，力大无穷', image:'' },
+  { id:'dl2', name:'啸风',   label:'风之恶魔', maxHp:900,  attack:70,  reqMinutes:60,  desc:'风之恶魔，张口能吞噬一切', image:'' },
+  { id:'dl3', name:'咒蓝',   label:'月之恶魔', maxHp:1000, attack:80,  reqMinutes:90,  desc:'月之恶魔，操控引力', image:'' },
+  { id:'dl4', name:'西木',   label:'天之恶魔', maxHp:1100, attack:90,  reqMinutes:120, desc:'天之恶魔，空中飞魔', image:'' },
+  { id:'dl5', name:'地魁',   label:'地之恶魔', maxHp:1200, attack:95,  reqMinutes:120, desc:'地之恶魔，遁地而行', image:'' },
+  { id:'dl6', name:'芭莎',   label:'水之恶魔', maxHp:1300, attack:100, reqMinutes:150, desc:'水之恶魔，操控水流', image:'' },
+  { id:'dl7', name:'圣主',   label:'火之恶魔', maxHp:1500, attack:110, reqMinutes:180, desc:'火之恶魔，八大恶魔之首', image:'' },
+  { id:'dl8', name:'中苏',   label:'雷之恶魔', maxHp:1400, attack:105, reqMinutes:180, desc:'雷之恶魔，操控雷电', image:'' },
+];
 const STORAGE_KEY = 'xinmo_shilian_save_v3';
 // ---------- 游戏状态 ----------
 let gameState = {
   categories: { gongfa: [], permanent: [], consumable: [] },
   equipment: { gongfa: [], permanent: [], consumable: [] },
   monsters: [],
+  monsterGroups: [],
+  currentGroup: 'shanhai',
   history: [],
   seededGongfa: false,
   enlightenCount: 0,
@@ -1860,6 +1902,19 @@ function loadSave() {
   gameState.categories = data?.categories || { gongfa: [], permanent: [], consumable: [] };
   gameState.equipment = data?.equipment || { gongfa: [], permanent: [], consumable: [] };
   gameState.monsters = data?.monsters || [];
+  gameState.monsterGroups = data?.monsterGroups || null;
+  gameState.currentGroup = data?.currentGroup || 'shanhai';
+  // 首次初始化：填充默认分组和成龙BOSS
+  if (!gameState.monsterGroups) {
+    gameState.monsterGroups = JSON.parse(JSON.stringify(DEFAULT_MONSTER_GROUPS));
+    // 把成龙BOSS加入monsters
+    var existingIds = gameState.monsters.map(function(m){ return m.id; });
+    DEFAULT_CHENGLONG_BOSSES.forEach(function(b) {
+      if (existingIds.indexOf(b.id) < 0) gameState.monsters.push(JSON.parse(JSON.stringify(b)));
+    });
+    // 更新chenglong分组的monsterIds
+    gameState.monsterGroups[1].monsterIds = DEFAULT_CHENGLONG_BOSSES.map(function(b){ return b.id; });
+  }
   gameState.history = data?.history || [];
   gameState.focusSessions = data?.focusSessions || [];
   gameState.bonusFocus = data?.bonusFocus || 0;
@@ -2157,6 +2212,7 @@ function renderHome() {
 }
 // ---------- 备战页渲染 ----------
 function renderPrepare() {
+  renderMonsterGroupSelect();
   renderMonsterSelector();
   renderBeastSelector();
   renderPrepareCatSelector();
@@ -2197,6 +2253,8 @@ function toggleMonsterForm() {
     document.getElementById('newMonsterReqMinutes').value = '0';
     document.getElementById('newMonsterDesc').value = '';
     document.getElementById('newMonsterImage').value = '';
+    document.getElementById('newMonsterFragReward').value = '';
+    document.getElementById('newMonsterCultReward').value = '';
   }
 }
 function editMonster(id) {
@@ -2214,6 +2272,8 @@ function editMonster(id) {
   document.getElementById('newMonsterReqMinutes').value = m.reqMinutes || 0;
   document.getElementById('newMonsterDesc').value = m.desc || '';
   document.getElementById('newMonsterImage').value = m.image || '';
+  document.getElementById('newMonsterFragReward').value = m.fragReward || '';
+  document.getElementById('newMonsterCultReward').value = m.cultReward || '';
   form.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function uploadMonsterImage() {
@@ -2389,20 +2449,26 @@ function saveMonster() {
   const reqMinutes = parseInt(document.getElementById('newMonsterReqMinutes').value) || 0;
   const desc = document.getElementById('newMonsterDesc').value.trim();
   const image = document.getElementById('newMonsterImage').value.trim() || DEFAULT_MONSTER_IMAGE;
+  const fragReward = parseInt(document.getElementById('newMonsterFragReward').value) || 0;
+  const cultReward = parseInt(document.getElementById('newMonsterCultReward').value) || 0;
   if (!name) { showToast('凶兽需有名号', 'error'); return; }
   if (editingMonsterId) {
     const m = getMonsterById(editingMonsterId);
     if (m) {
       m.name = name; m.label = label; m.maxHp = maxHp;
       m.attack = attack; m.reqMinutes = reqMinutes; m.desc = desc; m.image = image;
+      m.fragReward = fragReward; m.cultReward = cultReward;
       showToast(`凶兽「${name}」已更新`, 'success');
     }
     editingMonsterId = null;
   } else {
-    const newM = { id: genId(), name, label, maxHp, attack, reqMinutes, desc, image, createdAt: Date.now() };
+    const newM = { id: genId(), name, label, maxHp, attack, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, createdAt: Date.now() };
     gameState.monsters.push(newM);
     prepareState.selectedMonsterId = newM.id;
-    showToast(`凶兽「${name}」已加入图鉴`, 'success');
+    // 自动加入当前分组
+    var grp = (gameState.monsterGroups || []).find(function(g){ return g.id === gameState.currentGroup; });
+    if (grp && grp.monsterIds.indexOf(newM.id) < 0) grp.monsterIds.push(newM.id);
+    showToast(`凶兽「${name}」已加入当前副本`, 'success');
   }
   saveGame();
   toggleMonsterForm();
@@ -3298,6 +3364,11 @@ function recordFocusSession(minutes) {
   if (minutes <= 0) return;
   if (!gameState.focusSessions) gameState.focusSessions = [];
   gameState.focusSessions.push({ date: getTodayStr(), minutes: minutes, timestamp: Date.now() });
+  // 携带神兽同步修炼
+  getActiveBeasts().forEach(function(b) {
+    var beast = getBeastById(b.id);
+    if (beast) beast.cultivation = (beast.cultivation || 0) + minutes;
+  });
   saveGame();
 }
 function formatTime(sec) {
@@ -3513,7 +3584,10 @@ var origRenderMonsterSelector = renderMonsterSelector;
 renderMonsterSelector = function() {
   var container = document.getElementById('monsterSelector');
   if (!container) return;
-  container.innerHTML = gameState.monsters.map(function(m) {
+  var groupId = gameState.currentGroup || 'shanhai';
+  var group = (gameState.monsterGroups || []).find(function(g){ return g.id === groupId; });
+  var list = group ? gameState.monsters.filter(function(m){ return group.monsterIds.indexOf(m.id) >= 0; }) : gameState.monsters;
+  container.innerHTML = list.map(function(m) {
     var unlocked = isMonsterUnlocked(m);
     var req = m.reqMinutes;
     if (req === undefined || req === null) {
@@ -5161,9 +5235,9 @@ function finishBattle(result) {
     battleState.rewards = null;
     if (result === 'win') {
       var mReq = battleState.monster.reqMinutes || 0;
-      var baseFrag = mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2;
+      var baseFrag = battleState.monster.fragReward > 0 ? battleState.monster.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
       var fragReward = Math.max(1, Math.floor(baseFrag * difficultyMult));
-      var baseCult = mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3;
+      var baseCult = battleState.monster.cultReward > 0 ? battleState.monster.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
       var cultReward = Math.max(1, Math.floor(baseCult * difficultyMult));
       if (!dailyState.fragments) dailyState.fragments = 0;
       dailyState.fragments += fragReward;
@@ -6162,7 +6236,7 @@ function renderBeastPage() {
     var evolved = b.evolved || false;
     var wins = b.wins || 0;
     var needWins = 20, needFocus = 300;
-    var canEvolve = unlocked && !evolved && wins >= needWins && getTotalFocus() >= needFocus;
+    var canEvolve = unlocked && !evolved && wins >= needWins && (b.cultivation || 0) >= needFocus;
     var imgHtml = b.image
       ? '<img src="' + b.image + '" style="width:72px;height:72px;border-radius:10px;object-fit:cover;flex-shrink:0;' + (unlocked ? '' : 'filter:grayscale(1) brightness(0.4);') + ';">'
       : '<div style="width:72px;height:72px;border-radius:10px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;' + (unlocked ? '' : 'filter:grayscale(1) brightness(0.4);') + ';">' + b.icon + '</div>';
@@ -6172,9 +6246,9 @@ function renderBeastPage() {
     html += '<div style="font-size:16px;font-weight:900;color:' + (unlocked ? 'var(--gold-light)' : 'var(--text-dim)') + ';font-family:Noto Serif SC,serif;">' + b.name + (evolved ? ' <span style="font-size:11px;color:#FFD700;">·进化</span>' : '') + '</div>';
     html += '<div style="font-size:11px;color:var(--text-secondary);line-height:1.7;margin-top:4px;">' + (unlocked ? b.desc : '🔒 ' + b.unlockText) + '</div>';
     if (unlocked && !evolved) {
-      html += '<div style="margin-top:8px;font-size:11px;color:var(--text-secondary);">进化进度：战斗胜利 ' + wins + '/' + needWins + ' 场 · 专注 ' + Math.floor(getTotalFocus()) + '/' + needFocus + ' 分钟</div>';
-      html += '<div style="margin-top:6px;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + Math.min(100, Math.max(wins/needWins*50, (getTotalFocus()/needFocus)*50)) + '%;background:linear-gradient(90deg,var(--gold),var(--jade));"></div></div>';
-      html += '<button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="evolveBeast(\'' + b.id + '\')" ' + (canEvolve ? '' : 'disabled') + '>' + (canEvolve ? '进化神兽' : '需胜利20场+300分钟专注') + '</button>';
+      html += '<div style="margin-top:8px;font-size:11px;color:var(--text-secondary);">进化进度：战斗胜利 ' + wins + '/' + needWins + ' 场 · 神兽修炼 ' + Math.floor(b.cultivation || 0) + '/' + needFocus + ' 分钟</div>';
+      html += '<div style="margin-top:6px;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + Math.min(100, Math.max(wins/needWins*50, ((b.cultivation||0)/needFocus)*50)) + '%;background:linear-gradient(90deg,var(--gold),var(--jade));"></div></div>';
+      html += '<button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="evolveBeast(\'' + b.id + '\')" ' + (canEvolve ? '' : 'disabled') + '>' + (canEvolve ? '进化神兽' : '需胜利20场+神兽修炼300分钟') + '</button>';
     }
     if (unlocked && evolved) html += '<div style="margin-top:6px;font-size:11px;color:#FFD700;">✨ 已进化 · 属性加成翻倍 · 大招强化</div>';
     if (!unlocked) {
@@ -6268,6 +6342,7 @@ function saveBeast() {
     unlocked: document.getElementById('newBeastUnlocked').value === '1' || (old ? !!old.unlocked : false),
     evolved: old ? !!old.evolved : false,
     wins: old ? (old.wins || 0) : 0,
+    cultivation: old ? (old.cultivation || 0) : 0,
   };
   if (editingBeastId) {
     var idx = gameState.beasts.findIndex(function(b){ return b.id === editingBeastId; });
@@ -6280,7 +6355,7 @@ function saveBeast() {
 function evolveBeast(id) {
   var b = getBeastById(id);
   if (!b || b.evolved) return;
-  if ((b.wins || 0) < 20 || getTotalFocus() < 300) { showToast('条件未满足', 'error'); return; }
+  if ((b.wins || 0) < 20 || (b.cultivation || 0) < 300) { showToast('条件未满足', 'error'); return; }
   b.evolved = true;
   b.atkMult *= 2;
   b.critAdd = (b.critAdd || 0) * 2;
@@ -6404,6 +6479,31 @@ function resetMonsterKills() {
   saveDaily(); saveGame();
   renderMonsterSelector();
   showToast('今日凶兽挑战次数已重置', 'success');
+}
+// 凶兽副本分组
+function renderMonsterGroupSelect() {
+  var sel = document.getElementById('monsterGroupSelect');
+  if (!sel) return;
+  sel.innerHTML = (gameState.monsterGroups || []).map(function(g) {
+    return '<option value="' + g.id + '"' + (g.id === gameState.currentGroup ? ' selected' : '') + '>' + (g.icon || '📦') + ' ' + g.name + '</option>';
+  }).join('');
+}
+function switchMonsterGroup(id) {
+  gameState.currentGroup = id;
+  saveGame();
+  renderMonsterSelector();
+}
+function addMonsterGroup() {
+  var name = prompt('新副本名称：');
+  if (!name) return;
+  var icon = prompt('副本图标（emoji，默认📦）：') || '📦';
+  var newId = 'mg_' + Date.now();
+  gameState.monsterGroups.push({ id: newId, name: name, icon: icon, desc: '自定义副本', builtin: false, monsterIds: [] });
+  gameState.currentGroup = newId;
+  saveGame();
+  renderMonsterGroupSelect();
+  renderMonsterSelector();
+  showToast('已创建副本「' + name + '」，点新增凶兽开始添加BOSS', 'success');
 }
 </script>
 </body>
