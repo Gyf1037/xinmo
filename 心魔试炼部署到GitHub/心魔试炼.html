@@ -146,19 +146,19 @@ input, textarea, select { font-family: inherit; outline: none; }
   border-radius: 50%;
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
 }
-.nav-links { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.nav-links { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .nav-link {
-  padding: 6px 10px; border-radius: 6px;
-  color: var(--text-secondary); font-size: 13px;
+  padding: 8px 14px; border-radius: 6px;
+  color: var(--text-secondary); font-size: 15px;
   background: transparent; transition: all 0.25s;
   text-decoration: none; cursor: pointer; white-space: nowrap;
 }
 @media (max-width: 768px) {
-  .top-nav { padding: 0 8px; height: auto; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; gap: 4px; }
-  .nav-brand { font-size: 15px; letter-spacing: 1px; }
-  .nav-brand::before { width: 18px; height: 18px; }
-  .nav-links { width: 100%; order: 3; gap: 2px; }
-  .nav-link { padding: 5px 8px; font-size: 12px; }
+  .top-nav { padding: 0 10px; height: auto; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; gap: 6px; }
+  .nav-brand { font-size: 17px; letter-spacing: 1px; }
+  .nav-brand::before { width: 20px; height: 20px; }
+  .nav-links { width: 100%; order: 3; gap: 4px; }
+  .nav-link { padding: 7px 10px; font-size: 14px; }
   .nav-date { display: none; }
 }
 .nav-link:hover { color: var(--gold-light); background: rgba(212, 175, 55, 0.08); }
@@ -3364,10 +3364,11 @@ function recordFocusSession(minutes) {
   if (minutes <= 0) return;
   if (!gameState.focusSessions) gameState.focusSessions = [];
   gameState.focusSessions.push({ date: getTodayStr(), minutes: minutes, timestamp: Date.now() });
-  // 携带神兽同步修炼
+  // 携带神兽同步修炼（单次最多50分钟，和功法一致）
+  var beastCultMin = Math.min(minutes, 50);
   getActiveBeasts().forEach(function(b) {
     var beast = getBeastById(b.id);
-    if (beast) beast.cultivation = (beast.cultivation || 0) + minutes;
+    if (beast) beast.cultivation = (beast.cultivation || 0) + beastCultMin;
   });
   saveGame();
 }
