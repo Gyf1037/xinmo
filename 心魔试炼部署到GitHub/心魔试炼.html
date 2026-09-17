@@ -382,11 +382,16 @@ input, textarea, select { font-family: inherit; outline: none; }
 @media (max-width: 768px) { .prepare-layout { grid-template-columns: 1fr; } }
 .difficulty-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
 .diff-btn {
-  padding: 10px 8px; border-radius: 8px;
+  padding: 8px 6px; border-radius: 8px;
   background: rgba(10, 10, 20, 0.5);
   border: 1px solid var(--border-gold);
   color: var(--text-secondary); font-size: 12px;
   transition: all 0.2s; text-align: center; cursor: pointer;
+  max-width: 100%; overflow: hidden; box-sizing: border-box;
+}
+@media (max-width: 600px) {
+  .difficulty-selector { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .diff-btn { padding: 6px 4px; font-size: 11px; }
 }
 .diff-btn:hover { border-color: var(--gold); color: var(--gold-light); }
 .diff-btn.active {
@@ -3602,8 +3607,8 @@ renderMonsterSelector = function() {
     var todayCnt = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.date === todayD && gameState.dailyMonsterKills.kills[m.id]) ? gameState.dailyMonsterKills.kills[m.id] : 0;
     var cntHtml = '<span style="font-size:10px;color:' + (todayCnt >= 2 ? '#ff6b6b' : '#d4af37') + ';margin-left:4px;">今日' + todayCnt + '/2</span>';
     var imgHtml = m.image
-      ? '<img src="' + m.image + '" style="width:64px;height:64px;border-radius:8px;object-fit:cover;flex-shrink:0;transform:scaleX(-1);">'
-      : '<div style="width:64px;height:64px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;">🐾</div>';
+      ? '<img src="' + m.image + '" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;" onerror="this.style.display=\'none\'">'
+      : '<div style="width:48px;height:48px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐾</div>';
     if (todayCnt >= 2) lockHtml = '<div class="monster-lock-overlay">今日已挑战2次</div>';
     return '<button class="diff-btn ' + (prepareState.selectedMonsterId === m.id ? 'active' : '') + (unlocked && todayCnt < 2 ? '' : ' monster-locked') + '" data-action="select-monster" data-monster-id="' + m.id + '" style="display:flex;align-items:center;gap:10px;text-align:left;">' +
       imgHtml +
