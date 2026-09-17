@@ -395,7 +395,7 @@ input, textarea, select { font-family: inherit; outline: none; }
   color: var(--gold-light);
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
 }
-.diff-btn .diff-name { display: block; font-weight: 700; font-size: 14px; margin-bottom: 2px; font-family: 'Noto Serif SC', serif; }
+.diff-btn .diff-name { display: block; font-weight: 700; font-size: 11px; margin-bottom: 2px; font-family: 'Noto Serif SC', serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .diff-btn .diff-stats { display: block; font-size: 10px; opacity: 0.7; }
 .diff-btn .diff-req { display: block; font-size: 10px; color: var(--jade-light); margin-top: 2px; }
 .monster-edit-btn {
@@ -1190,10 +1190,6 @@ input, textarea, select { font-family: inherit; outline: none; }
                   <label class="form-label">凶兽名称</label>
                   <input type="text" class="form-input" id="newMonsterName" placeholder="例如：九尾狐">
                 </div>
-                <div class="form-group">
-                  <label class="form-label">难度标签</label>
-                  <input type="text" class="form-input" id="newMonsterLabel" placeholder="例如：简单/困难/地狱" value="普通">
-                </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
@@ -1277,7 +1273,8 @@ input, textarea, select { font-family: inherit; outline: none; }
                   <button class="btn btn-ghost btn-sm diff-btn" data-diff="1.0" onclick="setDifficulty(1.0)">普通 1.0×</button>
                   <button class="btn btn-ghost btn-sm diff-btn" data-diff="1.4" onclick="setDifficulty(1.4)">困难 1.4×</button>
                   <button class="btn btn-ghost btn-sm diff-btn" data-diff="1.8" onclick="setDifficulty(1.8)">地狱 1.8×</button>
-                  <input type="number" class="form-input" id="customDiffInput" style="width:72px;" placeholder="自定义" min="0.1" max="5" step="0.1" onchange="setDifficulty(parseFloat(this.value)||1)">
+                  <button class="btn btn-ghost btn-sm diff-btn" data-diff="2.0" onclick="setDifficulty(2.0)">炼狱 2.0×</button>
+                  <input type="number" class="form-input" id="customDiffInput" style="width:80px;" placeholder="自定义" min="0.1" max="5" step="0.1" oninput="var v=parseFloat(this.value); if(v>0) setDifficulty(v)" onblur="var v=parseFloat(this.value); if(v>0) setDifficulty(v)">
                 </div>
               </div>
               <div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">功法神通参数（按类别配置，战斗中实时生效）</div>
@@ -2254,7 +2251,6 @@ function toggleMonsterForm() {
     document.getElementById('monsterFormTitle').textContent = '新增凶兽';
     document.getElementById('submitMonsterBtn').textContent = '保存凶兽';
     document.getElementById('newMonsterName').value = '';
-    document.getElementById('newMonsterLabel').value = '普通';
     document.getElementById('newMonsterHp').value = '500';
     document.getElementById('newMonsterAtk').value = '50';
     document.getElementById('newMonsterReqMinutes').value = '0';
@@ -2273,7 +2269,6 @@ function editMonster(id) {
   document.getElementById('monsterFormTitle').textContent = '编辑凶兽';
   document.getElementById('submitMonsterBtn').textContent = '保存修改';
   document.getElementById('newMonsterName').value = m.name;
-  document.getElementById('newMonsterLabel').value = m.label || '';
   document.getElementById('newMonsterHp').value = m.maxHp;
   document.getElementById('newMonsterAtk').value = m.attack;
   document.getElementById('newMonsterReqMinutes').value = m.reqMinutes || 0;
@@ -2450,7 +2445,6 @@ function viewInscription(insId) {
 }
 function saveMonster() {
   const name = document.getElementById('newMonsterName').value.trim();
-  const label = document.getElementById('newMonsterLabel').value.trim();
   const maxHp = parseInt(document.getElementById('newMonsterHp').value) || 1;
   const attack = parseInt(document.getElementById('newMonsterAtk').value) || 1;
   const reqMinutes = parseInt(document.getElementById('newMonsterReqMinutes').value) || 0;
@@ -2462,14 +2456,14 @@ function saveMonster() {
   if (editingMonsterId) {
     const m = getMonsterById(editingMonsterId);
     if (m) {
-      m.name = name; m.label = label; m.maxHp = maxHp;
+      m.name = name; m.maxHp = maxHp;
       m.attack = attack; m.reqMinutes = reqMinutes; m.desc = desc; m.image = image;
       m.fragReward = fragReward; m.cultReward = cultReward;
       showToast(`凶兽「${name}」已更新`, 'success');
     }
     editingMonsterId = null;
   } else {
-    const newM = { id: genId(), name, label, maxHp, attack, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, createdAt: Date.now() };
+    const newM = { id: genId(), name, maxHp, attack, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, createdAt: Date.now() };
     gameState.monsters.push(newM);
     prepareState.selectedMonsterId = newM.id;
     // 自动加入当前分组
@@ -4610,7 +4604,7 @@ function setDifficulty(v) {
   saveDifficulty();
   document.querySelectorAll('.diff-btn[data-diff]').forEach(function(b) { b.classList.toggle('active', parseFloat(b.dataset.diff) === v); });
   var inp = document.getElementById('customDiffInput');
-  if (inp) { if ([0.7,1.0,1.4,1.8].indexOf(v) < 0) inp.value = v; else inp.value = ''; }
+  if (inp) { if ([0.7,1.0,1.4,1.8,2.0].indexOf(v) < 0) inp.value = v; else inp.value = ''; }
   updatePreview();
 }
 
