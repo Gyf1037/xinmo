@@ -380,18 +380,17 @@ input, textarea, select { font-family: inherit; outline: none; }
   display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
 }
 @media (max-width: 768px) { .prepare-layout { grid-template-columns: 1fr; } }
-.difficulty-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
+.difficulty-selector { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 8px; }
 .diff-btn {
   padding: 8px 6px; border-radius: 8px;
   background: rgba(10, 10, 20, 0.5);
   border: 1px solid var(--border-gold);
-  color: var(--text-secondary); font-size: 12px;
+  color: var(--text-secondary); font-size: 11px;
   transition: all 0.2s; text-align: center; cursor: pointer;
-  max-width: 100%; overflow: hidden; box-sizing: border-box;
-}
-@media (max-width: 600px) {
-  .difficulty-selector { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  .diff-btn { padding: 6px 4px; font-size: 11px; }
+  width: 100%; min-width: 0; max-width: 100%;
+  overflow: hidden; box-sizing: border-box;
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 60px;
 }
 .diff-btn:hover { border-color: var(--gold); color: var(--gold-light); }
 .diff-btn.active {
