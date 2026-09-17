@@ -133,7 +133,7 @@ input, textarea, select { font-family: inherit; outline: none; }
 }
 .nav-brand {
   font-family: 'Noto Serif SC', serif;
-  font-size: 20px; font-weight: 700;
+  font-size: 24px; font-weight: 900;
   color: var(--gold-light);
   letter-spacing: 3px;
   display: flex; align-items: center; gap: 10px;
@@ -149,16 +149,16 @@ input, textarea, select { font-family: inherit; outline: none; }
 .nav-links { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .nav-link {
   padding: 8px 14px; border-radius: 6px;
-  color: var(--text-secondary); font-size: 15px;
+  color: var(--text-secondary); font-size: 17px; font-weight: 600;
   background: transparent; transition: all 0.25s;
   text-decoration: none; cursor: pointer; white-space: nowrap;
 }
 @media (max-width: 768px) {
   .top-nav { padding: 0 10px; height: auto; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; gap: 6px; }
-  .nav-brand { font-size: 17px; letter-spacing: 1px; }
-  .nav-brand::before { width: 20px; height: 20px; }
+  .nav-brand { font-size: 19px; letter-spacing: 2px; }
+  .nav-brand::before { width: 22px; height: 22px; }
   .nav-links { width: 100%; order: 3; gap: 4px; }
-  .nav-link { padding: 7px 10px; font-size: 14px; }
+  .nav-link { padding: 7px 10px; font-size: 15px; font-weight: 600; }
   .nav-date { display: none; }
 }
 .nav-link:hover { color: var(--gold-light); background: rgba(212, 175, 55, 0.08); }
@@ -6249,6 +6249,10 @@ function renderBeastPage() {
     if (unlocked && !evolved) {
       html += '<div style="margin-top:8px;font-size:11px;color:var(--text-secondary);">进化进度：战斗胜利 ' + wins + '/' + needWins + ' 场 · 神兽修炼 ' + Math.floor(b.cultivation || 0) + '/' + needFocus + ' 分钟</div>';
       html += '<div style="margin-top:6px;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + Math.min(100, Math.max(wins/needWins*50, ((b.cultivation||0)/needFocus)*50)) + '%;background:linear-gradient(90deg,var(--gold),var(--jade));"></div></div>';
+      var isCulting = beastCultTimers[b.id] && Date.now() < beastCultTimers[b.id].endTime;
+      html += isCulting
+        ? '<button class="btn btn-ghost btn-sm" style="margin-top:8px;" disabled>⏳ 修炼中 ' + formatBeastCultTime(beastCultTimers[b.id].endTime) + '</button>'
+        : '<button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="startBeastCultivation(\'' + b.id + '\')">开始修炼(50分钟)</button>';
       html += '<button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="evolveBeast(\'' + b.id + '\')" ' + (canEvolve ? '' : 'disabled') + '>' + (canEvolve ? '进化神兽' : '需胜利20场+神兽修炼300分钟') + '</button>';
     }
     if (unlocked && evolved) html += '<div style="margin-top:6px;font-size:11px;color:#FFD700;">✨ 已进化 · 属性加成翻倍 · 大招强化</div>';
@@ -6480,6 +6484,35 @@ function resetMonsterKills() {
   saveDaily(); saveGame();
   renderMonsterSelector();
   showToast('今日凶兽挑战次数已重置', 'success');
+}
+// 神兽修炼计时（每只独立）
+var beastCultTimers = {};
+function startBeastCultivation(beastId) {
+  var b = getBeastById(beastId);
+  if (!b) return;
+  if (beastCultTimers[beastId] && Date.now() < beastCultTimers[beastId].endTime) {
+    showToast('该神兽正在修炼中', 'error'); return;
+  }
+  var endTime = Date.now() + 50 * 60 * 1000;
+  beastCultTimers[beastId] = { endTime: endTime, timer: null };
+  showToast(b.name + ' 开始修炼，50分钟后完成', 'success');
+  beastCultTimers[beastId].timer = setInterval(function() {
+    if (Date.now() >= endTime) {
+      clearInterval(beastCultTimers[beastId].timer);
+      delete beastCultTimers[beastId];
+      b.cultivation = (b.cultivation || 0) + 50;
+      saveGame();
+      showToast(b.name + ' 修炼完成！+50分钟', 'success');
+      renderBeastPage();
+    } else {
+      renderBeastPage();
+    }
+  }, 30000); // 每30秒刷新一次显示
+}
+function formatBeastCultTime(endTime) {
+  var remain = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+  var m = Math.floor(remain / 60), s = remain % 60;
+  return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }
 // 凶兽副本分组
 function renderMonsterGroupSelect() {
