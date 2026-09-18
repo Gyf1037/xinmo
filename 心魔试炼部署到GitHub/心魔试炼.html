@@ -6223,6 +6223,55 @@ function init() {
     restoreCultivationState();
   }, 300);
 }
+// 关闭/刷新页面前自动结算所有进行中的计时，防止时长丢失
+window.addEventListener('beforeunload', function() {
+  try {
+    // 1. 专注计时
+    if (timerState.running) {
+      var elapsed = timerState.accumulated + Math.floor((Date.now() - timerState.startTime) / 1000);
+      var mins = Math.round(elapsed / 60);
+      if (mins > 0) {
+        gameState.focusSessions.push({ date: getTodayStr(), minutes: mins, timestamp: Date.now() });
+      }
+    }
+    // 2. 功法修炼
+    if (cultivationState.activeId && cultivationState.startTime) {
+      var eq = gameState.equipment.gongfa.find(function(g){ return g.id === cultivationState.activeId; });
+      if (eq) {
+        var cmins = Math.min(Math.floor((Date.now() - cultivationState.startTime) / 60000), CULTIVATION_SESSION_LIMIT);
+        if (cmins > 0) {
+          eq.cultivation = (eq.cultivation || 0) + cmins;
+          var today = getTodayStr();
+          if (!gameState.todayCultivation || gameState.todayCultivation.date !== today) {
+            gameState.todayCultivation = { date: today, minutes: 0 };
+          }
+          gameState.todayCultivation.minutes = (gameState.todayCultivation.minutes || 0) + cmins;
+        }
+      }
+    }
+    // 3. 神兽修炼：按已过时间折算
+    for (var bid in beastCultTimers) {
+      var bct = beastCultTimers[bid];
+      var b = getBeastById(bid);
+      if (b && Date.now() < bct.endTime) {
+        var remaining = Math.floor((bct.endTime - Date.now()) / 1000);
+        var total = 50 * 60;
+        var doneSec = total - remaining;
+        var bmins = Math.floor(doneSec / 60);
+        if (bmins > 0) {
+          b.cultivation = (b.cultivation || 0) + bmins;
+          var today2 = getTodayStr();
+          if (!gameState.todayBeastCult || gameState.todayBeastCult.date !== today2) {
+            gameState.todayBeastCult = { date: today2, minutes: 0 };
+          }
+          gameState.todayBeastCult.minutes = (gameState.todayBeastCult.minutes || 0) + bmins;
+        }
+      }
+    }
+    saveGame();
+  } catch(e) {}
+});
+
 document.addEventListener('DOMContentLoaded', init);
 // ---------- PWA：Service Worker 注册（离线可用 + 全屏安装）----------
 if ('serviceWorker' in navigator) {
