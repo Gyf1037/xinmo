@@ -1204,6 +1204,22 @@ input, textarea, select { font-family: inherit; outline: none; }
                   <label class="form-label">攻击力</label>
                   <input type="number" class="form-input" id="newMonsterAtk" placeholder="例如：50" min="1" value="50">
                 </div>
+                <div class="form-group">
+                  <label class="form-label">属性</label>
+                  <select class="form-input" id="newMonsterElement">
+                    <option value="">无属性</option>
+                    <option value="light">光</option>
+                    <option value="dark">暗</option>
+                    <option value="fire">火</option>
+                    <option value="water">水</option>
+                    <option value="electric">电</option>
+                    <option value="wood">木</option>
+                    <option value="ice">冰</option>
+                    <option value="thunder">雷</option>
+                    <option value="wind">风</option>
+                    <option value="earth">土</option>
+                  </select>
+                </div>
               </div>
               <div class="form-group">
                 <label class="form-label">所需今日专注时长（分钟，0=无限制）</label>
@@ -2280,6 +2296,7 @@ function editMonster(id) {
   document.getElementById('newMonsterImage').value = m.image || '';
   document.getElementById('newMonsterFragReward').value = m.fragReward || '';
   document.getElementById('newMonsterCultReward').value = m.cultReward || '';
+  document.getElementById('newMonsterElement').value = m.element || '';
   form.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function uploadMonsterImage() {
@@ -2456,18 +2473,19 @@ function saveMonster() {
   const image = document.getElementById('newMonsterImage').value.trim() || DEFAULT_MONSTER_IMAGE;
   const fragReward = parseInt(document.getElementById('newMonsterFragReward').value) || 0;
   const cultReward = parseInt(document.getElementById('newMonsterCultReward').value) || 0;
+  const element = document.getElementById('newMonsterElement').value;
   if (!name) { showToast('凶兽需有名号', 'error'); return; }
   if (editingMonsterId) {
     const m = getMonsterById(editingMonsterId);
     if (m) {
       m.name = name; m.maxHp = maxHp;
       m.attack = attack; m.reqMinutes = reqMinutes; m.desc = desc; m.image = image;
-      m.fragReward = fragReward; m.cultReward = cultReward;
+      m.fragReward = fragReward; m.cultReward = cultReward; m.element = element;
       showToast(`凶兽「${name}」已更新`, 'success');
     }
     editingMonsterId = null;
   } else {
-    const newM = { id: genId(), name, maxHp, attack, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, createdAt: Date.now() };
+    const newM = { id: genId(), name, maxHp, attack, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, element: element, createdAt: Date.now() };
     gameState.monsters.push(newM);
     prepareState.selectedMonsterId = newM.id;
     // 自动加入当前分组
@@ -5206,6 +5224,7 @@ function runMonsterTurn() {
       playerEl.classList.add('hurt');
       battleTimeouts.push(setTimeout(() => playerEl.classList.remove('hurt'), 400));
       showDamage('player', dmg, false);
+      if (m.element) playElementEffect(m.element);
       updateHpBars();
       addLog('monster', pick(MONSTER_BASIC_HIT).replace('{d}', dmg));
       if (p.hp <= 0) { finishBattle('lose'); return; }
