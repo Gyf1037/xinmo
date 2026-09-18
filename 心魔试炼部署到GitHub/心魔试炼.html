@@ -3964,6 +3964,12 @@ function restoreCultivationState() {
     var capped = Math.min(minutes, CULTIVATION_SESSION_LIMIT);
     if (capped > 0) {
       eq.cultivation = (eq.cultivation || 0) + capped;
+      // 同步计入今日总时长
+      var today = getTodayStr();
+      if (!gameState.todayCultivation || gameState.todayCultivation.date !== today) {
+        gameState.todayCultivation = { date: today, minutes: 0 };
+      }
+      gameState.todayCultivation.minutes = (gameState.todayCultivation.minutes || 0) + capped;
       saveGame();
     }
     if (minutes >= CULTIVATION_SESSION_LIMIT) {
