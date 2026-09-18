@@ -3363,6 +3363,10 @@ function getTodayFocus() {
   if (gameState.todayBookRead && gameState.todayBookRead.date === today) {
     base += gameState.todayBookRead.minutes || 0;
   }
+  // 今日神兽修炼时长
+  if (gameState.todayBeastCult && gameState.todayBeastCult.date === today) {
+    base += gameState.todayBeastCult.minutes || 0;
+  }
   return base;
 }
 function recordFocusSession(minutes) {
@@ -3427,9 +3431,17 @@ function startTimer() {
 function pauseTimer() {
   if (timerState.running) {
     timerState.accumulated += Math.floor((Date.now() - timerState.startTime) / 1000);
+    // 暂停时立即记录本次时长，防止关页面丢失
+    var mins = Math.round(timerState.accumulated / 60);
+    if (mins > 0) {
+      recordFocusSession(mins);
+      timerState.accumulated = 0;
+      timerState.seconds = 0;
+      timerState.targetSeconds = 0;
+    }
   }
   timerState.running = false;
-  document.getElementById('timerStartBtn').textContent = '继续';
+  document.getElementById('timerStartBtn').textContent = '开始';
   if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
   saveTimerState();
   updateTimerDisplay();
@@ -3452,9 +3464,7 @@ function timerTick() {
 function finishTimer() {
   if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
   timerState.running = false;
-  var minutes = timerState.mode === 'countdown'
-    ? Math.round(timerState.targetSeconds / 60)
-    : Math.round(timerState.accumulated / 60);
+  var minutes = Math.round(timerState.accumulated / 60);
   recordFocusSession(minutes);
   timerState.accumulated = 0;
   timerState.seconds = 0;
@@ -6552,6 +6562,12 @@ function startBeastCultivation(beastId) {
       clearInterval(beastCultTimers[beastId].timer);
       delete beastCultTimers[beastId];
       b.cultivation = (b.cultivation || 0) + 50;
+      // 记录今日神兽修炼时长
+      var today = getTodayStr();
+      if (!gameState.todayBeastCult || gameState.todayBeastCult.date !== today) {
+        gameState.todayBeastCult = { date: today, minutes: 0 };
+      }
+      gameState.todayBeastCult.minutes = (gameState.todayBeastCult.minutes || 0) + 50;
       saveGame();
       showToast(b.name + ' 修炼完成！+50分钟', 'success');
       renderBeastPage();
