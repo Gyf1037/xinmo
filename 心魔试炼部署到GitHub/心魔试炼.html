@@ -5227,22 +5227,25 @@ function afterMonsterTurn() {
 }
 function finishBattle(result) {
   if (battleState.finished) return;
-  // 复活丹：失败时询问
-  if (result === 'lose' && (gameState.reviveCharges || 0) > 0 && !battleState.reviveUsed) {
-    if (confirm('💊 你有复活丹×' + gameState.reviveCharges + '，是否使用一颗复活？（满血复活，继续战斗）')) {
-      gameState.reviveCharges -= 1;
-      battleState.reviveUsed = true;
-      battleState.player.hp = battleState.player.maxHp;
-      battleState.player.spirit = battleState.player.maxSpirit;
-      battleState.player.statuses = [];
-      saveGame();
-      updateHpBars();
-      renderStatuses();
-      addLog('system', '💊 复活丹生效！你满血复活了！');
-      showHeal('player', battleState.player.maxHp);
-      setActionsEnabled(true);
-      battleState.awaitingAction = false;
-      return;
+  // 复活丹：失败时询问（从一次性法宝里找）
+  if (result === 'lose' && !battleState.reviveUsed) {
+    var reviveIdx = (gameState.equipment.consumable || []).findIndex(function(e){ return e.revive; });
+    if (reviveIdx >= 0) {
+      if (confirm('💊 你有复活丹，是否使用一颗复活？（满血复活，继续战斗）')) {
+        var used = gameState.equipment.consumable.splice(reviveIdx, 1)[0];
+        battleState.reviveUsed = true;
+        battleState.player.hp = battleState.player.maxHp;
+        battleState.player.spirit = battleState.player.maxSpirit;
+        battleState.player.statuses = [];
+        saveGame();
+        updateHpBars();
+        renderStatuses();
+        addLog('system', '💊 复活丹生效！你满血复活了！');
+        showHeal('player', battleState.player.maxHp);
+        setActionsEnabled(true);
+        battleState.awaitingAction = false;
+        return;
+      }
     }
   }
   battleState.finished = true;
@@ -6601,9 +6604,14 @@ function craftTopEquip() {
 function buyRevive() {
   if (dailyState.fragments < 50) { showToast('需要50枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
   dailyState.fragments -= 50;
-  gameState.reviveCharges = (gameState.reviveCharges || 0) + 1;
+  if (!gameState.equipment.consumable) gameState.equipment.consumable = [];
+  gameState.equipment.consumable.push({
+    id: genId(), name: '复活丹', type: 'consumable', category: '丹药类',
+    effect: '战斗失败时满血复活一次', power: 0, crit: 0,
+    revive: true, image: '', createdAt: Date.now()
+  });
   saveDaily(); saveGame();
-  showToast('获得复活丹×1（当前' + gameState.reviveCharges + '颗）', 'success');
+  showToast('获得复活丹×1（丹药类）', 'success');
 }
 // 神兽修炼计时（每只独立）
 var beastCultTimers = {};
