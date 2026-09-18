@@ -6387,6 +6387,7 @@ function renderBeastPage() {
   html += '<div class="form-group"><label class="form-label">攻击加成%（如15）</label><input class="form-input" id="newBeastAtk" type="number" value="15"></div>';
   html += '<div class="form-group"><label class="form-label">暴击加成%</label><input class="form-input" id="newBeastCrit" type="number" value="0"></div>';
   html += '</div>';
+  html += '<div class="form-group"><label class="form-label">属性</label><select class="form-input" id="newBeastElement"><option value="">无属性</option><option value="light">光</option><option value="dark">暗</option><option value="fire">火</option><option value="water">水</option><option value="electric">电</option><option value="wood">木</option><option value="ice">冰</option><option value="thunder">雷</option><option value="wind">风</option><option value="earth">土</option></select></div>';
   html += '<div class="form-group"><label class="form-label">大招名称</label><input class="form-input" id="newBeastUltName" placeholder="如：龙吟"></div>';
   html += '<div class="form-group"><label class="form-label">大招描述</label><input class="form-input" id="newBeastUltDesc" placeholder="效果说明"></div>';
   html += '<div class="form-group"><label class="form-label">解锁说明（文字提示，仅未解锁时显示）</label><input class="form-input" id="newBeastUnlockText" placeholder="如：累计专注3000分钟解锁"></div>';
@@ -6411,6 +6412,7 @@ function addBeast() {
   document.getElementById('newBeastUltDesc').value = '';
   document.getElementById('newBeastUnlockText').value = '';
   document.getElementById('newBeastUnlocked').value = '0';
+  document.getElementById('newBeastElement').value = '';
   document.getElementById('beastImagePreview').innerHTML = '';
 }
 function editBeast(id) {
@@ -6427,6 +6429,7 @@ function editBeast(id) {
   document.getElementById('newBeastUltDesc').value = b.ultDesc || '';
   document.getElementById('newBeastUnlockText').value = b.unlockText || '';
   document.getElementById('newBeastUnlocked').value = b.unlocked ? '1' : '0';
+  document.getElementById('newBeastElement').value = b.element || '';
   document.getElementById('newBeastImage').value = b.image || '';
   document.getElementById('beastImagePreview').innerHTML = b.image ? '<img src="' + b.image + '" style="width:60px;height:60px;border-radius:8px;object-fit:cover;">' : '';
 }
@@ -6458,6 +6461,7 @@ function saveBeast() {
     ultDesc: document.getElementById('newBeastUltDesc').value.trim(),
     unlockText: document.getElementById('newBeastUnlockText').value.trim(),
     image: beastImageData || '',
+    element: document.getElementById('newBeastElement').value,
     unlocked: document.getElementById('newBeastUnlocked').value === '1' || (old ? !!old.unlocked : false),
     evolved: old ? !!old.evolved : false,
     wins: old ? (old.wins || 0) : 0,
