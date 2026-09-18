@@ -3322,6 +3322,10 @@ function challengeHeartDemon() {
     skill: { name: '心魔侵蚀', type: 'confuse', cooldown: 2, text: '心魔低语，修士心神动摇，招式错乱！' },
     custom: true,
   };
+  // 自动带上所有永久法宝和功法
+  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
+  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
+  prepareState.selectedConsumable = [];
   startBattle(heartDemon, { baseAtk: 55, baseHp: 220, context: 'heartDemon', onWin: onHeartDemonWin, onLose: onHeartDemonLose });
 }
 function onHeartDemonWin(bs) {
