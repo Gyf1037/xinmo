@@ -1050,12 +1050,12 @@ input, textarea, select { font-family: inherit; outline: none; }
           <div style="margin-top:12px;padding:12px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:10px;">
             <div style="font-size:12px;font-weight:700;color:var(--gold-light);margin-bottom:10px;letter-spacing:1px;">🔮 碎片兑换</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <button class="btn btn-ghost btn-sm" onclick="craftFragment()" style="text-align:left;">⚔️ 合成法宝<br><span style="font-size:10px;opacity:0.7;">30枚 · 随机永久法宝</span></button>
-              <button class="btn btn-ghost btn-sm" onclick="challengeHeartDemon()" style="text-align:left;">👹 挑战心魔本体<br><span style="font-size:10px;opacity:0.7;">50枚 · 最终BOSS</span></button>
-              <button class="btn btn-ghost btn-sm" onclick="buyRevive()" style="text-align:left;">💊 复活丹<br><span style="font-size:10px;opacity:0.7;">50枚 · 败后满血再战</span></button>
-              <button class="btn btn-ghost btn-sm" onclick="buyStone()" style="text-align:left;">🪨 兑换铸字石<br><span style="font-size:10px;opacity:0.7;">70枚 · 剑气长城刻字</span></button>
-              <button class="btn btn-ghost btn-sm" onclick="craftTopEquip()" style="text-align:left;">✨ 顶级法宝<br><span style="font-size:10px;opacity:0.7;">100枚 · 高属性3词条</span></button>
-              <button class="btn btn-ghost btn-sm" onclick="resetMonsterKills()" style="text-align:left;">🔄 重置今日挑战<br><span style="font-size:10px;opacity:0.7;">15枚 · 清空凶兽次数</span></button>
+              <button class="btn btn-ghost btn-sm" onclick="craftFragment()" style="text-align:left;">⚔️ 合成法宝<br><span style="font-size:10px;opacity:0.7;">90枚 · 随机永久法宝</span></button>
+              <button class="btn btn-ghost btn-sm" onclick="challengeHeartDemon()" style="text-align:left;">👹 挑战心魔本体<br><span style="font-size:10px;opacity:0.7;">150枚 · 最终BOSS</span></button>
+              <button class="btn btn-ghost btn-sm" onclick="buyRevive()" style="text-align:left;">💊 复活丹<br><span style="font-size:10px;opacity:0.7;">150枚 · 败后满血再战</span></button>
+              <button class="btn btn-ghost btn-sm" onclick="buyStone()" style="text-align:left;">🪨 兑换铸字石<br><span style="font-size:10px;opacity:0.7;">210枚 · 剑气长城刻字</span></button>
+              <button class="btn btn-ghost btn-sm" onclick="craftTopEquip()" style="text-align:left;">✨ 顶级法宝<br><span style="font-size:10px;opacity:0.7;">300枚 · 高属性3词条</span></button>
+              <button class="btn btn-ghost btn-sm" onclick="resetMonsterKills()" style="text-align:left;">🔄 重置今日挑战<br><span style="font-size:10px;opacity:0.7;">45枚 · 清空凶兽次数</span></button>
             </div>
           </div>
         </div>
@@ -1178,7 +1178,7 @@ input, textarea, select { font-family: inherit; outline: none; }
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">心魔碎片</b>：按凶兽等级基础2~10枚，再乘全局难度系数（0.7~1.8×）</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">修为经验</b>：按凶兽等级基础3~20分钟，再乘全局难度系数（计入总修为，助于境界突破）</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">法宝掉落</b>：普通及以上难度15%概率掉落（护心镜、嗜血幡、破甲锥、凝神香）</div>
-                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">碎片用途</b>：15枚重置今日挑战 / 30枚合成法宝 / 50枚挑战心魔本体 / 70枚兑换铸字石 / 100枚合成顶级法宝</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">碎片用途</b>：45枚重置今日挑战 / 90枚合成法宝 / 150枚挑战心魔本体 / 210枚兑换铸字石 / 300枚合成顶级法宝</div>
                 <div style="color:var(--jade-light);">解锁条件：凶兽需今日专注时长达标方可挑战，未解锁也可点✎编辑属性。每个凶兽每日限打2次。</div>
               </div>
             </div>
@@ -3322,8 +3322,8 @@ function toggleTask(idx) {
   if (t.done) showToast('心魔碎片 +1（共' + dailyState.fragments + '枚）', 'success');
 }
 function craftFragment() {
-  if (dailyState.fragments < 30) { showToast('需要30枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
-  dailyState.fragments -= 30;
+  if (dailyState.fragments < 90) { showToast('需要90枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 90;
   saveDaily();
   var reward = generateArenaReward(5);
   reward.name = '心魔·' + reward.name;
@@ -3333,8 +3333,8 @@ function craftFragment() {
   showToast('合成成功：' + reward.name, 'success');
 }
 function challengeHeartDemon() {
-  if (dailyState.fragments < 50) { showToast('需要50枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
-  dailyState.fragments -= 50;
+  if (dailyState.fragments < 150) { showToast('需要150枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 150;
   saveDaily();
   renderDailyTasks();
   var realm = getRealmInfo();
@@ -6619,23 +6619,23 @@ function useBeastUlt(idx) {  if (battleState.finished) return;
 }
 // 心魔碎片兑换
 function buyStone() {
-  if (dailyState.fragments < 70) { showToast('需要70枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
-  dailyState.fragments -= 70;
+  if (dailyState.fragments < 210) { showToast('需要210枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 210;
   gameState.swordStones = (gameState.swordStones || 0) + 1;
   saveDaily(); saveGame();
   showToast('兑换成功：获得铸字石×1（当前' + gameState.swordStones + '枚）', 'success');
 }
 function resetMonsterKills() {
-  if (dailyState.fragments < 15) { showToast('需要15枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
-  dailyState.fragments -= 15;
+  if (dailyState.fragments < 45) { showToast('需要45枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 45;
   if (gameState.dailyMonsterKills) gameState.dailyMonsterKills.kills = {};
   saveDaily(); saveGame();
   renderMonsterSelector();
   showToast('今日凶兽挑战次数已重置', 'success');
 }
 function craftTopEquip() {
-  if (dailyState.fragments < 100) { showToast('需要100枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
-  dailyState.fragments -= 100;
+  if (dailyState.fragments < 300) { showToast('需要300枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 300;
   saveDaily();
   // 顶级法宝：高攻高暴+3条随机词条
   var pool = [
@@ -6655,8 +6655,8 @@ function craftTopEquip() {
   showToast('顶级法宝：' + eq.name, 'success');
 }
 function buyRevive() {
-  if (dailyState.fragments < 50) { showToast('需要50枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
-  dailyState.fragments -= 50;
+  if (dailyState.fragments < 150) { showToast('需要150枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
+  dailyState.fragments -= 150;
   if (!gameState.equipment.consumable) gameState.equipment.consumable = [];
   gameState.equipment.consumable.push({
     id: genId(), name: '复活丹', type: 'consumable', category: '丹药类',
