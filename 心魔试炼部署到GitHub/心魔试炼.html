@@ -518,17 +518,16 @@ input, textarea, select { font-family: inherit; outline: none; }
   width: 100%; height: 100%; object-fit: contain;
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.6));
 }
-.combatant.monster .combatant-char { transform: scaleX(-1); }
 .combatant.attacking .combatant-char { animation: attackLunge 0.5s ease; }
 .combatant.player.attacking .combatant-char { animation: attackLungeRight 0.5s ease; }
 .combatant.monster.attacking .combatant-char { animation: attackLungeLeft 0.5s ease; }
 @keyframes attackLungeRight { 0%{transform:translateX(0)} 40%{transform:translateX(50px) scale(1.05)} 100%{transform:translateX(0)} }
-@keyframes attackLungeLeft { 0%{transform:scaleX(-1) translateX(0)} 40%{transform:scaleX(-1) translateX(50px) scale(1.05)} 100%{transform:scaleX(-1) translateX(0)} }
+@keyframes attackLungeLeft { 0%{transform:translateX(0)} 40%{transform:translateX(-50px) scale(1.05)} 100%{transform:translateX(0)} }
 @keyframes shake { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-8px,4px)} 40%{transform:translate(8px,-4px)} 60%{transform:translate(-6px,-2px)} 80%{transform:translate(6px,2px)} }
 .combatant.player.hurt .combatant-char { animation: hurtShakeP 0.4s ease; }
 .combatant.monster.hurt .combatant-char { animation: hurtShakeM 0.4s ease; }
 @keyframes hurtShakeP { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-12px)} 40%{transform:translateX(12px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
-@keyframes hurtShakeM { 0%,100%{transform:scaleX(-1) translateX(0)} 20%{transform:scaleX(-1) translateX(-12px)} 40%{transform:scaleX(-1) translateX(12px)} 60%{transform:scaleX(-1) translateX(-8px)} 80%{transform:scaleX(-1) translateX(8px)} }
+@keyframes hurtShakeM { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-12px)} 40%{transform:translateX(12px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
 .combatant-name {
   font-family: 'Noto Serif SC', serif;
   font-size: 17px; font-weight: 700;
@@ -1654,6 +1653,11 @@ input, textarea, select { font-family: inherit; outline: none; }
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <div class="panel-title" style="font-size:14px;margin-bottom:0;">阅读计时</div>
         <select class="form-input" id="bookReadSelect" style="width:auto;font-size:13px;" onchange="updateBookReadDisplay()"></select>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:8px;">
+        <span style="font-size:12px;color:var(--text-dim);">设定时长</span>
+        <input type="number" class="form-input" id="bookTimerMinutes" value="0" min="0" style="width:80px;text-align:center;font-size:14px;" placeholder="0=正计时">
+        <span style="font-size:12px;color:var(--text-dim);">分钟（0=正计时）</span>
       </div>
       <div class="timer-display" id="bookTimerDisplay" style="font-size:36px;">00:00</div>
       <div style="display:flex;gap:8px;margin-top:10px;justify-content:center;align-items:center;flex-wrap:wrap;">
@@ -3553,6 +3557,7 @@ function saveBookTimerState() {
       startTime: bookTimerState.startTime,
       accumulated: bookTimerState.accumulated,
       seconds: bookTimerState.seconds,
+      targetSeconds: bookTimerState.targetSeconds,
       currentBossId: bookTimerState.currentBossId
     }));
   } catch(e) {}
@@ -3562,6 +3567,7 @@ function restoreBookTimerState() {
     var s = JSON.parse(localStorage.getItem('xm_booktimer') || 'null');
     if (!s) return;
     bookTimerState.accumulated = s.accumulated || 0;
+    bookTimerState.targetSeconds = s.targetSeconds || 0;
     bookTimerState.currentBossId = s.currentBossId || 'ming1';
     if (s.running && s.startTime > 0) {
       var elapsed = bookTimerState.accumulated + Math.floor((Date.now() - s.startTime) / 1000);
@@ -3871,7 +3877,7 @@ const DUNGEON_REWARDS = {
   shuihan:  { name:'水寒', type:'gongfa', categoryId:'cat_jianjue', power:22, crit:8, effect:'秦时明月剑谱，高渐离佩剑，风萧萧兮易水寒。', affixes:[{type:'hp',value:50},{type:'freeze',value:15},{type:'reflect',value:10}], image:'' },
 };
 
-var bookTimerState = { running:false, seconds:0, interval:null, currentBossId:'ming1', startTime:0, accumulated:0 };
+var bookTimerState = { running:false, seconds:0, interval:null, currentBossId:'ming1', startTime:0, accumulated:0, targetSeconds:0 };
 
 // ===== 功法修炼升级系统 =====
 var cultivationState = { activeId: null, startTime: 0, interval: null, autoStopTimer: null };
@@ -4509,6 +4515,10 @@ function toggleBookTimer() {
   }
 }
 function startBookTimer() {
+  var minsInput = parseInt(document.getElementById('bookTimerMinutes').value) || 0;
+  if (minsInput > 0 && bookTimerState.accumulated === 0) {
+    bookTimerState.targetSeconds = minsInput * 60;
+  }
   bookTimerState.running = true;
   bookTimerState.startTime = Date.now();
   document.getElementById('bookTimerStartBtn').textContent = '暂停';
@@ -4516,13 +4526,32 @@ function startBookTimer() {
   if (bookTimerState.interval) { clearInterval(bookTimerState.interval); }
   bookTimerState.interval = setInterval(function() {
     if (!bookTimerState.running) return;
-    bookTimerState.seconds = bookTimerState.accumulated + Math.floor((Date.now() - bookTimerState.startTime) / 1000);
-    var el = document.getElementById('bookTimerDisplay');
-    if (el) el.textContent = formatTime(bookTimerState.seconds);
+    var elapsed = bookTimerState.accumulated + Math.floor((Date.now() - bookTimerState.startTime) / 1000);
+    if (bookTimerState.targetSeconds > 0) {
+      // 倒计时模式
+      var remain = Math.max(0, bookTimerState.targetSeconds - elapsed);
+      bookTimerState.seconds = remain;
+      var el = document.getElementById('bookTimerDisplay');
+      if (el) el.textContent = formatTime(remain);
+      if (remain <= 0) {
+        showToast('阅读时长已到，自动记录', 'success');
+        resetBookTimer();
+        return;
+      }
+    } else {
+      // 正计时模式
+      bookTimerState.seconds = elapsed;
+      var el2 = document.getElementById('bookTimerDisplay');
+      if (el2) el2.textContent = formatTime(elapsed);
+    }
   }, 1000);
   saveBookTimerState();
   // 立即刷新一次
-  bookTimerState.seconds = bookTimerState.accumulated;
+  if (bookTimerState.targetSeconds > 0) {
+    bookTimerState.seconds = bookTimerState.targetSeconds;
+  } else {
+    bookTimerState.seconds = bookTimerState.accumulated;
+  }
   var el0 = document.getElementById('bookTimerDisplay');
   if (el0) el0.textContent = formatTime(bookTimerState.seconds);
 }
@@ -4553,6 +4582,7 @@ function resetBookTimer() {
   bookTimerState.seconds = 0;
   bookTimerState.accumulated = 0;
   bookTimerState.startTime = 0;
+  bookTimerState.targetSeconds = 0;
   document.getElementById('bookTimerStartBtn').textContent = '开始阅读';
   document.getElementById('bookTimerDisplay').classList.remove('running');
   document.getElementById('bookTimerDisplay').textContent = '00:00';
