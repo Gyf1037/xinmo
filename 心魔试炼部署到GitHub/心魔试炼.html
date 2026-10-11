@@ -524,6 +524,24 @@ input, textarea, select { font-family: inherit; outline: none; }
 @keyframes attackLungeRight { 0%{transform:translateX(0)} 40%{transform:translateX(50px) scale(1.05)} 100%{transform:translateX(0)} }
 @keyframes attackLungeLeft { 0%{transform:translateX(0)} 40%{transform:translateX(-50px) scale(1.05)} 100%{transform:translateX(0)} }
 @keyframes shake { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-8px,4px)} 40%{transform:translate(8px,-4px)} 60%{transform:translate(-6px,-2px)} 80%{transform:translate(6px,2px)} }
+/* ===== 属性特效动画 ===== */
+@keyframes fxLightBeam { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 20%{transform:translateX(-50%) scaleY(1);opacity:1} 80%{opacity:1} 100%{transform:translateX(-50%) scaleY(1);opacity:0} }
+@keyframes fxLightBurst { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(-50%,-50%) scale(3);opacity:0} }
+@keyframes fxDarkRise { 0%{transform:translateY(30px) scale(0.5);opacity:0} 50%{opacity:0.8} 100%{transform:translateY(-40px) scale(1.5);opacity:0} }
+@keyframes fxFireBurst { 0%{transform:translate(-50%,-50%) scale(0.3) rotate(0deg);opacity:1} 100%{transform:translate(-50%,-50%) scale(2.5) rotate(180deg);opacity:0} }
+@keyframes fxFireRise { 0%{transform:translateY(0) scale(1);opacity:0.9} 100%{transform:translateY(-60px) scale(0.3);opacity:0} }
+@keyframes fxWaterSplash { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(-50%,-50%) scale(2.5);opacity:0} }
+@keyframes fxWaterDrop { 0%{transform:translateY(-20px);opacity:0} 30%{opacity:1} 100%{transform:translateY(40px);opacity:0} }
+@keyframes fxElectric { 0%,100%{opacity:0;transform:translateX(-50%) scaleX(0.5)} 10%,30%,50%,70%{opacity:1;transform:translateX(-50%) scaleX(1.2)} 20%,40%,60%{opacity:0.3;transform:translateX(-50%) scaleX(0.8)} }
+@keyframes fxWoodGrow { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 40%{transform:translateX(-50%) scaleY(1);opacity:1} 100%{transform:translateX(-50%) scaleY(1);opacity:0} }
+@keyframes fxLeafFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(50px) rotate(360deg);opacity:0} }
+@keyframes fxIceBurst { 0%{transform:translate(-50%,-50%) scale(0) rotate(0deg);opacity:1} 100%{transform:translate(-50%,-50%) scale(2) rotate(45deg);opacity:0} }
+@keyframes fxIceShard { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(1) rotate(var(--rot));opacity:0} }
+@keyframes fxThunderStrike { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 15%{transform:translateX(-50%) scaleY(1);opacity:1} 30%{opacity:0.3} 45%{opacity:1} 60%{opacity:0} 100%{opacity:0} }
+@keyframes fxWindSpin { 0%{transform:translate(-50%,-50%) rotate(0deg) scale(0.5);opacity:0.8} 100%{transform:translate(-50%,-50%) rotate(720deg) scale(2);opacity:0} }
+@keyframes fxWindBlade { 0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(0);opacity:1} 100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) rotate(var(--rot)) scale(1.5);opacity:0} }
+@keyframes fxEarthRise { 0%{transform:translateX(-50%) translateY(20px) scale(0);opacity:0} 40%{transform:translateX(-50%) translateY(0) scale(1);opacity:1} 100%{transform:translateX(-50%) translateY(-10px) scale(1.2);opacity:0} }
+@keyframes fxEarthShard { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(1) rotate(var(--rot));opacity:0} }
 .combatant.player.hurt .combatant-char { animation: hurtShakeP 0.4s ease; }
 .combatant.monster.hurt .combatant-char { animation: hurtShakeM 0.4s ease; }
 @keyframes hurtShakeP { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-12px)} 40%{transform:translateX(12px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
@@ -1160,7 +1178,8 @@ input, textarea, select { font-family: inherit; outline: none; }
               <label class="form-label">凶兽副本</label>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
                 <select class="form-input" id="monsterGroupSelect" style="flex:1;min-width:120px;" onchange="switchMonsterGroup(this.value)"></select>
-                <button class="btn btn-ghost btn-sm" onclick="addMonsterGroup()">+新建副本</button>
+                <button class="btn btn-ghost btn-sm" onclick="addMonsterGroup()">+新建</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteCurrentGroup()">删除</button>
               </div>
             </div>
             <div class="form-group">
@@ -1171,6 +1190,25 @@ input, textarea, select { font-family: inherit; outline: none; }
               <label class="form-label">参战神兽（最多2只，未解锁在神兽阁查看）</label>
               <div id="beastSelector" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
             </div>
+            <!-- 念·无尽挑战 -->
+            <div style="margin-top:10px;padding:12px;background:linear-gradient(135deg,rgba(157,78,221,0.15),rgba(0,0,0,0.3));border:1px solid rgba(157,78,221,0.4);border-radius:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-size:14px;font-weight:700;color:#CE93D8;">🌑 念·无尽挑战</span>
+                <span style="font-size:11px;color:var(--text-secondary);">历史最高：第<span id="nianBestLayer">1</span>层</span>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);line-height:1.6;margin-bottom:8px;">
+                不死不灭之念，每天从第1层开始，全装备挑战。击败一层+2积分。<br>难度基于你当日战力动态计算，层数越高回合越多、攻击越猛。
+              </div>
+              <button class="btn btn-primary btn-sm" style="width:100%;background:linear-gradient(135deg,#7B1FA2,#9C27B0);" onclick="startNianChallenge()">挑战「念」</button>
+            </div>
+            <!-- 赛季周目面板 -->
+            <div style="margin-top:10px;padding:12px;background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(0,0,0,0.3));border:1px solid rgba(212,175,55,0.3);border-radius:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-size:14px;font-weight:700;color:var(--gold-light);">🏆 赛季周目</span>
+                <span id="zhoumuStars" style="font-size:16px;color:var(--gold);">★</span>
+              </div>
+              <div id="seasonPanel" style="font-size:12px;color:var(--text-secondary);line-height:1.8;"></div>
+            </div>
             <!-- 凶兽奖励说明 -->
             <div style="margin-top:10px;">
               <div onclick="toggleHelp('monsterRewardHelp')" style="cursor:pointer;font-size:12px;color:var(--gold-light);font-weight:600;margin-bottom:6px;">▸ 凶兽战利品说明</div>
@@ -1180,6 +1218,17 @@ input, textarea, select { font-family: inherit; outline: none; }
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">法宝掉落</b>：普通及以上难度15%概率掉落（护心镜、嗜血幡、破甲锥、凝神香）</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">碎片用途</b>：45枚重置今日挑战 / 90枚合成法宝 / 150枚挑战心魔本体 / 210枚兑换铸字石 / 300枚合成顶级法宝</div>
                 <div style="color:var(--jade-light);">解锁条件：凶兽需今日专注时长达标方可挑战，未解锁也可点✎编辑属性。每个凶兽每日限打2次。</div>
+              </div>
+            </div>
+            <!-- 战斗系统说明 -->
+            <div style="margin-top:10px;">
+              <div onclick="toggleHelp('battleHelp')" style="cursor:pointer;font-size:12px;color:var(--gold-light);font-weight:600;margin-bottom:6px;">▸ 战斗系统说明</div>
+              <div id="battleHelp" class="help-content" style="display:none;font-size:11px;color:var(--text-secondary);line-height:1.8;margin-top:6px;padding:10px;background:rgba(212,175,55,0.05);border-radius:6px;border:1px solid rgba(212,175,55,0.15);">
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">灵力系统：</b>普攻获得+15灵力，技能耗灵35~45，调息回灵+35并获得护盾。</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">技能效果：</b>归元（回血20%+减伤30%/2回合）、破军（高伤+破甲25%/2回合）、残影（连击2次+闪避30%/2回合）、乾坤（伤害+灼烧）。</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">属性效果：</b>光（受伤+15%）、暗（攻击-15%）、火（灼烧5%/回合）、水（攻击-20%）、电（20%麻痹）、木（中毒3%/回合）、冰（15%冻结）、雷（受伤+25%）、风（流血4%/回合）、土（受伤+25%）。</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">属性克制：</b>每只凶兽有弱点属性，使用对应属性攻击伤害+30%。</div>
+                <div style="color:var(--jade-light);">策略：合理使用技能附加状态，利用属性克制，普攻攒灵后释放大招。</div>
               </div>
             </div>
             <div style="margin-top:10px;">
@@ -1196,12 +1245,19 @@ input, textarea, select { font-family: inherit; outline: none; }
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">血量</label>
-                  <input type="number" class="form-input" id="newMonsterHp" placeholder="例如：500" min="1" value="500">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">攻击力</label>
-                  <input type="number" class="form-input" id="newMonsterAtk" placeholder="例如：50" min="1" value="50">
+                  <label class="form-label">强度等级</label>
+                  <select class="form-input" id="newMonsterTier">
+                    <option value="1">练气级（2回合）</option>
+                    <option value="2">筑基级（3回合）</option>
+                    <option value="3">金丹级（4回合）</option>
+                    <option value="4">元婴级（5回合）</option>
+                    <option value="5">化神级（6回合）</option>
+                    <option value="6">炼虚级（7回合）</option>
+                    <option value="7">合体级（9回合）</option>
+                    <option value="8">大乘级（11回合）</option>
+                    <option value="9">渡劫级（13回合）</option>
+                    <option value="10">真仙级（16回合）</option>
+                  </select>
                 </div>
                 <div class="form-group">
                   <label class="form-label">属性</label>
@@ -1278,7 +1334,7 @@ input, textarea, select { font-family: inherit; outline: none; }
             <div class="preview-row"><span class="preview-label">总攻击力</span><span class="preview-value" id="previewTotalAtk">336</span></div>
             <div class="preview-row"><span class="preview-label">暴击率</span><span class="preview-value" id="previewCrit">15%</span></div>
             <div class="preview-row"><span class="preview-label">生命值</span><span class="preview-value" id="previewHp">310</span></div>
-            <div class="preview-row"><span class="preview-label">预估胜率</span><span class="preview-value" id="previewWinRate">--</span></div>
+            <div class="preview-row"><span class="preview-label">目标回合</span><span class="preview-value" id="previewWinRate">--</span></div>
             <div id="previewSkillList" style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);"></div>
           </div>
           <!-- 神通与难度设置 -->
@@ -1314,7 +1370,7 @@ input, textarea, select { font-family: inherit; outline: none; }
         <div class="combatant player" id="playerCombatant">
           <div style="position:relative;">
             <div class="combatant-char">
-              <img src="https://aka.doubaocdn.com/s/R8cNAM9EqZ" alt="修士">
+              <img src="https://aka.doubaocdn.com/s/VGMHWdmuA2" alt="修士" style="width:100%;height:100%;object-fit:contain;">
             </div>
             <div id="beastFollowers" style="position:absolute;top:-20px;right:-60px;display:flex;flex-direction:column;gap:6px;z-index:10;"></div>
           </div>
@@ -1822,13 +1878,72 @@ const TYPE_NAMES = { gongfa: '修行功法', permanent: '永久法宝', consumab
 function getTypeName(t) { return TYPE_NAMES[t] || '法宝'; }
 
 // ---------- 六档难度配置（上古凶兽）----------
+// ========== 凶兽强度等级配置（动态血量系统） ==========
+const MONSTER_TIERS = [
+  { tier:1,  name:'练气级', targetRounds:2,  dmgRatio:0.12 },
+  { tier:2,  name:'筑基级', targetRounds:3,  dmgRatio:0.16 },
+  { tier:3,  name:'金丹级', targetRounds:3,  dmgRatio:0.20 },
+  { tier:4,  name:'元婴级', targetRounds:4,  dmgRatio:0.24 },
+  { tier:5,  name:'化神级', targetRounds:5,  dmgRatio:0.28 },
+  { tier:6,  name:'炼虚级', targetRounds:5,  dmgRatio:0.32 },
+  { tier:7,  name:'合体级', targetRounds:6,  dmgRatio:0.36 },
+  { tier:8,  name:'大乘级', targetRounds:7,  dmgRatio:0.40 },
+  { tier:9,  name:'渡劫级', targetRounds:8,  dmgRatio:0.44 },
+  { tier:10, name:'真仙级', targetRounds:10, dmgRatio:0.50 },
+];
+function getTierConfig(tier) {
+  return MONSTER_TIERS[Math.max(0, Math.min(9, (tier||1)-1))];
+}
+// 每日裸战力缓存（每天首次打开时计算）
+var dailyCombatPower = { date:'', nakedAtk:0, nakedCrit:0, nakedHp:0, nakedDps:0 };
+function calcDailyCombatPower() {
+  var today = new Date().toISOString().slice(0,10);
+  if (dailyCombatPower.date === today) return dailyCombatPower;
+  // 裸攻击力 = 基础攻击 + 法宝/功法/神兽加成（不含今日专注）
+  var baseAtk = 86;
+  var equipAtk = 0;
+  var equipCrit = 0;
+  var equipHp = 0;
+  (gameState.equipment.gongfa||[]).forEach(function(e){ if(prepareState.selectedGongfa.indexOf(e.id)>=0){ var lb=getGongfaLevelBonus(e); equipAtk+=Math.floor((e.power||0)*lb.atkMult); equipCrit+=(e.crit||0)+lb.critAdd; } });
+  (gameState.equipment.permanent||[]).forEach(function(e){ if(prepareState.selectedPermanent.indexOf(e.id)>=0){ equipAtk+=e.power||0; equipCrit+=e.crit||0; if(e.affixes){ equipHp+=(e.affixes.hp||0); } } });
+  // 神兽加成
+  getActiveBeasts().forEach(function(b){ equipAtk += Math.floor(baseAtk * (b.atkMult||0)); equipCrit += (b.critAdd||0); });
+  // 法宝/功法暴击上限20%
+  var cappedCrit = Math.min(equipCrit, 20);
+  var nakedAtk = baseAtk + equipAtk;
+  var nakedHp = 100 + equipHp; // 基础生命+词条（不含专注加成）
+  var nakedDps = nakedAtk * (1 + cappedCrit/100 * 0.5);
+  dailyCombatPower = { date:today, nakedAtk:nakedAtk, nakedCrit:cappedCrit, nakedHp:nakedHp, nakedDps:nakedDps };
+  return dailyCombatPower;
+}
+// 动态计算凶兽实际血攻
+function calcMonsterStats(monster) {
+  // 没有tier属性的凶兽（如典籍副本BOSS）保留固定血量
+  if (!monster.tier && monster.maxHp) {
+    return { maxHp: monster.maxHp, attack: monster.attack || 10, tierName: monster.label || '固定', targetRounds: '--' };
+  }
+  var cp = calcDailyCombatPower();
+  var tier = getTierConfig(monster.tier || 3);
+  var zhoumuMult = 1 + ((gameState.season?.zhoumu || 1) - 1) * 0.15;
+  var diffMult = difficultyMult;
+  // 专注5小时的DPS基准（用于换算血量基准回合）
+  var focus5hAtk = 300 * 0.8;
+  var focus5hDps = (cp.nakedAtk + focus5hAtk) * (1 + cp.nakedCrit/100 * 0.5);
+  var baseRounds = tier.targetRounds * (focus5hDps / cp.nakedDps);
+  var maxHp = Math.floor(cp.nakedDps * baseRounds * zhoumuMult * diffMult);
+  // 攻击基于玩家当日实际生命，dmgRatio为每回合承伤比例
+  var todayFocus = getTodayFocus();
+  var todayTotalHp = cp.nakedHp + Math.floor(todayFocus * 0.5);
+  var attack = Math.max(8, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult)));
+  return { maxHp: maxHp, attack: attack, tierName: tier.name, targetRounds: tier.targetRounds };
+}
 const DEFAULT_MONSTERS = [
-  { id:'m1', name:'朱厌',   label:'简单', maxHp:300,  attack:30,  reqMinutes:0,   desc:'白猿凶兽，现则天下大乱', image:'https://aka.doubaocdn.com/s/tUOlUrUx0F' },
-  { id:'m2', name:'穷奇',   label:'普通', maxHp:500,  attack:50,  reqMinutes:30,  desc:'有翼猛虎，食人凶兽',     image:'https://aka.doubaocdn.com/s/KVNJXHIOm3' },
-  { id:'m3', name:'饕餮',   label:'困难', maxHp:800,  attack:75,  reqMinutes:60,  desc:'羊身人面，贪食无厌',     image:'https://aka.doubaocdn.com/s/o6mEABKQWk' },
-  { id:'m4', name:'梼杌',   label:'极难', maxHp:1200, attack:100, reqMinutes:90,  desc:'长毛猛虎，顽凶难驯',     image:'https://aka.doubaocdn.com/s/K3UvXuRGkF' },
-  { id:'m5', name:'混沌',   label:'噩梦', maxHp:1800, attack:140, reqMinutes:120, desc:'混沌无形，不辨是非',     image:'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
-  { id:'m6', name:'相柳',   label:'地狱', maxHp:2600, attack:190, reqMinutes:180, desc:'九头蛇身，毒泽千里',     image:'https://aka.doubaocdn.com/s/nVu89uZgvN' },
+  { id:'m1', name:'朱厌',   tier:1, reqMinutes:0,   desc:'白猿凶兽，现则天下大乱', image:'https://aka.doubaocdn.com/s/tUOlUrUx0F' },
+  { id:'m2', name:'穷奇',   tier:2, reqMinutes:30,  desc:'有翼猛虎，食人凶兽',     image:'https://aka.doubaocdn.com/s/KVNJXHIOm3' },
+  { id:'m3', name:'饕餮',   tier:3, reqMinutes:60,  desc:'羊身人面，贪食无厌',     image:'https://aka.doubaocdn.com/s/o6mEABKQWk' },
+  { id:'m4', name:'梼杌',   tier:4, reqMinutes:90,  desc:'长毛猛虎，顽凶难驯',     image:'https://aka.doubaocdn.com/s/K3UvXuRGkF' },
+  { id:'m5', name:'混沌',   tier:6, reqMinutes:180, desc:'混沌无形，不辨是非',     image:'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
+  { id:'m6', name:'相柳',   tier:8, reqMinutes:300, desc:'九头蛇身，毒泽千里',     image:'https://aka.doubaocdn.com/s/nVu89uZgvN' },
 ];
 const DEFAULT_MONSTER_IMAGE = 'https://aka.doubaocdn.com/s/uXKUSDTAi2';
 // 凶兽副本分组
@@ -1837,14 +1952,14 @@ const DEFAULT_MONSTER_GROUPS = [
   { id: 'chenglong', name: '成龙历险记', icon: '🀄', desc: '八大恶魔，圣主领衔', builtin: true, monsterIds: [] },
 ];
 const DEFAULT_CHENGLONG_BOSSES = [
-  { id:'dl1', name:'波刚',   label:'山之恶魔', maxHp:800,  attack:60,  reqMinutes:30,  desc:'山之恶魔，体型巨大，力大无穷', image:'' },
-  { id:'dl2', name:'啸风',   label:'风之恶魔', maxHp:900,  attack:70,  reqMinutes:60,  desc:'风之恶魔，张口能吞噬一切', image:'' },
-  { id:'dl3', name:'咒蓝',   label:'月之恶魔', maxHp:1000, attack:80,  reqMinutes:90,  desc:'月之恶魔，操控引力', image:'' },
-  { id:'dl4', name:'西木',   label:'天之恶魔', maxHp:1100, attack:90,  reqMinutes:120, desc:'天之恶魔，空中飞魔', image:'' },
-  { id:'dl5', name:'地魁',   label:'地之恶魔', maxHp:1200, attack:95,  reqMinutes:120, desc:'地之恶魔，遁地而行', image:'' },
-  { id:'dl6', name:'芭莎',   label:'水之恶魔', maxHp:1300, attack:100, reqMinutes:150, desc:'水之恶魔，操控水流', image:'' },
-  { id:'dl7', name:'圣主',   label:'火之恶魔', maxHp:1500, attack:110, reqMinutes:180, desc:'火之恶魔，八大恶魔之首', image:'' },
-  { id:'dl8', name:'中苏',   label:'雷之恶魔', maxHp:1400, attack:105, reqMinutes:180, desc:'雷之恶魔，操控雷电', image:'' },
+  { id:'dl1', name:'波刚',   label:'山之恶魔', tier:2, reqMinutes:30,  desc:'山之恶魔，体型巨大，力大无穷', image:'' },
+  { id:'dl2', name:'啸风',   label:'风之恶魔', tier:3, reqMinutes:60,  desc:'风之恶魔，张口能吞噬一切', image:'' },
+  { id:'dl3', name:'咒蓝',   label:'月之恶魔', tier:4, reqMinutes:90,  desc:'月之恶魔，操控引力', image:'' },
+  { id:'dl4', name:'西木',   label:'天之恶魔', tier:3, reqMinutes:120, desc:'天之恶魔，空中飞魔', image:'' },
+  { id:'dl5', name:'地魁',   label:'地之恶魔', tier:4, reqMinutes:120, desc:'地之恶魔，遁地而行', image:'' },
+  { id:'dl6', name:'芭莎',   label:'水之恶魔', tier:5, reqMinutes:150, desc:'水之恶魔，操控水流', image:'' },
+  { id:'dl7', name:'圣主',   label:'火之恶魔', tier:7, reqMinutes:180, desc:'火之恶魔，八大恶魔之首', image:'' },
+  { id:'dl8', name:'中苏',   label:'雷之恶魔', tier:6, reqMinutes:180, desc:'雷之恶魔，操控雷电', image:'' },
 ];
 const STORAGE_KEY = 'xinmo_shilian_save_v3';
 // ---------- 游戏状态 ----------
@@ -1867,6 +1982,19 @@ let gameState = {
   // 剑气长城
   swordStones: 0,
   swordInscriptions: [],
+  // 赛季周目系统
+  season: {
+    weekStart: '',           // 本周开始日期(周一)
+    weekScore: 0,            // 本周积分
+    weekBreakdown: { beasts:0, focus:0, enlighten:0, dungeons:0, nian:0 },
+    weekRank: '',            // 本周段位
+    zhoumu: 1,               // 当前周目(1-4)
+    zhoumuMonth: '',         // 当前周目所属月份
+    monthlyTitles: [],       // 月度称号列表 [{month, title, score, zhoumu}]
+    nianBestLayer: 0,        // 念的历史最高层
+    zhoumuBestScores: {},    // 各周目最高分 {1: score, 2: score...}
+    lastSettlement: '',      // 上次结算日期
+  },
 };
 let prepareState = {
   selectedMonsterId: 'm1',
@@ -1929,6 +2057,21 @@ function loadSave() {
   gameState.categories = data?.categories || { gongfa: [], permanent: [], consumable: [] };
   gameState.equipment = data?.equipment || { gongfa: [], permanent: [], consumable: [] };
   gameState.monsters = data?.monsters || [];
+  // 旧存档兼容：给没有tier的凶兽自动分配强度等级
+  gameState.monsters.forEach(function(m) {
+    if (!m.tier) {
+      var hp = m.maxHp || 500;
+      if (hp <= 400) m.tier = 1;
+      else if (hp <= 600) m.tier = 2;
+      else if (hp <= 900) m.tier = 3;
+      else if (hp <= 1300) m.tier = 4;
+      else if (hp <= 2000) m.tier = 5;
+      else if (hp <= 3000) m.tier = 6;
+      else if (hp <= 5000) m.tier = 7;
+      else if (hp <= 8000) m.tier = 8;
+      else m.tier = 9;
+    }
+  });
   gameState.monsterGroups = data?.monsterGroups || null;
   gameState.currentGroup = data?.currentGroup || 'shanhai';
   // 首次初始化：填充默认分组和成龙BOSS
@@ -2207,7 +2350,7 @@ function navigate(view) {
   if (view === 'beast') renderBeastPage();
   if (view === 'infinity') renderInfinityWar();
   if (view === 'home') renderHome();
-  if (view === 'prepare') renderPrepare();
+  if (view === 'prepare') { renderPrepare(); renderSeasonPanel(); }
   if (view === 'inventory') renderInventory();
   if (view === 'history') renderHistory();
   if (view === 'sect') { renderSects(); document.getElementById('sectorDetailPanel').style.display = 'none'; document.getElementById('sectEditorPanel').style.display = 'none'; }
@@ -2255,17 +2398,20 @@ function getMonsterById(id) {
 function renderMonsterSelector() {
   const container = document.getElementById('monsterSelector');
   if (!container) return;
-  container.innerHTML = gameState.monsters.map(m => `
+  container.innerHTML = gameState.monsters.map(m => {
+    var tc = getTierConfig(m.tier || 3);
+    var todayKills = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.kills) ? (gameState.dailyMonsterKills.kills[m.id] || 0) : 0;
+    return `
     <button class="diff-btn ${prepareState.selectedMonsterId === m.id ? 'active' : ''}" data-action="select-monster" data-monster-id="${m.id}" style="display:flex;align-items:center;gap:10px;text-align:left;">
       ${m.image ? '<img src="' + m.image + '" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;">' : '<div style="width:42px;height:42px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🐾</div>'}
       <div style="flex:1;min-width:0;">
-        <div class="diff-name">${m.name}</div>
-        <div class="diff-stats">血${m.maxHp} · 攻${m.attack}</div>
-        <div class="diff-req">${m.label || ''}</div>
+        <div class="diff-name">${m.name} <span style="font-size:10px;color:var(--text-dim);">今日 ${todayKills}/2</span></div>
+        <div class="diff-stats">${tc.name} · ${tc.targetRounds}回合</div>
+        <div class="diff-req">${m.reqMinutes ? '需专注' + m.reqMinutes + '分钟' : '无门槛'}</div>
       </div>
       <span class="monster-edit-btn" data-action="edit-monster" data-monster-id="${m.id}" onclick="event.stopPropagation();editMonster('${m.id}')">✎</span>
-    </button>
-  `).join('');
+    </button>`;
+  }).join('');
 }
 function toggleMonsterForm() {
   const form = document.getElementById('monsterForm');
@@ -2275,13 +2421,13 @@ function toggleMonsterForm() {
     document.getElementById('monsterFormTitle').textContent = '新增凶兽';
     document.getElementById('submitMonsterBtn').textContent = '保存凶兽';
     document.getElementById('newMonsterName').value = '';
-    document.getElementById('newMonsterHp').value = '500';
-    document.getElementById('newMonsterAtk').value = '50';
+    document.getElementById('newMonsterTier').value = '3';
     document.getElementById('newMonsterReqMinutes').value = '0';
     document.getElementById('newMonsterDesc').value = '';
     document.getElementById('newMonsterImage').value = '';
     document.getElementById('newMonsterFragReward').value = '';
     document.getElementById('newMonsterCultReward').value = '';
+    document.getElementById('newMonsterElement').value = '';
   }
 }
 function editMonster(id) {
@@ -2293,8 +2439,7 @@ function editMonster(id) {
   document.getElementById('monsterFormTitle').textContent = '编辑凶兽';
   document.getElementById('submitMonsterBtn').textContent = '保存修改';
   document.getElementById('newMonsterName').value = m.name;
-  document.getElementById('newMonsterHp').value = m.maxHp;
-  document.getElementById('newMonsterAtk').value = m.attack;
+  document.getElementById('newMonsterTier').value = m.tier || 3;
   document.getElementById('newMonsterReqMinutes').value = m.reqMinutes || 0;
   document.getElementById('newMonsterDesc').value = m.desc || '';
   document.getElementById('newMonsterImage').value = m.image || '';
@@ -2337,6 +2482,27 @@ function renderSwordWall() {
   html += '<div style="font-size:12px;color:var(--text-dim);line-height:1.8;">';
   html += '连续证道7天可获1枚铸字石，用它在长城上刻下一句诗。一句最多7字（五言/七言），点击石刻可放大观看。';
   html += '</div>';
+  html += '</div>';
+
+  // 成就榜（月度称号）
+  var titles = gameState.season?.monthlyTitles || [];
+  html += '<div class="panel" style="margin-bottom:16px;">';
+  html += '<div class="panel-title" style="font-size:14px;margin-bottom:10px;">🏅 成就榜 · 月度称号</div>';
+  if (titles.length > 0) {
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    titles.slice().reverse().forEach(function(t) {
+      html += '<div style="padding:10px;background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(0,0,0,0.3));border:1px solid rgba(212,175,55,0.3);border-radius:8px;text-align:center;">';
+      html += '<div style="font-size:13px;font-weight:700;color:var(--gold-light);font-family:Noto Serif SC,serif;margin-bottom:4px;">' + t.title + '</div>';
+      html += '<div style="font-size:10px;color:var(--text-dim);">' + t.month + ' · 周目' + t.zhoumu + ' · ' + t.score + '分</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  } else {
+    html += '<div style="text-align:center;padding:16px 8px;color:var(--text-dim);font-size:12px;line-height:1.8;">';
+    html += '暂无称号<br>';
+    html += '<span style="font-size:11px;">每月月底根据当月周目最高分自动颁发称号<br>称号永久保留，挂于剑气长城成就榜</span>';
+    html += '</div>';
+  }
   html += '</div>';
 
   // 刻字按钮
@@ -2470,8 +2636,7 @@ function viewInscription(insId) {
 }
 function saveMonster() {
   const name = document.getElementById('newMonsterName').value.trim();
-  const maxHp = parseInt(document.getElementById('newMonsterHp').value) || 1;
-  const attack = parseInt(document.getElementById('newMonsterAtk').value) || 1;
+  const tier = parseInt(document.getElementById('newMonsterTier').value) || 3;
   const reqMinutes = parseInt(document.getElementById('newMonsterReqMinutes').value) || 0;
   const desc = document.getElementById('newMonsterDesc').value.trim();
   const image = document.getElementById('newMonsterImage').value.trim() || DEFAULT_MONSTER_IMAGE;
@@ -2482,14 +2647,14 @@ function saveMonster() {
   if (editingMonsterId) {
     const m = getMonsterById(editingMonsterId);
     if (m) {
-      m.name = name; m.maxHp = maxHp;
-      m.attack = attack; m.reqMinutes = reqMinutes; m.desc = desc; m.image = image;
+      m.name = name; m.tier = tier;
+      m.reqMinutes = reqMinutes; m.desc = desc; m.image = image;
       m.fragReward = fragReward; m.cultReward = cultReward; m.element = element;
       showToast(`凶兽「${name}」已更新`, 'success');
     }
     editingMonsterId = null;
   } else {
-    const newM = { id: genId(), name, maxHp, attack, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, element: element, createdAt: Date.now() };
+    const newM = { id: genId(), name, tier, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, element: element, createdAt: Date.now() };
     gameState.monsters.push(newM);
     prepareState.selectedMonsterId = newM.id;
     // 自动加入当前分组
@@ -2505,12 +2670,17 @@ function saveMonster() {
 function deleteMonster(id) {
   const m = getMonsterById(id);
   if (!m) return;
+  if (!confirm(`确定删除凶兽「${m.name}」吗？\n删除后无法恢复，副本中的引用也会被清除。`)) return;
   gameState.monsters = gameState.monsters.filter(x => x.id !== id);
+  // 从所有副本分组中移除
+  (gameState.monsterGroups || []).forEach(function(g) {
+    g.monsterIds = (g.monsterIds || []).filter(function(mid) { return mid !== id; });
+  });
   if (prepareState.selectedMonsterId === id && gameState.monsters.length > 0) {
     prepareState.selectedMonsterId = gameState.monsters[0].id;
   }
   saveGame();
-  showToast(`凶兽「${m.name}」已移除`, 'success');
+  showToast(`凶兽「${m.name}」已删除`, 'success');
   renderMonsterSelector();
   updatePreview();
 }
@@ -2597,7 +2767,12 @@ function updatePreview() {
   var realmInfo = getRealmInfo();
   var aff = collectAffixes(usedEquips);
   var totalAtk = baseAtk + equipBonus + realmInfo.bonusAtk + (gameState.inscriptionAtkBonus || 0);
-  var totalCrit = Math.min(15 + critBonus, 100);
+  // 法宝/功法暴击上限20%
+  var stoneCritP = 0, beastCritP = 0;
+  try { stoneCritP = getStoneBonus().critAdd || 0; } catch(e){}
+  try { beastCritP = getBeastBonus().critAdd || 0; } catch(e){}
+  var equipCritOnlyP = Math.max(0, critBonus - stoneCritP - beastCritP);
+  var totalCrit = Math.min(15 + Math.min(equipCritOnlyP, 20) + stoneCritP + beastCritP, 100);
   var totalHp = baseHp + aff.hp + realmInfo.bonusHp + (gameState.inscriptionHpBonus || 0);
   document.getElementById('previewBaseAtk').textContent = baseAtk;
   document.getElementById('previewEquipBonus').textContent = '+' + equipBonus;
@@ -2605,15 +2780,9 @@ function updatePreview() {
   document.getElementById('previewCrit').textContent = totalCrit + '%';
   document.getElementById('previewHp').textContent = totalHp + (aff.hp > 0 ? ' (+' + aff.hp + '词条)' : '');
   var monster = getMonsterById(prepareState.selectedMonsterId);
-  if (monster && minutes > 0 && totalAtk > 0) {
-    var mHp = Math.floor(monster.maxHp * difficultyMult * realmInfo.realmMult);
-    var mAtk = Math.floor(monster.attack * difficultyMult * realmInfo.realmMult);
-    var wins = 0;
-    var sims = 300;
-    for (var i = 0; i < sims; i++) {
-      if (simulateBattle(totalAtk, totalCrit, totalHp, mHp, mAtk, monster.id)) wins++;
-    }
-    document.getElementById('previewWinRate').textContent = Math.round(wins / sims * 100) + '%' + ((difficultyMult * realmInfo.realmMult) !== 1.0 ? ' (' + (difficultyMult * realmInfo.realmMult).toFixed(2) + '×强度)' : '');
+  if (monster) {
+    var tierCfg = getTierConfig(monster.tier || 3);
+    document.getElementById('previewWinRate').textContent = tierCfg.name + ' · ' + tierCfg.targetRounds + '回合';
   } else {
     document.getElementById('previewWinRate').textContent = '--';
   }
@@ -2839,7 +3008,7 @@ const AFFIX_TYPES = {
   hp:       { name:'生命',  desc:'最大生命 +{v}',   unit:'' },
   spirit:   { name:'灵力',  desc:'最大灵力 +{v}',   unit:'' },
   regen:    { name:'回灵',  desc:'每回合回灵 +{v}', unit:'' },
-  lifesteal:{ name:'吸血',  desc:'攻击吸血 {v}%',   unit:'%' },
+  lifesteal:{ name:'吸血',  desc:'{v}%概率触发，回复伤害{v}%×1.5的生命',   unit:'%' },
   burn:     { name:'灼烧',  desc:'攻击 {v}% 几率灼烧', unit:'%' },
   poison:   { name:'淬毒',  desc:'攻击 {v}% 几率中毒', unit:'%' },
   execute:  { name:'斩杀',  desc:'目标血量≤{v}%时伤害+50%', unit:'%' },
@@ -2913,11 +3082,41 @@ function parsePassives(usedEquips) {
 // 功法 → 神通（按分类与名称推导）
 // 功法神通配置（可自定义，持久化保存）
 var GONGFA_SKILL_CONFIG = {
-  heal:     { name:'归元', cost:40, dmgMult:0.8, healPct:0.22 },
-  slash:    { name:'破军', cost:50, dmgMult:2.2, critBonus:25 },
-  multihit: { name:'残影', cost:45, dmgMult:1.25, hits:2 },
-  burst:    { name:'乾坤', cost:50, dmgMult:1.8, burnChance:0.2 },
+  heal:     { name:'归元', cost:35, dmgMult:0.8, healPct:0.20 },
+  slash:    { name:'破军', cost:45, dmgMult:1.8, critBonus:15 },
+  multihit: { name:'残影', cost:40, dmgMult:1.1, hits:2 },
+  burst:    { name:'乾坤', cost:45, dmgMult:1.5, burnChance:0.15 },
 };
+// ========== 属性效果配置 ==========
+var ELEMENT_EFFECTS = {
+  light:    { name:'光', status:'vuln',       duration:2, value:0.15, desc:'受伤+15%' },
+  dark:     { name:'暗', status:'weaken',     duration:2, value:0.15, desc:'攻击-15%' },
+  fire:     { name:'火', status:'burn',       duration:3, valuePct:0.05, desc:'灼烧5%/回合' },
+  water:    { name:'水', status:'slow',       duration:2, value:0.20, desc:'攻击-20%' },
+  electric: { name:'电', status:'stun',       duration:1, chance:0.20, desc:'20%麻痹' },
+  wood:     { name:'木', status:'poison',     duration:3, valuePct:0.03, desc:'中毒3%/回合' },
+  ice:      { name:'冰', status:'freeze',     duration:1, chance:0.15, desc:'15%冻结' },
+  thunder:  { name:'雷', status:'vuln',       duration:2, value:0.25, desc:'受伤+25%' },
+  wind:     { name:'风', status:'bleed',      duration:2, valuePct:0.04, desc:'流血4%/回合' },
+  earth:    { name:'土', status:'armorBreak', duration:2, value:0.25, desc:'受伤+25%' },
+};
+// 凶兽属性弱点（凶兽id: 弱点属性）
+var MONSTER_WEAKNESS = {
+  m1:'water', m2:'thunder', m3:'wood', m4:'fire', m5:'light', m6:'earth',
+  dl1:'wood', dl2:'earth', dl3:'electric', dl4:'ice', dl5:'thunder', dl6:'fire', dl7:'water', dl8:'earth',
+};
+function applyElementEffect(element, targetSide) {
+  try {
+  if (!element || !ELEMENT_EFFECTS[element]) return;
+  var eff = ELEMENT_EFFECTS[element];
+  var target = battleState[targetSide];
+  if (eff.chance && Math.random() > eff.chance) return;
+  var value = eff.value || 0;
+  if (eff.valuePct) value = Math.max(3, Math.floor(target.maxHp * eff.valuePct));
+  applyStatus(targetSide, { type: eff.status, value: value, duration: eff.duration });
+  addLog('crit', `${eff.name}属性生效：${targetSide === 'monster' ? battleState.monster.name : '修士'}${eff.desc}！`);
+  } catch(e) { console.warn('属性效果异常:', e); }
+}
 function loadGongfaConfig() {
   try {
     var raw = localStorage.getItem('xinmo_gongfa_cfg');
@@ -2947,7 +3146,8 @@ function buildGongfaSkills() {
     var type = gongfaTypeOf(eq);
     var cfg = GONGFA_SKILL_CONFIG[type];
     skills.push({ type:type, name: eq.name + '·' + cfg.name, cost:cfg.cost, dmgMult:cfg.dmgMult,
-      healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits, burnChance:cfg.burnChance, desc: skillDesc(type) });
+      healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits, burnChance:cfg.burnChance,
+      element: eq.element || '', desc: skillDesc(type) });
   });
   return skills.slice(0, 3);
 }
@@ -2957,10 +3157,10 @@ function renderGongfaSkillConfig() {
   var rows = Object.keys(GONGFA_SKILL_CONFIG).map(function(key) {
     var cfg = GONGFA_SKILL_CONFIG[key];
     var special = '';
-    if (key === 'heal') special = '<span style="font-size:11px;color:var(--text-dim);">回血%</span><input type="number" min="0" max="100" value="' + Math.round(cfg.healPct*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.healPct=(parseInt(this.value)||0)/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
-    else if (key === 'slash') special = '<span style="font-size:11px;color:var(--text-dim);">暴击+%</span><input type="number" min="0" max="100" value="' + cfg.critBonus + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.critBonus=parseInt(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
-    else if (key === 'multihit') special = '<span style="font-size:11px;color:var(--text-dim);">连击数</span><input type="number" min="1" max="5" value="' + cfg.hits + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.hits=parseInt(this.value)||1;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
-    else if (key === 'burst') special = '<span style="font-size:11px;color:var(--text-dim);">灼烧%</span><input type="number" min="0" max="100" value="' + Math.round(cfg.burnChance*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.burnChance=(parseInt(this.value)||0)/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    if (key === 'heal') special = '<span style="font-size:11px;color:var(--text-dim);">回血%(上限20)</span><input type="number" min="0" max="20" value="' + Math.round(cfg.healPct*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.healPct=Math.min(20,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    else if (key === 'slash') special = '<span style="font-size:11px;color:var(--text-dim);">暴击+%(上限30)</span><input type="number" min="0" max="30" value="' + cfg.critBonus + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.critBonus=Math.min(30,parseInt(this.value)||0);saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    else if (key === 'multihit') special = '<span style="font-size:11px;color:var(--text-dim);">连击数(上限3)</span><input type="number" min="1" max="3" value="' + cfg.hits + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.hits=Math.min(3,parseInt(this.value)||1);saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    else if (key === 'burst') special = '<span style="font-size:11px;color:var(--text-dim);">灼烧%(上限30)</span><input type="number" min="0" max="30" value="' + Math.round(cfg.burnChance*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.burnChance=Math.min(30,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
     return '<div class="skill-config-row"><span class="skill-name">' + cfg.name + '</span><span class="skill-desc">' + skillDesc(key) + '</span>' +
       '<span style="font-size:11px;color:var(--text-dim);">耗灵</span><input type="number" min="0" max="100" value="' + cfg.cost + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.cost=parseInt(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">' +
       '<span style="font-size:11px;color:var(--text-dim);">伤害×</span><input type="number" step="0.1" min="0" value="' + cfg.dmgMult + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.dmgMult=parseFloat(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">' +
@@ -3009,6 +3209,14 @@ function getTotalFocus() {
       total += (g.cultivation || 0);
     });
   }
+  // 神兽修炼时长并入总修为
+  if (gameState.beasts) {
+    gameState.beasts.forEach(function(b) {
+      total += (b.cultivation || 0);
+    });
+  }
+  // 阅读时长累计
+  total += (gameState.totalBookRead || 0);
   return total + (gameState.bonusFocus || 0);
 }
 function getRealmInfo() {
@@ -3044,19 +3252,20 @@ function renderRealm() {
   var info = getRealmInfo();
   var nextIdx = Math.min(info.idx + 1, REALM_NAMES.length - 1);
   var nextName = REALM_NAMES[nextIdx];
-  var remain = 1500 - (info.total % 1500);
+  // 专注够了但证道不够时，进度条停在100%，不再往下一级累加
+  var displayProgress = info.pendingEnlighten ? 1 : info.progress;
+  var remain = info.pendingEnlighten ? 0 : (1500 - (info.total % 1500));
   var enlightenHtml = '';
   if (info.pendingEnlighten) {
-    var needEnlighten = (info.idx + 1) * info.enlightenReq - info.enlightenCount;
-    enlightenHtml = '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">⏳ 专注已足，还需证道 ' + needEnlighten + ' 次方可突破</div>';
+    enlightenHtml = '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">⏳ 专注已足，还需证道 ' + info.enlightenNeeded + ' 次方可突破</div>';
   }
   el.innerHTML =
     '<div style="text-align:center;margin-bottom:6px;">' +
       '<div style="font-family:Noto Serif SC,serif;font-size:26px;font-weight:900;color:var(--gold-light);letter-spacing:2px;">' + info.name + '期</div>' +
       '<div style="font-size:11px;color:var(--text-dim);">第 ' + (info.idx + 1) + ' 境界 · 累计专注 ' + info.total + ' 分钟</div>' +
     '</div>' +
-    '<div class="realm-progress-bar"><div class="realm-progress-fill" style="width:' + (info.progress * 100) + '%;"></div></div>' +
-    '<div style="font-size:11px;color:var(--text-dim);text-align:center;margin-bottom:6px;">距 ' + nextName + ' 期还需 ' + remain + ' 分钟</div>' +
+    '<div class="realm-progress-bar"><div class="realm-progress-fill" style="width:' + (displayProgress * 100) + '%;"></div></div>' +
+    '<div style="font-size:11px;color:var(--text-dim);text-align:center;margin-bottom:6px;">' + (info.pendingEnlighten ? '专注已足，等待证道突破' : '距 ' + nextName + ' 期还需 ' + remain + ' 分钟') + '</div>' +
     '<div style="font-size:11px;color:var(--jade-light);text-align:center;">境界加成：攻击+' + info.bonusAtk + ' · 生命+' + info.bonusHp + ' · 灵力+' + info.bonusSpirit + '</div>' +
     '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">反派强度 ×' + info.realmMult.toFixed(2) + '</div>' +
     '<div style="font-size:10px;color:var(--purple);text-align:center;margin-top:2px;">证道 ' + info.enlightenCount + ' 次' + (info.pendingEnlighten ? '（还需' + info.enlightenNeeded + '次突破）' : '') + '</div>' +
@@ -3081,6 +3290,8 @@ function enlighten() {
   if (!confirm('今日是否已成功断念、专注向道？\n\n证道后将获得一件随机消耗法宝，每日仅可一次。\n连续证道7天可获额外奖励。')) return;
   dailyState.enlightenedToday = true;
   gameState.enlightenCount = (gameState.enlightenCount || 0) + 1;
+  // 赛季积分：证道每次3分
+  addSeasonScore('enlighten', 3);
   // 连续天数：检查昨天是否证道
   var today = getTodayStr();
   var yesterday = new Date(Date.now() - 86400000).toDateString();
@@ -3399,6 +3610,9 @@ function recordFocusSession(minutes) {
   if (minutes <= 0) return;
   if (!gameState.focusSessions) gameState.focusSessions = [];
   gameState.focusSessions.push({ date: getTodayStr(), minutes: minutes, timestamp: Date.now() });
+  // 赛季积分：专注每30分钟1分
+  var focusScore = Math.floor(minutes / 30);
+  if (focusScore > 0) addSeasonScore('focus', focusScore);
   // 携带神兽同步修炼（单次最多50分钟，和功法一致）
   var beastCultMin = Math.min(minutes, 50);
   getActiveBeasts().forEach(function(b) {
@@ -3647,12 +3861,16 @@ renderMonsterSelector = function() {
       ? '<img src="' + m.image + '" style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;display:block;margin:0 auto;" onerror="this.style.display=\'none\'">'
       : '<div style="width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;margin:0 auto;">🐾</div>';
     if (todayCnt >= 2) lockHtml = '<div class="monster-lock-overlay">今日已挑战2次</div>';
+    // 越级通关标记
+    var autoCleared = gameState.autoCleared && gameState.autoCleared.date === todayD && gameState.autoCleared.ids[m.id];
+    var autoHtml = autoCleared ? '<div style="font-size:9px;color:#80CBC4;font-weight:600;margin-top:2px;">⚡已越级通关</div>' : '';
     return '<button class="diff-btn ' + (prepareState.selectedMonsterId === m.id ? 'active' : '') + (unlocked && todayCnt < 2 ? '' : ' monster-locked') + '" data-action="select-monster" data-monster-id="' + m.id + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;">' +
       imgHtml +
       '<div style="flex:1;min-width:0;text-align:center;">' +
         '<div class="diff-name">' + m.name + cntHtml + '</div>' +
-        '<div class="diff-stats">血' + m.maxHp + ' · 攻' + m.attack + '</div>' +
+        '<div class="diff-stats">' + getTierConfig(m.tier || 3).name + '</div>' +
         (req > 0 ? '<div class="diff-req">需专注' + req + '分钟</div>' : '') +
+        autoHtml +
       '</div>' +
       lockHtml +
       '<span class="monster-edit-btn" data-action="edit-monster" data-monster-id="' + m.id + '" style="z-index:10;position:relative;" onclick="event.stopPropagation();editMonster(\'' + m.id + '\')">✎</span>' +
@@ -3913,12 +4131,26 @@ function startGongfaCultivation(id) {
   if (cultivationState.autoStopTimer) { clearTimeout(cultivationState.autoStopTimer); }
   cultivationState.interval = setInterval(function() {
     if (!cultivationState.activeId) return;
-    // 检查是否达到50分钟上限
     var elapsed = (Date.now() - cultivationState.startTime) / 60000;
+    // 检查是否达到50分钟上限
     if (elapsed >= CULTIVATION_SESSION_LIMIT) {
       stopGongfaCultivation();
       showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
       return;
+    }
+    // 检查是否达到突破条件
+    var eq = gameState.equipment.gongfa.find(function(g){ return g.id === cultivationState.activeId; });
+    if (eq) {
+      var lv = eq.level || 1;
+      if (lv < 5) {
+        var req = getGongfaUpgradeReq(lv);
+        var totalCult = (eq.cultivation || 0) + Math.floor(elapsed);
+        if (totalCult >= req) {
+          stopGongfaCultivation();
+          showToast('「' + eq.name + '」修炼已满，可突破！已自动停止', 'success');
+          return;
+        }
+      }
     }
     renderInventoryGrid();
   }, 1000);
@@ -4042,6 +4274,8 @@ function addBookRead(bossId, minutes) {
     gameState.todayBookRead = { date: today, minutes: 0 };
   }
   gameState.todayBookRead.minutes = (gameState.todayBookRead.minutes || 0) + minutes;
+  // 累计阅读时长（计入总修为/境界突破）
+  gameState.totalBookRead = (gameState.totalBookRead || 0) + minutes;
   saveGame();
 }
 function isBookBossCleared(bossId) {
@@ -4697,6 +4931,9 @@ function renderStatuses() {
   const labels = {
     poison:['中毒','debuff'], burn:['灼烧','debuff'], weaken:['虚弱','debuff'],
     confuse:['迷乱','debuff'], rage:['激怒','buff'], shield:['灵盾','shield'],
+    armorBreak:['破甲','debuff'], vuln:['易伤','debuff'], dodge:['闪避','buff'],
+    dmgReduce:['减伤','buff'], stun:['麻痹','debuff'], freeze:['冻结','debuff'],
+    bleed:['流血','debuff'], slow:['减速','debuff'], empower:['强化','buff'],
   };
   ['player', 'monster'].forEach(side => {
     const c = battleState[side];
@@ -4722,11 +4959,12 @@ function tickStatuses() {
     if (battleState.finished) return;
     const c = battleState[side];
     (c.statuses || []).forEach(s => {
-      if (s.type === 'poison' || s.type === 'burn') {
+      if (s.type === 'poison' || s.type === 'burn' || s.type === 'bleed') {
         const dmg = Math.max(1, Math.floor(s.value));
         c.hp = Math.max(0, c.hp - dmg);
         showDamage(side, dmg, false);
-        addLog(side === 'player' ? 'monster' : 'player', `${side === 'player' ? '修士' : battleState.monster.name} 受到持续伤害 ${dmg} 点。`);
+        const dmgName = s.type === 'poison' ? '中毒' : s.type === 'burn' ? '灼烧' : '流血';
+        addLog(side === 'player' ? 'monster' : 'player', `${side === 'player' ? '修士' : battleState.monster.name} 受到${dmgName}伤害 ${dmg} 点。`);
       }
     });
     c.statuses = (c.statuses || []).map(s => ({ ...s, duration: s.duration - 1 })).filter(s => s.duration > 0);
@@ -4748,10 +4986,32 @@ function updateSpiritBar() {
 function renderActions() {
   const container = document.getElementById('battleActions');
   const p = battleState.player;
-  let html = `
-    <button class="battle-action-btn" onclick="playerAct('basic')">
-      <span class="aa-name">挥剑</span><span class="aa-sub">普通攻击</span>
-    </button>`;
+  const swords = battleState.availableSwords || [];
+  let html = '';
+  // 挥剑：如果有多把剑，显示选择器
+  if (swords.length > 1) {
+    html += '<div style="grid-column:1/-1;margin-bottom:4px;">';
+    swords.forEach(function(sw, i) {
+      var elemName = sw.element ? (ELEMENT_EFFECTS[sw.element] ? ELEMENT_EFFECTS[sw.element].name : '') + '属性' : '无属性';
+      html += '<button class="battle-action-btn" style="padding:6px 10px;font-size:12px;' + (battleState.selectedSwordIdx === i ? 'border-color:var(--gold-light);background:rgba(212,175,55,0.15);' : '') + '" onclick="selectSword(' + i + ')">' +
+        '<span class="aa-name" style="font-size:13px;">' + sw.name + '</span>' +
+        '<span class="aa-sub" style="font-size:10px;">' + elemName + '</span>' +
+        '</button>';
+    });
+    html += '</div>';
+    html += '<button class="battle-action-btn" onclick="playerAct(\'basic\')">' +
+      '<span class="aa-name">挥剑·' + (swords[battleState.selectedSwordIdx] ? swords[battleState.selectedSwordIdx].name : '') + '</span>' +
+      '<span class="aa-sub">攻击 · +15灵</span></button>';
+  } else {
+    html += '<button class="battle-action-btn" onclick="playerAct(\'basic\')">' +
+      '<span class="aa-name">挥剑</span><span class="aa-sub">攻击 · +15灵</span></button>';
+  }
+  // 万剑齐发：第3回合解锁，所有剑一起攻击
+  if (swords.length >= 2 && battleState.round >= 3 && !battleState.allSwordsUsed) {
+    html += '<button class="battle-action-btn" style="border-color:var(--gold-light);background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.05));" onclick="playerAct(\'allSwords\')">' +
+      '<span class="aa-name">⚔ 万剑齐发</span>' +
+      '<span class="aa-sub">' + swords.length + '剑齐攻 · 每场1次</span></button>';
+  }
   battleState.skills.forEach((sk, i) => {
     html += `
       <button class="battle-action-btn skill" onclick="playerAct('skill', ${i})" data-cost="${sk.cost}">
@@ -4778,6 +5038,10 @@ function setActionsEnabled(enabled) {
   if (!container) return;
   container.querySelectorAll('button').forEach(b => b.disabled = !enabled);
 }
+function selectSword(idx) {
+  battleState.selectedSwordIdx = idx;
+  renderActions();
+}
 function showHeal(target, amount) {
   const combatant = document.getElementById(target === 'player' ? 'playerCombatant' : 'monsterCombatant');
   const popup = document.createElement('div');
@@ -4787,6 +5051,128 @@ function showHeal(target, amount) {
   combatant.appendChild(popup);
   setTimeout(() => { if (popup.parentNode) popup.remove(); }, 1200);
 }
+// ========== 念·无尽挑战 ==========
+var nianState = { layer: 1, running: false };
+function startNianChallenge() {
+  if (nianState.running) { showToast('念的挑战已在进行中', 'error'); return; }
+  nianState.layer = 1;
+  nianState.running = true;
+  launchNianLayer();
+}
+function launchNianLayer() {
+  var layer = nianState.layer;
+  var minutes = getTodayFocus();
+  // 计算玩家当日实际战力（与普通战斗一致）
+  var baseAtk = Math.floor(minutes * 0.8);
+  var baseHp = Math.floor(100 + minutes * 0.5);
+  // 计算装备加成
+  var equipBonus = 0, critBonus = 0, equipHp = 0;
+  var allGongfa = gameState.equipment.gongfa.map(function(e){ return e.id; });
+  var allPerm = gameState.equipment.permanent.map(function(e){ return e.id; });
+  allGongfa.concat(allPerm).forEach(function(id) {
+    var eq = gameState.equipment.gongfa.concat(gameState.equipment.permanent).find(function(e) { return e.id === id; });
+    if (eq) {
+      if (eq.type === 'gongfa') {
+        var lb = getGongfaLevelBonus(eq);
+        equipBonus += Math.floor(eq.power * lb.atkMult);
+        critBonus += (eq.crit || 0) + lb.critAdd;
+      } else {
+        equipBonus += eq.power || 0;
+        critBonus += eq.crit || 0;
+      }
+      // 装备词条生命值
+      if (eq.affixes) {
+        Object.keys(eq.affixes).forEach(function(k) {
+          if (k === 'hp') equipHp += eq.affixes[k] || 0;
+        });
+      }
+    }
+  });
+  var realm = getRealmInfo();
+  baseAtk += realm.bonusAtk;
+  baseHp += realm.bonusHp;
+  var stoneBonus = getStoneBonus();
+  baseAtk = Math.floor(baseAtk * (1 + stoneBonus.atkMult));
+  baseHp += stoneBonus.hpBonus;
+  critBonus += stoneBonus.critAdd;
+  baseAtk += gameState.inscriptionAtkBonus || 0;
+  baseHp += gameState.inscriptionHpBonus || 0;
+  var beastBonus = getBeastBonus();
+  baseAtk = Math.floor(baseAtk * (1 + beastBonus.atkMult));
+  critBonus += beastBonus.critAdd;
+  // 法宝/功法暴击上限20%，专注/神兽/宝石带来的暴击无上限
+  var stoneCrit = stoneBonus.critAdd || 0;
+  var beastCrit = beastBonus.critAdd || 0;
+  var equipCritOnly = Math.max(0, critBonus - stoneCrit - beastCrit);
+  var finalCrit = Math.min(15 + Math.min(equipCritOnly, 20) + stoneCrit + beastCrit, 100);
+  // 玩家当日DPS = 总攻击 × (1 + 暴击率 × 0.5)
+  var totalAtk = baseAtk + equipBonus;
+  var playerDps = totalAtk * (1 + finalCrit / 100 * 0.5);
+  // 玩家总生命（含装备词条）
+  var totalHp = baseHp + equipHp;
+  // 周目系数
+  var zhoumuMult = 1 + ((gameState.season?.zhoumu || 1) - 1) * 0.15;
+  // 无尽模式难度曲线：5回合起步，每层+1回合，攻击凶猛
+  var targetRounds = 4 + layer;  // 第1层5回合，第2层6回合...
+  var dmgRatio = Math.min(0.30 + layer * 0.035, 0.65); // 第1层33.5%，第10层65%封顶
+  // 动态公式计算血攻
+  var hp = Math.floor(playerDps * targetRounds * zhoumuMult);
+  var atk = Math.max(15, Math.floor(totalHp * dmgRatio * zhoumuMult));
+  var nianMonster = {
+    id: 'nian_' + layer,
+    monsterId: 'nian',
+    name: '念 · 第' + layer + '层',
+    attack: atk,
+    hp: hp,
+    maxHp: hp,
+    reqMinutes: 0,
+    difficulty: '无尽·第' + layer + '层',
+    fragReward: 0,
+    cultReward: 0,
+    element: 'dark',
+    image: '',
+    isNian: true,
+  };
+  prepareState.selectedGongfa = allGongfa;
+  prepareState.selectedPermanent = allPerm;
+  prepareState.selectedConsumable = [];
+  // 关闭旧的战斗结果面板
+  document.getElementById('battleOverlay').style.display = 'none';
+  startBattle(nianMonster, { baseAtk: baseAtk, baseHp: baseHp, focusMinutes: minutes, note: '念·第' + layer + '层', isNian: true, context: 'nian' });
+}
+function onNianVictory() {
+  var layer = nianState.layer;
+  // 每层2分
+  addSeasonScore('nian', NIAN_SCORE_PER_LAYER);
+  // 更新最高层
+  if (layer > (gameState.season.nianBestLayer || 0)) {
+    gameState.season.nianBestLayer = layer;
+    saveGame();
+  }
+  showToast('击败念·第' + layer + '层！积分+' + NIAN_SCORE_PER_LAYER, 'success');
+  // 询问是否继续下一层
+  setTimeout(function() {
+    document.getElementById('battleOverlay').style.display = 'none';
+    if (confirm('已击败念·第' + layer + '层，获得' + NIAN_SCORE_PER_LAYER + '积分。\n\n是否继续挑战第' + (layer+1) + '层？\n（下一层难度动态提升，血量与攻击基于你当前战力计算）')) {
+      nianState.layer++;
+      launchNianLayer();
+    } else {
+      nianState.running = false;
+      document.getElementById('battleOverlay').style.display = 'none';
+      navigate('prepare');
+    }
+  }, 800);
+}
+function onNianDefeat() {
+  nianState.running = false;
+  showToast('念·第' + nianState.layer + '层挑战失败，已获得' + ((nianState.layer - 1) * NIAN_SCORE_PER_LAYER) + '积分', 'error');
+  setTimeout(function() {
+    document.getElementById('battleOverlay').style.display = 'none';
+    navigate('prepare');
+  }, 1000);
+}
+// ========== 念·无尽挑战结束 ==========
+
 function startBattle(monsterInput, opts) {
   opts = opts || {};
   var monster;
@@ -4867,21 +5253,30 @@ function startBattle(monsterInput, opts) {
   aff.shield = Math.max(aff.shield || 0, stoneBonus.shield);
   var maxHp = baseHp + aff.hp;
   var maxSpirit = 100 + aff.spirit + realm.bonusSpirit;
-  var totalMult = difficultyMult * realm.realmMult;
+  // 动态血量系统：根据裸战力+强度等级计算凶兽血攻
+  var dynStats = calcMonsterStats(monster);
+  monster.maxHp = dynStats.maxHp;
+  monster.attack = dynStats.attack;
+  var totalMult = realm.realmMult;
   if (totalMult !== 1.0) {
     monster.maxHp = Math.floor(monster.maxHp * totalMult);
     monster.attack = Math.floor(monster.attack * totalMult);
   }
   var monsterSkill = monster.skill || (MONSTER_SKILLS[monster.id] ? JSON.parse(JSON.stringify(MONSTER_SKILLS[monster.id])) : (monster.custom ? JSON.parse(JSON.stringify(DEFAULT_MONSTER_SKILL)) : null));
+  // 法宝/功法暴击率上限20%，专注/神兽/宝石带来的暴击无上限
+  var stoneCrit = stoneBonus.critAdd || 0;
+  var beastCrit = beastBonus.critAdd || 0;
+  var equipCritOnly = Math.max(0, critBonus - stoneCrit - beastCrit);
+  var finalCrit = Math.min(15 + Math.min(equipCritOnly, 20) + stoneCrit + beastCrit, 100);
   battleState = {
     player: {
-      name: '修士', maxHp: maxHp, hp: maxHp, attack: baseAtk + equipBonus, crit: Math.min(15 + critBonus, 100),
+      name: '修士', maxHp: maxHp, hp: maxHp, attack: baseAtk + equipBonus, crit: finalCrit,
       spirit: maxSpirit, maxSpirit: maxSpirit, statuses: [], affixes: aff, passives: pass,
     },
     monster: {
       name: monster.name,
       maxHp: monster.maxHp, hp: monster.maxHp, attack: monster.attack,
-      difficulty: monster.label || monster.difficulty || '', monsterId: monster.id, image: monster.image, desc: monster.desc,
+      difficulty: dynStats.tierName, monsterId: monster.id, image: monster.image, desc: monster.desc,
       reqMinutes: monster.reqMinutes || 0,
       statuses: [], skillUsed: false, cooldownCounter: 0,
       skill: monsterSkill,
@@ -4889,6 +5284,7 @@ function startBattle(monsterInput, opts) {
     round: 0, log: [], usedEquips: usedEquips, focusMinutes: minutes, note: note,
     finished: false, result: null, awaitingAction: false,
     context: opts.context || 'normal',
+    isNian: opts.isNian || false,
     onWin: opts.onWin || null,
     onLose: opts.onLose || null,
   };
@@ -4897,6 +5293,17 @@ function startBattle(monsterInput, opts) {
   }
   battleState.skills = buildGongfaSkills();
   battleState.beastUlts = getBeastBonus().ults;
+  // 收集可用的剑（永久法宝中分类名称为"剑"的）
+  var swordCatIds = (gameState.categories.permanent || []).filter(function(c) {
+    return c.name === '剑' || c.name === '神剑' || c.name === '名剑';
+  }).map(function(c) { return c.id; });
+  // 也包含默认的cat_sword
+  if (swordCatIds.indexOf('cat_sword') < 0) swordCatIds.push('cat_sword');
+  battleState.availableSwords = (usedEquips || []).filter(function(e) {
+    return e.type === 'permanent' && swordCatIds.indexOf(e.categoryId) >= 0;
+  });
+  battleState.selectedSwordIdx = 0;
+  battleState.allSwordsUsed = false;
   if (aff.shield > 0) applyStatus('player', { type: 'shield', value: aff.shield, duration: 99 });
   navigate('battle');
   initBattleUI();
@@ -4906,7 +5313,7 @@ function initBattleUI() {
   battleRunning = true;
   document.getElementById('battleOverlay').style.display = 'none';
   document.getElementById('battleLog').innerHTML = '';
-  document.getElementById('playerName').textContent = battleState.player.name;
+  document.getElementById('playerName').textContent = getZhoumuStars() + ' ' + battleState.player.name;
   document.getElementById('monsterName').textContent = battleState.monster.name;
   document.getElementById('monsterImage').src = battleState.monster.image;
   document.getElementById('battlePlayerAtk').textContent = battleState.player.attack;
@@ -4965,6 +5372,285 @@ var ELEMENT_COLORS = {
   electric: '#FFEB3B', wood: '#66BB6A', ice: '#B3E5FC', thunder: '#7C4DFF',
   wind: '#80CBC4', earth: '#8D6E63'
 };
+
+// ========== 赛季周目系统配置 ==========
+var SEASON_RANKS = [
+  { name: '炼气期', minScore: 0,    fragments: 50,  color: '#9E9E9E' },
+  { name: '筑基期', minScore: 100,  fragments: 100, color: '#4CAF50' },
+  { name: '金丹期', minScore: 250,  fragments: 200, color: '#FF9800' },
+  { name: '元婴期', minScore: 500,  fragments: 400, color: '#E91E63' },
+  { name: '化神期', minScore: 900,  fragments: 800, color: '#9C27B0' },
+];
+var ZHOUMU_NAMES = ['初入轮回', '二周目', '三周目', '四周目'];
+var ZHOUMU_ACHIEVEMENTS = [
+  { minScore: 100,  name: '初窥门径' },
+  { minScore: 300,  name: '小有所成' },
+  { minScore: 600,  name: '锋芒毕露' },
+  { minScore: 1000, name: '威震一方' },
+  { minScore: 1500, name: '名动天下' },
+  { minScore: 2000, name: '盖世无双' },
+  { minScore: 3000, name: '万古流芳' },
+];
+// 念的配置
+var NIAN_BASE_HP = 500;
+var NIAN_BASE_ATK = 30;
+var NIAN_HP_GROWTH = 1.35;   // 每层血量增长
+var NIAN_ATK_GROWTH = 1.2;   // 每层攻击增长
+var NIAN_SCORE_PER_LAYER = 2; // 每层积分
+
+function getWeekStart() {
+  var d = new Date();
+  var day = d.getDay() || 7; // 周日=7
+  d.setDate(d.getDate() - day + 1); // 周一
+  d.setHours(0,0,0,0);
+  return d.toDateString();
+}
+function getMonthKey() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+}
+function getRankByScore(score) {
+  var rank = SEASON_RANKS[0];
+  for (var i = 0; i < SEASON_RANKS.length; i++) {
+    if (score >= SEASON_RANKS[i].minScore) rank = SEASON_RANKS[i];
+  }
+  return rank;
+}
+function getZhoumuStars() {
+  var z = gameState.season.zhoumu || 1;
+  var s = '';
+  for (var i = 0; i < z; i++) s += '★';
+  return s;
+}
+function addSeasonScore(type, amount) {
+  if (!gameState.season.weekBreakdown) gameState.season.weekBreakdown = { beasts:0, focus:0, enlighten:0, dungeons:0, nian:0 };
+  gameState.season.weekBreakdown[type] = (gameState.season.weekBreakdown[type] || 0) + amount;
+  gameState.season.weekScore += amount;
+  saveGame();
+}
+function checkSeasonRollover() {
+  var ws = getWeekStart();
+  var mk = getMonthKey();
+  if (!gameState.season.weekStart) {
+    gameState.season.weekStart = ws;
+    gameState.season.zhoumuMonth = mk;
+    return;
+  }
+  // 月份变化 → 颁发上月称号，重置周目为1
+  if (gameState.season.zhoumuMonth !== mk) {
+    awardMonthlyTitle();
+    gameState.season.zhoumu = 1;
+    gameState.season.zhoumuMonth = mk;
+    gameState.season.weekStart = ws;
+    gameState.season.weekScore = 0;
+    gameState.season.weekBreakdown = { beasts:0, focus:0, enlighten:0, dungeons:0, nian:0 };
+    showToast('新的一月，周目重置为初入轮回', 'info');
+    saveGame();
+    return;
+  }
+  // 周变化 → 结算上周
+  if (gameState.season.weekStart !== ws) {
+    settleWeek();
+    gameState.season.weekStart = ws;
+    gameState.season.weekScore = 0;
+    gameState.season.weekBreakdown = { beasts:0, focus:0, enlighten:0, dungeons:0, nian:0 };
+    // 周目+1（最多4）
+    if (gameState.season.zhoumu < 4) gameState.season.zhoumu++;
+    saveGame();
+  }
+}
+function settleWeek() {
+  var score = gameState.season.weekScore || 0;
+  var rank = getRankByScore(score);
+  gameState.season.weekRank = rank.name;
+  // 发碎片
+  dailyState.fragments += rank.fragments;
+  saveDaily();
+  // 记录周目最高分
+  var z = gameState.season.zhoumu || 1;
+  if (!gameState.season.zhoumuBestScores) gameState.season.zhoumuBestScores = {};
+  if (!gameState.season.zhoumuBestScores[z] || score > gameState.season.zhoumuBestScores[z]) {
+    gameState.season.zhoumuBestScores[z] = score;
+  }
+  // 金丹期以上掉法宝
+  if (score >= SEASON_RANKS[2].minScore) {
+    var quality = score >= SEASON_RANKS[4].minScore ? 'top' : (score >= SEASON_RANKS[3].minScore ? 'high' : 'mid');
+    var eq = generateSeasonEquip(quality);
+    if (eq) {
+      gameState.categories.permanent.push(eq);
+      showToast('赛季结算：获得法宝「' + eq.name + '」', 'success');
+    }
+  }
+  showToast('赛季结算：' + rank.name + '，获得' + rank.fragments + '枚碎片', 'success');
+}
+function generateSeasonEquip(quality) {
+  var pools = {
+    mid: [
+      { name:'玄铁剑', power:30, crit:8, effect:'赛季奖励·中品' },
+      { name:'青玉笛', power:25, crit:10, effect:'赛季奖励·中品' },
+      { name:'紫霞佩', power:28, crit:9, effect:'赛季奖励·中品' },
+    ],
+    high: [
+      { name:'赤霄剑', power:45, crit:12, effect:'赛季奖励·上品' },
+      { name:'太虚镜', power:40, crit:15, effect:'赛季奖励·上品' },
+      { name:'玄冥珠', power:42, crit:13, effect:'赛季奖励·上品' },
+    ],
+    top: [
+      { name:'轩辕剑', power:60, crit:18, effect:'赛季奖励·极品' },
+      { name:'昆仑镜', power:55, crit:20, effect:'赛季奖励·极品' },
+      { name:'东皇钟', power:65, crit:15, effect:'赛季奖励·极品' },
+    ],
+  };
+  var pool = pools[quality] || pools.mid;
+  var base = pool[Math.floor(Math.random()*pool.length)];
+  return {
+    id: genId(), name: base.name, power: base.power, crit: base.crit,
+    effect: base.effect, type: 'permanent', categoryId: '',
+    image: '', element: '', affixes: [], createdAt: Date.now()
+  };
+}
+function getZhoumuAchievement(score) {
+  var ach = null;
+  for (var i = 0; i < ZHOUMU_ACHIEVEMENTS.length; i++) {
+    if (score >= ZHOUMU_ACHIEVEMENTS[i].minScore) ach = ZHOUMU_ACHIEVEMENTS[i];
+  }
+  return ach;
+}
+// 越级通关：击败一只凶兽后，同副本内其他凶兽默认通关1次
+function applyAutoClear(beatenId, diffMult) {
+  var todayK = getTodayStr();
+  var grp = (gameState.monsterGroups || []).find(function(g){ return g.id === gameState.currentGroup; });
+  if (!grp || !grp.monsterIds) return;
+  if (!gameState.dailyMonsterWins || gameState.dailyMonsterWins.date !== todayK) {
+    gameState.dailyMonsterWins = { date: todayK, wins: {} };
+  }
+  if (!gameState.dailyMonsterKills || gameState.dailyMonsterKills.date !== todayK) {
+    gameState.dailyMonsterKills = { date: todayK, kills: {} };
+  }
+  if (!gameState.autoCleared || gameState.autoCleared.date !== todayK) {
+    gameState.autoCleared = { date: todayK, ids: {} };
+  }
+  var autoCount = 0;
+  var totalFrag = 0, totalCult = 0;
+  grp.monsterIds.forEach(function(mid) {
+    if (mid === beatenId) return; // 自己不算
+    if (gameState.dailyMonsterWins.wins[mid]) return; // 已经赢过的不重复
+    if (gameState.autoCleared.ids[mid]) return; // 已经越级通关过的不重复
+    // 标记为今日已通关
+    gameState.dailyMonsterWins.wins[mid] = true;
+    gameState.autoCleared.ids[mid] = true;
+    // 算每日次数（1次）
+    gameState.dailyMonsterKills.kills[mid] = Math.max(1, gameState.dailyMonsterKills.kills[mid] || 0) + 0;
+    if (!gameState.dailyMonsterKills.kills[mid]) gameState.dailyMonsterKills.kills[mid] = 1;
+    // 基础奖励（不乘难度系数）
+    var mObj = getMonsterById(mid);
+    if (mObj) {
+      var mReq = mObj.reqMinutes || 0;
+      var baseFrag = mObj.fragReward > 0 ? mObj.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
+      var baseCult = mObj.cultReward > 0 ? mObj.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
+      totalFrag += baseFrag;
+      totalCult += baseCult;
+      autoCount++;
+      // 按同难度计入赛季积分
+      var diffScore = diffMult >= 2.0 ? 5 : diffMult >= 1.8 ? 4 : diffMult >= 1.4 ? 2 : 1;
+      addSeasonScore('beast', diffScore);
+    }
+  });
+  if (autoCount > 0) {
+    if (!dailyState.fragments) dailyState.fragments = 0;
+    dailyState.fragments += totalFrag;
+    if (!gameState.bonusFocus) gameState.bonusFocus = 0;
+    gameState.bonusFocus += totalCult;
+    saveDaily();
+    saveGame();
+    showToast('⚡ 越级通关：' + autoCount + '只凶兽默认通过，获得' + totalFrag + '碎片+' + totalCult + '修为（基础奖励）', 'info');
+  }
+}
+function checkDungeonClear() {
+  var todayK = getTodayStr();
+  if (!gameState.dailyMonsterWins || gameState.dailyMonsterWins.date !== todayK) return;
+  if (!gameState.dailyDungeonClear || gameState.dailyDungeonClear.date !== todayK) {
+    gameState.dailyDungeonClear = { date: todayK, cleared: [], count: 0 };
+  }
+  var grp = (gameState.monsterGroups || []).find(function(g){ return g.id === gameState.currentGroup; });
+  if (!grp || !grp.monsterIds || grp.monsterIds.length === 0) return;
+  // 已通关过则跳过
+  if (gameState.dailyDungeonClear.cleared.indexOf(grp.id) >= 0) return;
+  // 每天最多2个副本
+  if (gameState.dailyDungeonClear.count >= 2) return;
+  // 检查副本内所有凶兽是否都赢过
+  var allWin = grp.monsterIds.every(function(mid) { return gameState.dailyMonsterWins.wins[mid]; });
+  if (allWin) {
+    gameState.dailyDungeonClear.cleared.push(grp.id);
+    gameState.dailyDungeonClear.count++;
+    addSeasonScore('dungeons', 8);
+    showToast('副本「' + grp.name + '」通关！赛季积分+8', 'success');
+    saveGame();
+  }
+}
+function awardMonthlyTitle() {
+  var mk = getMonthKey();
+  // 检查是否已颁发本月称号
+  if (gameState.season.monthlyTitles) {
+    for (var i = 0; i < gameState.season.monthlyTitles.length; i++) {
+      if (gameState.season.monthlyTitles[i].month === mk) return;
+    }
+  }
+  var z = gameState.season.zhoumu || 1;
+  var best = gameState.season.zhoumuBestScores ? (gameState.season.zhoumuBestScores[z] || 0) : 0;
+  var ach = getZhoumuAchievement(best);
+  var titleName = ach ? ach.name : '初入轮回';
+  var year = mk.split('-')[0], month = mk.split('-')[1];
+  var title = year + '年' + parseInt(month) + '月·' + titleName;
+  if (!gameState.season.monthlyTitles) gameState.season.monthlyTitles = [];
+  gameState.season.monthlyTitles.push({ month: mk, title: title, score: best, zhoumu: z });
+  saveGame();
+  showToast('获得月度称号：' + title, 'success');
+}
+function renderSeasonPanel() {
+  var el = document.getElementById('seasonPanel');
+  if (!el) return;
+  var s = gameState.season;
+  if (!s) return;
+  var score = s.weekScore || 0;
+  var rank = getRankByScore(score);
+  var nextRank = null;
+  for (var i = 0; i < SEASON_RANKS.length; i++) {
+    if (SEASON_RANKS[i].minScore > score) { nextRank = SEASON_RANKS[i]; break; }
+  }
+  var bd = s.weekBreakdown || { beasts:0, focus:0, enlighten:0, dungeons:0, nian:0 };
+  var z = s.zhoumu || 1;
+  var html = '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">';
+  html += '<span>当前段位：<b style="color:' + rank.color + ';">' + rank.name + '</b></span>';
+  html += '<span>周目：<b style="color:var(--gold);">' + ZHOUMU_NAMES[z-1] + '</b></span></div>';
+  html += '<div style="margin-bottom:4px;">本周积分：<b style="color:var(--gold-light);font-size:16px;">' + score + '</b>';
+  if (nextRank) html += ' / 距' + nextRank.name + '还需' + (nextRank.minScore - score) + '分';
+  html += '</div>';
+  html += '<div style="font-size:11px;color:var(--text-dim);line-height:1.6;">';
+  html += '凶兽+' + (bd.beasts||0) + ' · 专注+' + (bd.focus||0) + ' · 证道+' + (bd.enlighten||0) + '<br>';
+  html += '副本+' + (bd.dungeons||0) + ' · 念+' + (bd.nian||0);
+  html += '</div>';
+  html += '<div style="font-size:10px;color:var(--text-dim);margin-top:4px;">周日结算：' + rank.fragments + '枚碎片' + (score >= SEASON_RANKS[2].minScore ? ' + 赛季法宝' : '') + ' · 4周目一轮回</div>';
+  // 积分获取规则（可展开）
+  html += '<div onclick="document.getElementById(\'seasonRules\').style.display=document.getElementById(\'seasonRules\').style.display===\'none\'?\'block\':\'none\'" style="cursor:pointer;font-size:11px;color:var(--gold-light);margin-top:8px;font-weight:600;">▸ 积分获取规则</div>';
+  html += '<div id="seasonRules" style="display:none;margin-top:6px;padding:8px;background:rgba(0,0,0,0.3);border-radius:6px;font-size:10px;color:var(--text-secondary);line-height:1.8;">';
+  html += '<div><b style="color:var(--gold-light);">击败凶兽</b>：简单1分 / 普通2分 / 困难3分 / 高阶4分 / 极难5分（按当前难度）</div>';
+  html += '<div><b style="color:var(--gold-light);">专注时长</b>：每累计30分钟 +1分</div>';
+  html += '<div><b style="color:var(--gold-light);">每日证道</b>：每次 +3分（每日1次）</div>';
+  html += '<div><b style="color:var(--gold-light);">副本通关</b>：每个副本 +8分（每天最多2个副本=16分，需副本内每只凶兽至少赢1次）</div>';
+  html += '<div><b style="color:var(--gold-light);">挑战「念」</b>：击败一层 +2分（每天从第1层开始，全装备挑战）</div>';
+  html += '<div style="margin-top:4px;color:var(--text-dim);">段位：炼气0 / 筑基100 / 金丹250 / 元婴500 / 化神900</div>';
+  html += '<div style="color:var(--text-dim);">周日24点结算，按段位发碎片，金丹期以上额外掉落赛季法宝</div>';
+  html += '</div>';
+  el.innerHTML = html;
+  // 更新星星
+  var starsEl = document.getElementById('zhoumuStars');
+  if (starsEl) starsEl.textContent = getZhoumuStars();
+  // 更新念最高层
+  var nianEl = document.getElementById('nianBestLayer');
+  if (nianEl) nianEl.textContent = s.nianBestLayer || 1;
+}
+// ========== 赛季周目系统结束 ==========
 function getActiveElement() {
   if (!battleState || !battleState.usedEquips) return '';
   for (var i = 0; i < battleState.usedEquips.length; i++) {
@@ -5002,6 +5688,57 @@ function spawnElementParticles() {
     setTimeout(function(el) { if (el.parentNode) el.remove(); }, 800, p);
   }
 }
+// 万剑齐发：所有剑一起攻击
+function doAllSwordsAttack() {
+  var p = battleState.player, m = battleState.monster;
+  var swords = battleState.availableSwords || [];
+  if (swords.length < 2 || battleState.allSwordsUsed) { runMonsterTurn(); return; }
+  battleState.allSwordsUsed = true;
+  addLog('system', '⚔ 万剑齐发！' + swords.length + '把神剑同时出鞘！');
+  var totalDmg = 0;
+  var swordIdx = 0;
+  function nextSword() {
+    if (swordIdx >= swords.length || battleState.finished) {
+      // 所有剑攻击完毕
+      if (m.hp <= 0) { finishBattle('win'); return; }
+      updateHpBars();
+      renderActions();
+      battleTimeouts.push(setTimeout(function() { if (!battleState.finished) runMonsterTurn(); }, 600));
+      return;
+    }
+    var sw = swords[swordIdx];
+    var elem = sw.element || '';
+    var atk = p.attack;
+    var wk = p.statuses.find(s => s.type === 'weaken');
+    if (wk) atk = Math.floor(atk * (1 - wk.value));
+    // 每把剑造成0.7倍伤害（多剑平衡）
+    var crit = Math.random() * 100 < p.crit;
+    var dmg = Math.floor(atk * 0.7 * (crit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+    // 属性克制
+    var weakness = MONSTER_WEAKNESS[m.monsterId];
+    if (weakness && elem === weakness) dmg = Math.floor(dmg * 1.3);
+    // 破甲/易伤
+    var ab = m.statuses.find(s => s.type === 'armorBreak');
+    var vn = m.statuses.find(s => s.type === 'vuln');
+    if (ab) dmg = Math.floor(dmg * (1 + (ab.value || 0.25)));
+    if (vn) dmg = Math.floor(dmg * (1 + (vn.value || 0.15)));
+    totalDmg += dmg;
+    m.hp = Math.max(0, m.hp - dmg);
+    showDamage('monster', dmg, crit);
+    if (elem) playElementEffect(elem);
+    if (dmg > 0 && elem) applyElementEffect(elem, 'monster');
+    addLog('player', '「' + sw.name + '」出鞘，造成 ' + dmg + ' 点伤害' + (crit ? '（暴击！）' : '') + '！');
+    updateHpBars();
+    renderStatuses();
+    swordIdx++;
+    battleTimeouts.push(setTimeout(nextSword, 350));
+  }
+  // 玩家攻击动画
+  var playerEl = document.getElementById('playerCombatant');
+  playerEl.classList.add('attacking');
+  battleTimeouts.push(setTimeout(() => playerEl.classList.remove('attacking'), 500));
+  nextSword();
+}
 function clearAllBattleTimeouts() {
   battleTimeouts.forEach(t => clearTimeout(t));
   battleTimeouts = [];
@@ -5032,44 +5769,71 @@ function playerAct(type, idx) {
   if (wk) atk = Math.floor(atk * (1 - wk.value));
 
   let pDmg = 0, pCrit = false, pSkill = null, healAmount = 0;
+  var playerElement = getPlayerElement();
+  // 普攻时使用选中剑的属性
+  if (type === 'basic' && battleState.availableSwords && battleState.availableSwords.length > 0) {
+    var selSword = battleState.availableSwords[battleState.selectedSwordIdx || 0];
+    if (selSword && selSword.element) playerElement = selSword.element;
+  }
+  var monsterWeakness = MONSTER_WEAKNESS[m.monsterId];
+
+  if (type === 'allSwords') {
+    doAllSwordsAttack();
+    return;
+  }
 
   if (type === 'basic') {
     pCrit = Math.random() * 100 < p.crit;
     pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
     if (p.passives.dmgBonus > 0) pDmg = Math.floor(pDmg * (1 + p.passives.dmgBonus));
+    // 普攻获得灵力
+    p.spirit = Math.min(p.maxSpirit, p.spirit + 15);
+    updateSpiritBar();
   } else if (type === 'skill') {
     const sk = battleState.skills[idx];
     if (!sk || p.spirit < sk.cost) {
       addLog('system', `灵力不足，无法施展「${sk ? sk.name : '神通'}」，改以挥剑攻击！`);
       pCrit = Math.random() * 100 < p.crit;
       pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+      p.spirit = Math.min(p.maxSpirit, p.spirit + 15);
+      updateSpiritBar();
     } else {
       p.spirit -= sk.cost;
       updateSpiritBar();
       pSkill = sk;
       if (sk.type === 'heal') {
-        healAmount = Math.floor(p.maxHp * (sk.healPct || 0.2));
+        healAmount = Math.floor(p.maxHp * Math.min(sk.healPct || 0.2, 0.20));
         p.hp = Math.min(p.maxHp, p.hp + healAmount);
         pDmg = Math.floor(atk * (sk.dmgMult || 0.8) * (0.9 + Math.random() * 0.2));
+        // 归元附加减伤2回合
+        applyStatus('player', { type:'dmgReduce', value:0.30, duration:2 });
       } else if (sk.type === 'slash') {
-        pCrit = Math.random() * 100 < Math.min(p.crit + (sk.critBonus || 0), 100);
-        pDmg = Math.floor(atk * sk.dmgMult * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        pCrit = Math.random() * 100 < Math.min(p.crit + Math.min(sk.critBonus || 0, 30), 100);
+        pDmg = Math.floor(atk * Math.min(sk.dmgMult, 2.5) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        // 破军附加破甲2回合
+        applyStatus('monster', { type:'armorBreak', value:0.25, duration:2 });
       } else if (sk.type === 'multihit') {
         let total = 0, crits = 0;
-        for (let i = 0; i < (sk.hits || 2); i++) {
+        for (let i = 0; i < Math.min(sk.hits || 2, 3); i++) {
           const c = Math.random() * 100 < p.crit;
           if (c) crits++;
-          total += Math.floor(atk * sk.dmgMult * (c ? 2 : 1) * (0.9 + Math.random() * 0.2));
+          total += Math.floor(atk * Math.min(sk.dmgMult, 2.5) * (c ? 2 : 1) * (0.9 + Math.random() * 0.2));
         }
         pDmg = total; pCrit = crits > 0;
+        // 残影附加闪避2回合
+        applyStatus('player', { type:'dodge', value:0.30, duration:2 });
       } else { // burst
         pCrit = Math.random() * 100 < p.crit;
-        pDmg = Math.floor(atk * sk.dmgMult * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
-        if ((sk.burnChance || 0) > 0 && Math.random() < sk.burnChance) {
+        pDmg = Math.floor(atk * Math.min(sk.dmgMult, 2.5) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        if (Math.min(sk.burnChance || 0, 0.30) > 0 && Math.random() < Math.min(sk.burnChance || 0, 0.30)) {
           applyStatus('monster', { type: 'burn', value: Math.max(4, Math.floor(m.maxHp * 0.03)), duration: 2 });
           addLog('crit', '神通余威化作烈焰，凶兽被点燃！');
         }
       }
+    }
+    // 技能使用所属功法的属性，没有则用第一个装备的属性
+    if (pSkill && pSkill.element) {
+      playerElement = pSkill.element;
     }
   } else if (type === 'meditate') {
     const regain = 35;
@@ -5107,13 +5871,26 @@ function playerAct(type, idx) {
     battleTimeouts.push(setTimeout(() => playerEl.classList.remove('attacking'), 500));
   }, 150));
   battleTimeouts.push(setTimeout(() => {
+    try {
     if (battleState.finished) return;
     const monsterEl = document.getElementById('monsterCombatant');
     monsterEl.classList.add('hurt');
     battleTimeouts.push(setTimeout(() => monsterEl.classList.remove('hurt'), 400));
+    // 属性弱点加成
+    if (monsterWeakness && playerElement === monsterWeakness && pDmg > 0) {
+      pDmg = Math.floor(pDmg * 1.3);
+      addLog('crit', '属性克制！伤害提升30%！');
+    }
+    // 破甲/易伤加成
+    var ab = m.statuses.find(s => s.type === 'armorBreak');
+    var vn = m.statuses.find(s => s.type === 'vuln');
+    if (ab) pDmg = Math.floor(pDmg * (1 + (ab.value || 0.25)));
+    if (vn) pDmg = Math.floor(pDmg * (1 + (vn.value || 0.15)));
     m.hp = Math.max(0, m.hp - pDmg);
     showDamage('monster', pDmg, pCrit);
-    playElementEffect(getPlayerElement());
+    playElementEffect(playerElement);
+    // 触发属性持续效果
+    if (pDmg > 0) applyElementEffect(playerElement, 'monster');
     updateHpBars();
 
     if (pSkill) {
@@ -5142,8 +5919,10 @@ function playerAct(type, idx) {
       addLog('crit', '法宝毒煞渗入凶兽体内！');
     }
     const lifestealPct = (p.affixes.lifesteal || 0) / 100;
-    if (lifestealPct > 0 && pDmg > 0) {
-      const lh = Math.floor(pDmg * lifestealPct);
+    // 回血类技能本身已回血，不再触发吸血词条，避免双重回血
+    const isHealSkill = pSkill && pSkill.type === 'heal';
+    if (lifestealPct > 0 && pDmg > 0 && !isHealSkill && Math.random() < lifestealPct) {
+      const lh = Math.floor(pDmg * lifestealPct * 1.5);
       p.hp = Math.min(p.maxHp, p.hp + lh);
       addLog('player', `吸星之力涌动，修士恢复 ${lh} 点生命。`);
     }
@@ -5151,6 +5930,11 @@ function playerAct(type, idx) {
     renderStatuses();
     if (m.hp <= 0) { finishBattle('win'); return; }
     battleTimeouts.push(setTimeout(() => { if (battleState.finished) return; runMonsterTurn(); }, 1000));
+    } catch(e) {
+      console.warn('战斗回合异常:', e);
+      battleState.awaitingAction = false;
+      if (!battleState.finished) { renderActions(); setActionsEnabled(true); }
+    }
   }, 650));
 }
 
@@ -5222,8 +6006,16 @@ function resolveMonsterSkill(sk) {
   }
 }
 function runMonsterTurn() {
+  try {
   if (!battleState || battleState.finished) return;
   const p = battleState.player, m = battleState.monster;
+  // 麻痹/冻结：跳过回合
+  var stun = m.statuses.find(s => s.type === 'stun' || s.type === 'freeze');
+  if (stun) {
+    addLog('system', `${m.name} 被${stun.type === 'stun' ? '麻痹' : '冻结'}，无法行动！`);
+    battleTimeouts.push(setTimeout(() => { if (!battleState.finished) afterMonsterTurn(); }, 700));
+    return;
+  }
   const action = decideMonsterAction();
   const monsterEl = document.getElementById('monsterCombatant');
   monsterEl.classList.add('attacking');
@@ -5240,8 +6032,22 @@ function runMonsterTurn() {
     battleTimeouts.push(setTimeout(() => {
       if (battleState.finished) return;
       const rage = m.statuses.find(s => s.type === 'rage');
-      const atk = rage ? Math.floor(m.attack * rage.value) : m.attack;
+      let atk = rage ? Math.floor(m.attack * rage.value) : m.attack;
+      // 减速/虚弱：降低敌人攻击
+      var slow = m.statuses.find(s => s.type === 'slow' || s.type === 'weaken');
+      if (slow) atk = Math.floor(atk * (1 - (slow.value || 0.15)));
       let dmg = Math.floor(atk * (0.9 + Math.random() * 0.2));
+      // 玩家闪避：30%概率完全闪避
+      var dodge = p.statuses.find(s => s.type === 'dodge');
+      if (dodge && Math.random() < (dodge.value || 0.30)) {
+        addLog('player', '修士身法迅捷，完美闪避了攻击！');
+        showDamage('player', 0, false);
+        afterMonsterTurn();
+        return;
+      }
+      // 玩家减伤：减少30%伤害
+      var dmgRed = p.statuses.find(s => s.type === 'dmgReduce');
+      if (dmgRed) dmg = Math.floor(dmg * (1 - (dmgRed.value || 0.30)));
       dmg = absorbShield('player', dmg);
       p.hp = Math.max(0, p.hp - dmg);
       // 反伤词条
@@ -5261,8 +6067,13 @@ function runMonsterTurn() {
       afterMonsterTurn();
     }, 700));
   }
+  } catch(e) {
+    console.warn('凶兽回合异常:', e);
+    if (battleState && !battleState.finished) { battleState.awaitingAction = false; renderActions(); setActionsEnabled(true); }
+  }
 }
 function afterMonsterTurn() {
+  try {
   if (battleState.finished) return;
   tickStatuses();
   if (battleState.finished) return;
@@ -5272,7 +6083,12 @@ function afterMonsterTurn() {
   battleState.round++;
   document.getElementById('roundIndicator').textContent = `第 ${battleState.round} 回合`;
   battleState.awaitingAction = false;
+  renderActions();
   setActionsEnabled(true);
+  } catch(e) {
+    console.warn('回合结束异常:', e);
+    if (battleState && !battleState.finished) { battleState.awaitingAction = false; renderActions(); setActionsEnabled(true); }
+  }
 }
 function finishBattle(result) {
   if (battleState.finished) return;
@@ -5301,7 +6117,15 @@ function finishBattle(result) {
   battleState.result = result;
   battleRunning = false;
   clearAllBattleTimeouts();
-  var isNormal = battleState.context === 'normal';
+  // 念·无尽挑战：胜利/失败处理
+  if (battleState.isNian) {
+    if (result === 'win') {
+      onNianVictory();
+    } else {
+      onNianDefeat();
+    }
+  }
+  var isNormal = battleState.context === 'normal' && !battleState.isNian;
   // 消耗一次性装备
   prepareState.selectedConsumable.forEach(function(id) {
     var idx = gameState.equipment.consumable.findIndex(function(e) { return e.id === id; });
@@ -5330,6 +6154,15 @@ function finishBattle(result) {
     // 胜利奖励
     battleState.rewards = null;
     if (result === 'win') {
+      // 记录今日胜利的凶兽（用于副本通关判断）
+      if (!gameState.dailyMonsterWins || gameState.dailyMonsterWins.date !== todayK) {
+        gameState.dailyMonsterWins = { date: todayK, wins: {} };
+      }
+      if (mId) gameState.dailyMonsterWins.wins[mId] = true;
+      // 越级通关：击败一只凶兽后，同副本内其他凶兽默认通关1次（同难度，基础奖励，算次数）
+      applyAutoClear(mId, difficultyMult);
+      // 副本通关检查：当前副本所有凶兽都赢过则通关（每天每副本1次，每天最多2个副本）
+      checkDungeonClear();
       var mReq = battleState.monster.reqMinutes || 0;
       var baseFrag = battleState.monster.fragReward > 0 ? battleState.monster.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
       var fragReward = Math.max(1, Math.floor(baseFrag * difficultyMult));
@@ -5339,6 +6172,9 @@ function finishBattle(result) {
       dailyState.fragments += fragReward;
       // 力量宝石：困难及以上（reqMinutes>=60）胜利计数
       if (mReq >= 60) gameState.hardWinCount = (gameState.hardWinCount || 0) + 1;
+      // 赛季积分：凶兽按难度（简单1/普通2/困难3/高阶4/极难5）
+      var beastScore = difficultyMult >= 2 ? 5 : difficultyMult >= 1.8 ? 4 : difficultyMult >= 1.4 ? 3 : difficultyMult >= 1.0 ? 2 : 1;
+      addSeasonScore('beasts', beastScore);
       saveDaily();
       // 修为经验（累计到总专注时长，按天去重后计入境界）
       if (!gameState.bonusFocus) gameState.bonusFocus = 0;
@@ -5378,7 +6214,8 @@ function finishBattle(result) {
   if (cb) {
     var bs = battleState;
     battleTimeouts.push(setTimeout(function() { cb(bs); }, 800));
-  } else {
+  } else if (!battleState.isNian) {
+    // 念的战斗由onNianVictory/onNianDefeat处理，不显示普通结果面板
     battleTimeouts.push(setTimeout(function() { showBattleResult(result); }, 800));
   }
 }
@@ -6026,6 +6863,7 @@ function deleteCategory(type, catId) {
   const cat = gameState.categories[type].find(c => c.id === catId);
   if (!cat) return;
   const count = gameState.equipment[type].filter(e => e.categoryId === catId).length;
+  if (!confirm(`确定删除分类「${cat.name}」吗？\n${count > 0 ? '该分类下' + count + '件法宝将变为未分类。' : ''}`)) return;
   gameState.categories[type] = gameState.categories[type].filter(c => c.id !== catId);
   gameState.equipment[type].forEach(e => { if (e.categoryId === catId) e.categoryId = ''; });
   saveGame();
@@ -6166,10 +7004,16 @@ function addEquipment() {
   renderInventory();
 }
 function deleteEquipment(id) {
+  let eq = null;
+  ['gongfa', 'permanent', 'consumable'].forEach(type => {
+    const found = gameState.equipment[type].find(e => e.id === id);
+    if (found) eq = found;
+  });
+  if (!eq) return;
+  if (!confirm(`确定要销毁法宝「${eq.name}」吗？\n销毁后无法恢复！`)) return;
   ['gongfa', 'permanent', 'consumable'].forEach(type => {
     const idx = gameState.equipment[type].findIndex(e => e.id === id);
     if (idx >= 0) {
-      const eq = gameState.equipment[type][idx];
       gameState.equipment[type].splice(idx, 1);
       saveGame();
       showToast(`法宝「${eq.name}」已销毁`, 'success');
@@ -6268,6 +7112,8 @@ function init() {
   loadDaily();
   loadSectors();
   loadArenaStats();
+  // 赛季周目检查（周/月重置与结算）
+  checkSeasonRollover();
   // 同步难度按钮状态
   setDifficulty(difficultyMult);
   // 关闭所有编辑表单（防止刷新后残留）
@@ -6572,30 +7418,278 @@ function getPlayerElement() {
   return '';
 }
 function playElementEffect(element) {
+  try {
   if (!element) return;
   var color = ELEMENT_COLORS[element] || '#fff';
+  var elemName = ELEMENT_EFFECTS[element] ? ELEMENT_EFFECTS[element].name : '';
   var monsterEl = document.getElementById('monsterCombatant');
   if (!monsterEl) return;
   var rect = monsterEl.getBoundingClientRect();
   var cx = rect.left + rect.width / 2;
   var cy = rect.top + rect.height / 2;
-  // 12个粒子四散
-  for (var i = 0; i < 12; i++) {
-    var p = document.createElement('div');
-    var angle = (Math.PI * 2 * i) / 12;
-    var dist = 40 + Math.random() * 50;
-    var dx = Math.cos(angle) * dist;
-    var dy = Math.sin(angle) * dist;
-    p.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:8px;height:8px;border-radius:50%;background:' + color + ';box-shadow:0 0 8px ' + color + ';pointer-events:none;z-index:9999;transition:all 0.5s ease-out;';
-    document.body.appendChild(p);
-    requestAnimationFrame(function(pp, x, y) { return function() { pp.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(0)'; pp.style.opacity = '0.6'; }; }(p, dx, dy));
-    setTimeout(function(pp) { return function() { if (pp.parentNode) pp.remove(); }; }(p), 600);
+  var w = rect.width, h = rect.height;
+  var vw = window.innerWidth, vh = window.innerHeight;
+
+  // 屏幕震动
+  var battleScene = document.getElementById('battleScene');
+  if (battleScene) {
+    battleScene.style.animation = 'shake 0.4s';
+    setTimeout(function(){ battleScene.style.animation = ''; }, 400);
   }
-  // 屏幕闪光
+
+  // 属性文字飘字
+  if (elemName) {
+    var txt = document.createElement('div');
+    txt.textContent = elemName + '属性';
+    txt.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h/2 - 20) + 'px;transform:translateX(-50%);font-size:28px;font-weight:900;color:' + color + ';text-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ',0 0 50px ' + color + ';pointer-events:none;z-index:9999;transition:all 1.8s ease-out;font-family:Noto Serif SC,serif;letter-spacing:4px;';
+    document.body.appendChild(txt);
+    requestAnimationFrame(function(t) { return function() { t.style.top = (cy - h/2 - 70) + 'px'; t.style.opacity = '0'; t.style.fontSize = '36px'; }; }(txt));
+    setTimeout(function(t) { return function() { if (t.parentNode) t.remove(); }; }(txt), 1900);
+  }
+
+  // 全屏闪光
   var flash = document.createElement('div');
-  flash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(circle at 70% 50%, ' + color + '22, transparent 60%);transition:opacity 0.4s;opacity:1;';
+  flash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9997;background:radial-gradient(circle at 70% 50%, ' + color + '44, ' + color + '11 40%, transparent 70%);transition:opacity 0.8s;opacity:1;';
   document.body.appendChild(flash);
-  setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if (flash.parentNode) flash.remove(); }, 400); }, 100);
+  setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if (flash.parentNode) flash.remove(); }, 800); }, 100);
+
+  // 光属性：巨型光柱 + 八道光芒 + 圣光粒子雨
+  if (element === 'light') {
+    var beam = document.createElement('div');
+    beam.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:100px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, ' + color + '66, ' + color + ', #fff, ' + color + '88);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ',0 0 200px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxLightBeam 1.2s ease-out forwards;';
+    document.body.appendChild(beam);
+    setTimeout(function(){ if(beam.parentNode) beam.remove(); }, 1300);
+    for (var i = 0; i < 8; i++) {
+      var ray = document.createElement('div');
+      var rot = i * 45;
+      ray.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (vw*0.4) + 'px;height:6px;background:linear-gradient(to right, ' + color + ', ' + color + '66, transparent);transform-origin:left center;transform:rotate(' + rot + 'deg);pointer-events:none;z-index:9998;opacity:0;box-shadow:0 0 10px ' + color + ';animation:fxLightBurst 1s ease-out 0.15s forwards;';
+      document.body.appendChild(ray);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(ray), 1200);
+    }
+    for (var i = 0; i < 30; i++) {
+      var particle = document.createElement('div');
+      var px = cx + (Math.random() - 0.5) * w * 2;
+      particle.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h) + 'px;width:' + (4+Math.random()*8) + 'px;height:' + (4+Math.random()*8) + 'px;border-radius:50%;background:' + color + ';box-shadow:0 0 10px ' + color + ',0 0 20px ' + color + ';pointer-events:none;z-index:9998;animation:fxFireRise ' + (1+Math.random()*0.8) + 's ease-out ' + (Math.random()*0.4) + 's forwards;';
+      document.body.appendChild(particle);
+      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(particle), 2000);
+    }
+  }
+  // 暗属性：黑暗吞噬 + 暗影触手 + 黑雾弥漫
+  else if (element === 'dark') {
+    var darkBurst = document.createElement('div');
+    darkBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*3) + 'px;height:' + (w*3) + 'px;border-radius:50%;background:radial-gradient(circle, #000 20%, ' + color + 'aa 40%, ' + color + '44 60%, transparent);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 1.2s ease-out forwards;';
+    document.body.appendChild(darkBurst);
+    setTimeout(function(){ if(darkBurst.parentNode) darkBurst.remove(); }, 1300);
+    for (var i = 0; i < 6; i++) {
+      var tentacle = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 6;
+      var tx = Math.cos(angle) * w;
+      var ty = Math.sin(angle) * h;
+      tentacle.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:15px;height:' + (h*0.8) + 'px;background:linear-gradient(to top, ' + color + ', #000, transparent);border-radius:50%;filter:blur(2px);pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxEarthShard 1s ease-out forwards;';
+      document.body.appendChild(tentacle);
+      setTimeout(function(t){ return function(){ if(t.parentNode) t.remove(); }; }(tentacle), 1100);
+    }
+    for (var i = 0; i < 15; i++) {
+      var mist = document.createElement('div');
+      var mx = cx + (Math.random() - 0.5) * vw * 0.6;
+      mist.style.cssText = 'position:fixed;left:' + mx + 'px;top:' + (cy + h/3) + 'px;width:' + (50+Math.random()*80) + 'px;height:' + (50+Math.random()*80) + 'px;border-radius:50%;background:radial-gradient(circle, ' + color + 'cc, ' + color + '44, transparent);filter:blur(8px);pointer-events:none;z-index:9998;animation:fxDarkRise ' + (1.2+Math.random()*0.8) + 's ease-out ' + (Math.random()*0.4) + 's forwards;';
+      document.body.appendChild(mist);
+      setTimeout(function(m){ return function(){ if(m.parentNode) m.remove(); }; }(mist), 2200);
+    }
+  }
+  // 火属性：巨型火球爆炸 + 火焰柱 + 火星雨
+  else if (element === 'fire') {
+    var fireBurst = document.createElement('div');
+    fireBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2.5) + 'px;height:' + (w*2.5) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, #FFD700 20%, #FF5722 40%, #B71C1C 60%, transparent);box-shadow:0 0 80px #FF5722,0 0 160px #FF5722,0 0 240px #FF9800;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxFireBurst 0.9s ease-out forwards;';
+    document.body.appendChild(fireBurst);
+    setTimeout(function(){ if(fireBurst.parentNode) fireBurst.remove(); }, 1000);
+    for (var i = 0; i < 5; i++) {
+      var fireCol = document.createElement('div');
+      var fx = cx + (i - 2) * 25;
+      fireCol.style.cssText = 'position:fixed;left:' + fx + 'px;top:' + (cy + h/3) + 'px;width:' + (20+Math.random()*15) + 'px;height:' + (h*1.5) + 'px;background:linear-gradient(to top, #B71C1C, #FF5722, #FF9800, #FFD700, transparent);border-radius:50% 50% 30% 30%;filter:blur(3px);box-shadow:0 0 30px #FF5722;pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxWoodGrow 0.8s ease-out ' + (i*0.06) + 's forwards;';
+      document.body.appendChild(fireCol);
+      setTimeout(function(f){ return function(){ if(f.parentNode) f.remove(); }; }(fireCol), 1200);
+    }
+    for (var i = 0; i < 35; i++) {
+      var spark = document.createElement('div');
+      var sx = cx + (Math.random() - 0.5) * w * 2.5;
+      var fireColors = ['#FF5722', '#FF9800', '#FFD700', '#FFC107', '#fff'];
+      spark.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + (cy + h/2) + 'px;width:' + (5+Math.random()*8) + 'px;height:' + (5+Math.random()*8) + 'px;border-radius:50%;background:' + fireColors[Math.floor(Math.random()*fireColors.length)] + ';box-shadow:0 0 10px #FF5722,0 0 20px #FF9800;pointer-events:none;z-index:9998;animation:fxFireRise ' + (0.9+Math.random()*0.8) + 's ease-out ' + (Math.random()*0.3) + 's forwards;';
+      document.body.appendChild(spark);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(spark), 2000);
+    }
+  }
+  // 水属性：巨型水爆 + 水龙卷 + 瀑布
+  else if (element === 'water') {
+    var waterBurst = document.createElement('div');
+    waterBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2.5) + 'px;height:' + (w*2.5) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ' 30%, ' + color + '66 50%, transparent);box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWaterSplash 1s ease-out forwards;';
+    document.body.appendChild(waterBurst);
+    setTimeout(function(){ if(waterBurst.parentNode) waterBurst.remove(); }, 1100);
+    var waterspout = document.createElement('div');
+    waterspout.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:100px;height:' + (h*2) + 'px;background:conic-gradient(from 0deg, transparent, ' + color + '66, #fff, ' + color + '88, transparent, ' + color + '44, transparent);border-radius:50%;filter:blur(3px);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWindSpin 1.2s linear forwards;';
+    document.body.appendChild(waterspout);
+    setTimeout(function(){ if(waterspout.parentNode) waterspout.remove(); }, 1300);
+    for (var i = 0; i < 25; i++) {
+      var drop = document.createElement('div');
+      var dx = cx + (Math.random() - 0.5) * w * 2;
+      drop.style.cssText = 'position:fixed;left:' + dx + 'px;top:' + (cy - h) + 'px;width:' + (6+Math.random()*8) + 'px;height:' + (10+Math.random()*12) + 'px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(to bottom, #fff, ' + color + ');box-shadow:0 0 10px ' + color + ';pointer-events:none;z-index:9998;animation:fxWaterDrop ' + (0.7+Math.random()*0.5) + 's ease-in ' + (Math.random()*0.4) + 's forwards;';
+      document.body.appendChild(drop);
+      setTimeout(function(d){ return function(){ if(d.parentNode) d.remove(); }; }(drop), 1600);
+    }
+  }
+  // 电属性：雷电网 + 多道闪电 + 电弧扩散
+  else if (element === 'electric') {
+    for (var i = 0; i < 6; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var bolt = document.createElement('div');
+          var bx = cx + (idx - 2.5) * 35;
+          bolt.style.cssText = 'position:fixed;left:' + bx + 'px;top:0px;width:' + (5+Math.random()*6) + 'px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, ' + color + ');box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ',0 0 80px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.5s ease-out forwards;';
+          document.body.appendChild(bolt);
+          setTimeout(function(){ if(bolt.parentNode) bolt.remove(); }, 600);
+        }, idx * 60);
+      })(i);
+    }
+    for (var i = 0; i < 3; i++) {
+      var arcRing = document.createElement('div');
+      arcRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(1+i*0.8)) + 'px;height:' + (w*(1+i*0.8)) + 'px;border:4px solid ' + color + ';border-radius:50%;box-shadow:0 0 30px ' + color + ',inset 0 0 30px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.7s ease-out ' + (i*0.15) + 's forwards;';
+      document.body.appendChild(arcRing);
+      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arcRing), 1000);
+    }
+    for (var i = 0; i < 20; i++) {
+      var eSpark = document.createElement('div');
+      var ex = cx + (Math.random() - 0.5) * w * 2;
+      eSpark.style.cssText = 'position:fixed;left:' + ex + 'px;top:' + (cy + (Math.random()-0.5)*h) + 'px;width:' + (3+Math.random()*5) + 'px;height:' + (3+Math.random()*5) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 8px ' + color + ',0 0 16px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.6s ease-out ' + (Math.random()*0.3) + 's forwards;';
+      document.body.appendChild(eSpark);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1000);
+    }
+  }
+  // 木属性：巨型藤蔓 + 生命之树 + 花瓣雨
+  else if (element === 'wood') {
+    for (var i = 0; i < 7; i++) {
+      var vine = document.createElement('div');
+      var vx = cx + (i - 3) * 22;
+      vine.style.cssText = 'position:fixed;left:' + vx + 'px;top:' + (cy + h/2) + 'px;width:12px;height:' + (h*1.5) + 'px;background:linear-gradient(to top, #1B5E20, #2E7D32, ' + color + ', #81C784, #A5D6A7);border-radius:6px;box-shadow:0 0 12px ' + color + ';pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxWoodGrow 0.9s ease-out ' + (i*0.07) + 's forwards;';
+      document.body.appendChild(vine);
+      setTimeout(function(v){ return function(){ if(v.parentNode) v.remove(); }; }(vine), 1300);
+    }
+    for (var i = 0; i < 7; i++) {
+      var vineTop = document.createElement('div');
+      var vx = cx + (i - 3) * 22;
+      vineTop.style.cssText = 'position:fixed;left:' + vx + 'px;top:' + (cy - h/2) + 'px;width:25px;height:25px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ', transparent);box-shadow:0 0 20px ' + color + ';pointer-events:none;z-index:9998;opacity:0;animation:fxLightBurst 0.8s ease-out ' + (0.3+i*0.07) + 's forwards;';
+      document.body.appendChild(vineTop);
+      setTimeout(function(v){ return function(){ if(v.parentNode) v.remove(); }; }(vineTop), 1300);
+    }
+    for (var i = 0; i < 25; i++) {
+      var petal = document.createElement('div');
+      var px = cx + (Math.random() - 0.5) * w * 2.5;
+      var petalColors = [color, '#81C784', '#A5D6A7', '#C8E6C9', '#fff'];
+      petal.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h) + 'px;width:' + (8+Math.random()*8) + 'px;height:' + (5+Math.random()*5) + 'px;background:' + petalColors[Math.floor(Math.random()*petalColors.length)] + ';border-radius:0 50% 0 50%;box-shadow:0 0 6px ' + color + ';pointer-events:none;z-index:9998;animation:fxLeafFall ' + (1.5+Math.random()*0.8) + 's ease-in ' + (Math.random()*0.5) + 's forwards;';
+      document.body.appendChild(petal);
+      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(petal), 2500);
+    }
+  }
+  // 冰属性：冰霜爆发 + 冰晶风暴 + 寒气弥漫
+  else if (element === 'ice') {
+    var iceBurst = document.createElement('div');
+    iceBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2) + 'px;height:' + (w*2) + 'px;background:conic-gradient(from 0deg, transparent 0deg, #fff 10deg, transparent 20deg, ' + color + ' 40deg, transparent 50deg, #fff 70deg, transparent 80deg, ' + color + ' 100deg, transparent 110deg);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxIceBurst 1s ease-out forwards;';
+    document.body.appendChild(iceBurst);
+    setTimeout(function(){ if(iceBurst.parentNode) iceBurst.remove(); }, 1100);
+    for (var i = 0; i < 25; i++) {
+      var shard = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 25;
+      var dist = 80 + Math.random() * 120;
+      var tx = Math.cos(angle) * dist;
+      var ty = Math.sin(angle) * dist;
+      var rot = Math.random() * 360;
+      shard.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;--rot:' + rot + 'deg;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (8+Math.random()*12) + 'px;height:' + (14+Math.random()*16) + 'px;background:linear-gradient(135deg, #fff, ' + color + ', #B3E5FC);clip-path:polygon(50% 0%, 100% 100%, 0% 100%);box-shadow:0 0 12px ' + color + ',0 0 24px ' + color + ';pointer-events:none;z-index:9998;animation:fxIceShard 1.1s ease-out forwards;';
+      document.body.appendChild(shard);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(shard), 1300);
+    }
+    var coldMist = document.createElement('div');
+    coldMist.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*3) + 'px;height:' + (h*2) + 'px;background:radial-gradient(ellipse, ' + color + '44, ' + color + '11, transparent);filter:blur(15px);pointer-events:none;z-index:9997;transform:translate(-50%,-50%);animation:fxDarkRise 1.5s ease-out forwards;';
+    document.body.appendChild(coldMist);
+    setTimeout(function(){ if(coldMist.parentNode) coldMist.remove(); }, 1600);
+  }
+  // 雷属性：天雷降世 + 雷云翻滚 + 雷暴扩散
+  else if (element === 'thunder') {
+    var thunderCloud = document.createElement('div');
+    thunderCloud.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h*1.5) + 'px;width:' + (w*3) + 'px;height:80px;background:radial-gradient(ellipse, ' + color + 'aa, ' + color + '44, transparent);border-radius:50%;filter:blur(10px);pointer-events:none;z-index:9998;opacity:0;animation:fxLightBurst 0.6s ease-out forwards;';
+    document.body.appendChild(thunderCloud);
+    setTimeout(function(){ if(thunderCloud.parentNode) thunderCloud.remove(); }, 700);
+    var tbolt = document.createElement('div');
+    tbolt.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:40px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #E1BEE7, #fff, ' + color + ');box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ',0 0 200px ' + color + ',0 0 300px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxThunderStrike 0.8s ease-out forwards;';
+    document.body.appendChild(tbolt);
+    setTimeout(function(){ if(tbolt.parentNode) tbolt.remove(); }, 900);
+    for (var i = 0; i < 4; i++) {
+      var tRing = document.createElement('div');
+      tRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.8+i*0.7)) + 'px;height:' + (w*(0.8+i*0.7)) + 'px;border:5px solid ' + color + ';border-radius:50%;box-shadow:0 0 40px ' + color + ',inset 0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.8s ease-out ' + (0.2+i*0.12) + 's forwards;';
+      document.body.appendChild(tRing);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(r), 1200);
+    }
+    for (var i = 0; i < 30; i++) {
+      var tSpark = document.createElement('div');
+      var tx = cx + (Math.random() - 0.5) * w * 2.5;
+      tSpark.style.cssText = 'position:fixed;left:' + tx + 'px;top:' + (cy + (Math.random()-0.5)*h*1.5) + 'px;width:' + (4+Math.random()*6) + 'px;height:' + (4+Math.random()*6) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 10px ' + color + ',0 0 20px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.7s ease-out ' + (Math.random()*0.4) + 's forwards;';
+      document.body.appendChild(tSpark);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1200);
+    }
+  }
+  // 风属性：巨型龙卷风 + 风刃风暴 + 气流漩涡
+  else if (element === 'wind') {
+    var tornado = document.createElement('div');
+    tornado.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:150px;height:' + (h*2.5) + 'px;background:conic-gradient(from 0deg, transparent, ' + color + '66, #fff, ' + color + 'aa, transparent, ' + color + '44, transparent, ' + color + '88, transparent);border-radius:50%;filter:blur(4px);box-shadow:0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWindSpin 1.3s linear forwards;';
+    document.body.appendChild(tornado);
+    setTimeout(function(){ if(tornado.parentNode) tornado.remove(); }, 1400);
+    for (var i = 0; i < 16; i++) {
+      var blade = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 16;
+      var dist = 80 + Math.random() * 100;
+      var tx = Math.cos(angle) * dist;
+      var ty = Math.sin(angle) * dist;
+      var rot = angle * 180 / Math.PI;
+      blade.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;--rot:' + rot + 'deg;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:60px;height:6px;background:linear-gradient(to right, transparent, ' + color + ', #fff, ' + color + ', transparent);box-shadow:0 0 12px ' + color + ',0 0 24px ' + color + ';pointer-events:none;z-index:9998;animation:fxWindBlade 1s ease-out ' + (i*0.04) + 's forwards;';
+      document.body.appendChild(blade);
+      setTimeout(function(b){ return function(){ if(b.parentNode) b.remove(); }; }(blade), 1300);
+    }
+    for (var i = 0; i < 25; i++) {
+      var wParticle = document.createElement('div');
+      var wx = cx + (Math.random() - 0.5) * w * 2;
+      wParticle.style.cssText = 'position:fixed;left:' + wx + 'px;top:' + (cy + (Math.random()-0.5)*h*1.5) + 'px;width:' + (3+Math.random()*5) + 'px;height:' + (3+Math.random()*5) + 'px;border-radius:50%;background:' + color + ';box-shadow:0 0 8px ' + color + ';pointer-events:none;z-index:9998;animation:fxWindSpin 1s ease-out ' + (Math.random()*0.3) + 's forwards;';
+      document.body.appendChild(wParticle);
+      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(p), 1400);
+    }
+  }
+  // 土属性：地裂 + 岩石喷发 + 沙尘暴
+  else if (element === 'earth') {
+    var crack = document.createElement('div');
+    crack.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:' + (w*3) + 'px;height:20px;background:linear-gradient(to right, transparent, #000, ' + color + ', #000, transparent);transform:translateX(-50%);box-shadow:0 0 20px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.8s ease-out forwards;';
+    document.body.appendChild(crack);
+    setTimeout(function(){ if(crack.parentNode) crack.remove(); }, 1000);
+    for (var i = 0; i < 8; i++) {
+      var rock = document.createElement('div');
+      var rx = cx + (i - 3.5) * 28;
+      rock.style.cssText = 'position:fixed;left:' + rx + 'px;top:' + (cy + h/2) + 'px;width:' + (25+Math.random()*20) + 'px;height:' + (30+Math.random()*25) + 'px;background:linear-gradient(135deg, #5D4037, ' + color + ', #8D6E63, #6D4C41);border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;box-shadow:0 0 15px rgba(0,0,0,0.6),inset 0 0 10px rgba(255,255,255,0.1);pointer-events:none;z-index:9998;animation:fxEarthRise 0.9s ease-out ' + (i*0.06) + 's forwards;';
+      document.body.appendChild(rock);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(rock), 1200);
+    }
+    for (var i = 0; i < 20; i++) {
+      var eshard = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 20 + Math.random() * 0.5;
+      var dist = 60 + Math.random() * 100;
+      var tx = Math.cos(angle) * dist;
+      var ty = Math.sin(angle) * dist - 30;
+      var rot = Math.random() * 360;
+      eshard.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;--rot:' + rot + 'deg;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (10+Math.random()*14) + 'px;height:' + (10+Math.random()*14) + 'px;background:linear-gradient(135deg, ' + color + ', #5D4037);border-radius:20%;box-shadow:0 0 8px rgba(0,0,0,0.5);pointer-events:none;z-index:9998;animation:fxEarthShard 1s ease-out forwards;';
+      document.body.appendChild(eshard);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1100);
+    }
+    var sandstorm = document.createElement('div');
+    sandstorm.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + (w*3.5) + 'px;height:80px;background:linear-gradient(to right, transparent, ' + color + '66, ' + color + 'aa, ' + color + '66, transparent);filter:blur(10px);pointer-events:none;z-index:9997;transform:translateX(-50%);animation:fxDarkRise 1.2s ease-out forwards;';
+    document.body.appendChild(sandstorm);
+    setTimeout(function(){ if(sandstorm.parentNode) sandstorm.remove(); }, 1300);
+  }
+  } catch(e) { console.warn('元素特效异常:', e); }
 }
 function useBeastUlt(idx) {  if (battleState.finished) return;
   var bu = battleState.beastUlts[idx];
@@ -6725,6 +7819,18 @@ function addMonsterGroup() {
   renderMonsterGroupSelect();
   renderMonsterSelector();
   showToast('已创建副本「' + name + '」，点新增凶兽开始添加BOSS', 'success');
+}
+function deleteCurrentGroup() {
+  var grp = (gameState.monsterGroups || []).find(function(g){ return g.id === gameState.currentGroup; });
+  if (!grp) return;
+  if (grp.builtin) { showToast('内置副本不可删除', 'error'); return; }
+  if (!confirm('确定删除副本「' + grp.name + '」吗？\n副本中的凶兽不会被删除，仅移除分组。')) return;
+  gameState.monsterGroups = gameState.monsterGroups.filter(function(g){ return g.id !== grp.id; });
+  gameState.currentGroup = gameState.monsterGroups[0]?.id || 'shanhai';
+  saveGame();
+  renderMonsterGroupSelect();
+  renderMonsterSelector();
+  showToast('副本「' + grp.name + '」已删除', 'success');
 }
 </script>
 </body>
