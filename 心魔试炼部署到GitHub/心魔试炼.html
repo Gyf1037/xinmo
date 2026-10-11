@@ -2925,7 +2925,14 @@ function triggerMapMonster(map, x, y) {
       gameState.adventure.mapState[mapId][key] = { cleared: true };
       saveGame();
       addSeasonScore('beasts', 1);
-      showToast('击败荒漠凶兽！', 'success');
+      showBattleOverlay('⚔️ 击败凶兽！', '你击败了' + monster.name + '！',
+        '心魔碎片 +' + monster.fragReward + '<br>修为 +' + monster.cultReward + ' 分钟<br>赛季积分 +1',
+        [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+    },
+    onLose: function() {
+      showBattleOverlay('💀 试炼失败', '你被' + monster.name + '击退了，休整后再来。',
+        '坚持了 ' + battleState.round + ' 回合',
+        [{ label: '返回地图', action: 'renderAdventureMap()', primary: true }]);
     }
   });
 }
@@ -2936,25 +2943,25 @@ function triggerMapTreasure() {
     var frag = 5 + Math.floor(Math.random() * 11);
     dailyState.fragments = (dailyState.fragments || 0) + frag;
     saveDaily();
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + frag + ' 枚心魔碎片', '继续探索', function() { renderAdventureMap(); });
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + frag + ' 枚心魔碎片', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
   } else if (roll < 0.7) {
     var stone = 1;
     gameState.swordStones = (gameState.swordStones || 0) + stone;
     saveGame();
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + stone + ' 枚铸字石', '继续探索', function() { renderAdventureMap(); });
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + stone + ' 枚铸字石', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
   } else {
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '宝箱是空的...只有一张破旧的地图', '继续探索', function() { renderAdventureMap(); });
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '宝箱是空的...只有一张破旧的地图', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
   }
 }
 
 function triggerMapSpirit() {
   var heal = 30 + Math.floor(Math.random() * 20);
-  showBattleOverlay('✨ 灵气', '一股精纯的灵气涌入体内！', '恢复 ' + heal + ' 点生命值，灵力充盈', '继续探索', function() { renderAdventureMap(); });
+  showBattleOverlay('✨ 灵气', '一股精纯的灵气涌入体内！', '恢复 ' + heal + ' 点生命值，灵力充盈', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
 }
 
 function triggerMapTrap() {
   var dmg = 10 + Math.floor(Math.random() * 15);
-  showBattleOverlay('⚠️ 陷阱', '你触发了一个隐藏的陷阱！', '损失 ' + dmg + ' 点生命值', '继续探索', function() { renderAdventureMap(); });
+  showBattleOverlay('⚠️ 陷阱', '你触发了一个隐藏的陷阱！', '损失 ' + dmg + ' 点生命值', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
 }
 
 function triggerMapRandom() {
@@ -2972,7 +2979,7 @@ function triggerMapRandom() {
     gameState.swordStones = (gameState.swordStones || 0) + 1;
     saveGame();
   }
-  showBattleOverlay('❓ ' + evt.title, evt.desc, evt.reward, '继续探索', function() { renderAdventureMap(); });
+  showBattleOverlay('❓ ' + evt.title, evt.desc, evt.reward, [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
 }
 
 function triggerMapBoss(map, x, y, isMini) {
@@ -3007,10 +3014,19 @@ function triggerMapBoss(map, x, y, isMini) {
       addSeasonScore('dungeons', scoreReward);
       saveGame();
       if (isMini) {
-        showBattleOverlay('⚔️ 击败小BOSS！', '你击败了' + bossName + '！', '赛季积分+' + scoreReward + '，心魔碎片+' + fragReward + '，修为+' + cultReward + '分钟', '继续探索', function() { renderAdventureMap(); });
+        showBattleOverlay('⚔️ 击败小BOSS！', '你击败了' + bossName + '！',
+          '赛季积分 +' + scoreReward + '<br>心魔碎片 +' + fragReward + '<br>修为 +' + cultReward + ' 分钟',
+          [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
       } else {
-        showBattleOverlay('🏆 通关！', '你击败了' + bossName + '，征服了' + map.name + '！', '赛季积分+' + scoreReward + '，心魔碎片+' + fragReward + '，修为+' + cultReward + '分钟', '返回地图', function() { renderAdventureMap(); });
+        showBattleOverlay('🏆 通关！', '你击败了' + bossName + '，征服了' + map.name + '！',
+          '赛季积分 +' + scoreReward + '<br>心魔碎片 +' + fragReward + '<br>修为 +' + cultReward + ' 分钟',
+          [{ label: '返回地图', action: 'renderAdventureMap()', primary: true }]);
       }
+    },
+    onLose: function() {
+      showBattleOverlay('💀 挑战失败', bossName + '过于强大，你被击退了。',
+        '坚持了 ' + battleState.round + ' 回合，提升实力后再来！',
+        [{ label: '返回地图', action: 'renderAdventureMap()', primary: true }]);
     }
   });
 }
@@ -5552,7 +5568,7 @@ function renderActions() {
   const p = battleState.player;
   const swords = battleState.availableSwords || [];
   let html = '';
-  // 挥剑：如果有多把剑，显示选择器
+  // 挥剑：如果有多把武器，显示选择器
   if (swords.length > 1) {
     html += '<div style="grid-column:1/-1;margin-bottom:4px;">';
     swords.forEach(function(sw, i) {
@@ -5564,17 +5580,17 @@ function renderActions() {
     });
     html += '</div>';
     html += '<button class="battle-action-btn" onclick="playerAct(\'basic\')">' +
-      '<span class="aa-name">挥剑·' + (swords[battleState.selectedSwordIdx] ? swords[battleState.selectedSwordIdx].name : '') + '</span>' +
-      '<span class="aa-sub">攻击 · +15灵</span></button>';
+      '<span class="aa-name">攻击·' + (swords[battleState.selectedSwordIdx] ? swords[battleState.selectedSwordIdx].name : '') + '</span>' +
+      '<span class="aa-sub">普攻 · +15灵</span></button>';
   } else {
     html += '<button class="battle-action-btn" onclick="playerAct(\'basic\')">' +
       '<span class="aa-name">挥剑</span><span class="aa-sub">攻击 · +15灵</span></button>';
   }
-  // 万剑齐发：第3回合解锁，所有剑一起攻击
+  // 万器齐发：第3回合解锁，所有武器一起攻击
   if (swords.length >= 2 && battleState.round >= 3 && !battleState.allSwordsUsed) {
     html += '<button class="battle-action-btn" style="border-color:var(--gold-light);background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.05));" onclick="playerAct(\'allSwords\')">' +
-      '<span class="aa-name">⚔ 万剑齐发</span>' +
-      '<span class="aa-sub">' + swords.length + '剑齐攻 · 每场1次</span></button>';
+      '<span class="aa-name">⚔ 万器齐发</span>' +
+      '<span class="aa-sub">' + swords.length + '件齐攻 · 每场1次</span></button>';
   }
   battleState.skills.forEach((sk, i) => {
     html += `
@@ -5858,13 +5874,9 @@ function startBattle(monsterInput, opts) {
   battleState.skills = buildGongfaSkills();
   battleState.beastUlts = getBeastBonus().ults;
   // 收集可用的剑（永久法宝中分类名称为"剑"的）
-  var swordCatIds = (gameState.categories.permanent || []).filter(function(c) {
-    return c.name === '剑' || c.name === '神剑' || c.name === '名剑';
-  }).map(function(c) { return c.id; });
-  // 也包含默认的cat_sword
-  if (swordCatIds.indexOf('cat_sword') < 0) swordCatIds.push('cat_sword');
+  // 可用武器：所有永久法宝（剑、异火、宝石等），只要有攻击力都可选
   battleState.availableSwords = (usedEquips || []).filter(function(e) {
-    return e.type === 'permanent' && swordCatIds.indexOf(e.categoryId) >= 0;
+    return e.type === 'permanent' && (e.power || 0) > 0;
   });
   battleState.selectedSwordIdx = 0;
   battleState.allSwordsUsed = false;
