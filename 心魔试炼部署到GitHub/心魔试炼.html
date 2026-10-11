@@ -2880,8 +2880,9 @@ function renderAdventureMap() {
   html += '<div class="panel" style="margin-top:16px;padding:14px;">';
   html += '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">';
   html += '<b style="color:var(--gold-light);">玩法说明：</b><br>';
-  html += '• 每专注10分钟获得1点行动力（最多50点）<br>';
-  html += '• 点击相邻格子移动，每次消耗1点行动力<br>';
+  html += '• 每专注30分钟获得1点行动力（最多50点）<br>';
+  html += '• 点击相邻格子移动，未探索格子消耗1点行动力<br>';
+  html += '• 已探索格子可免费回溯，不重复触发事件<br>';
   html += '• 遇到凶兽触发战斗，宝箱获得奖励，灵气恢复状态<br>';
   html += '• 击败终点BOSS即可通关地图，获得赛季积分+15';
   html += '</div></div>';
@@ -2890,8 +2891,6 @@ function renderAdventureMap() {
 }
 
 function moveToCell(x, y) {
-  var ap = getActionPoints();
-  if (ap <= 0) { showToast('行动力不足，专注10分钟可获得1点', 'error'); return; }
   var mapId = gameState.adventure.currentMap;
   var map = ADVENTURE_MAPS[mapId];
   var playerPos = gameState.adventure.playerPos;
@@ -2899,22 +2898,36 @@ function moveToCell(x, y) {
   var dy = Math.abs(y - playerPos.y);
   if (dx + dy !== 1) { showToast('只能移动到相邻格子', 'error'); return; }
 
-  // 消耗行动力
-  var today = getTodayStr();
-  if (gameState.adventure.apSpentDate !== today) {
-    gameState.adventure.apSpentDate = today;
-    gameState.adventure.apSpent = 0;
+  // 检查目标格子是否已清理（回溯不消耗行动力）
+  var key = x + ',' + y;
+  var cellState = (gameState.adventure.mapState[mapId] || {})[key] || {};
+  var isCleared = cellState.cleared;
+  // 起点也不算消耗
+  var isStart = (x === map.start.x && y === map.start.y);
+
+  if (!isCleared && !isStart) {
+    var ap = getActionPoints();
+    if (ap <= 0) { showToast('行动力不足，专注30分钟可获得1点', 'error'); return; }
+    // 消耗行动力
+    var today = getTodayStr();
+    if (gameState.adventure.apSpentDate !== today) {
+      gameState.adventure.apSpentDate = today;
+      gameState.adventure.apSpent = 0;
+    }
+    gameState.adventure.apSpent = (gameState.adventure.apSpent || 0) + 1;
   }
-  gameState.adventure.apSpent = (gameState.adventure.apSpent || 0) + 1;
 
   // 移动玩家
   gameState.adventure.playerPos = { x: x, y: y };
-  var key = x + ',' + y;
   gameState.adventure.explored[key] = true;
 
-  // 触发事件
+  // 触发事件（已清理的格子不重复触发）
   var cellType = map.layout[y][x];
-  handleMapEvent(cellType, x, y);
+  if (!isCleared && !isStart) {
+    handleMapEvent(cellType, x, y);
+  } else if (isCleared || isStart) {
+    showToast('已探索区域，免费回溯', 'info');
+  }
   saveGame();
   renderAdventureMap();
 }
@@ -2997,12 +3010,12 @@ function triggerMapMonster(map, x, y) {
       addSeasonScore('beasts', 1);
       showBattleOverlay('⚔️ 击败凶兽！', '你击败了' + monster.name + '！',
         '心魔碎片 +' + monster.fragReward + '<br>修为 +' + monster.cultReward + ' 分钟<br>赛季积分 +1',
-        [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
     },
     onLose: function() {
       showBattleOverlay('💀 试炼失败', '你被' + monster.name + '击退了，休整后再来。',
         '坚持了 ' + battleState.round + ' 回合',
-        [{ label: '返回地图', action: 'renderAdventureMap()', primary: true }]);
+        [{ label: '返回地图', action: 'closeBattleAndGoToMap()', primary: true }]);
     }
   });
 }
@@ -3013,25 +3026,25 @@ function triggerMapTreasure() {
     var frag = 5 + Math.floor(Math.random() * 11);
     dailyState.fragments = (dailyState.fragments || 0) + frag;
     saveDaily();
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + frag + ' 枚心魔碎片', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + frag + ' 枚心魔碎片', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
   } else if (roll < 0.7) {
     var stone = 1;
     gameState.swordStones = (gameState.swordStones || 0) + stone;
     saveGame();
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + stone + ' 枚铸字石', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + stone + ' 枚铸字石', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
   } else {
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '宝箱是空的...只有一张破旧的地图', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '宝箱是空的...只有一张破旧的地图', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
   }
 }
 
 function triggerMapSpirit() {
   var heal = 30 + Math.floor(Math.random() * 20);
-  showBattleOverlay('✨ 灵气', '一股精纯的灵气涌入体内！', '恢复 ' + heal + ' 点生命值，灵力充盈', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+  showBattleOverlay('✨ 灵气', '一股精纯的灵气涌入体内！', '恢复 ' + heal + ' 点生命值，灵力充盈', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
 }
 
 function triggerMapTrap() {
   var dmg = 10 + Math.floor(Math.random() * 15);
-  showBattleOverlay('⚠️ 陷阱', '你触发了一个隐藏的陷阱！', '损失 ' + dmg + ' 点生命值', [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+  showBattleOverlay('⚠️ 陷阱', '你触发了一个隐藏的陷阱！', '损失 ' + dmg + ' 点生命值', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
 }
 
 function triggerMapRandom() {
@@ -3049,7 +3062,7 @@ function triggerMapRandom() {
     gameState.swordStones = (gameState.swordStones || 0) + 1;
     saveGame();
   }
-  showBattleOverlay('❓ ' + evt.title, evt.desc, evt.reward, [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+  showBattleOverlay('❓ ' + evt.title, evt.desc, evt.reward, [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
 }
 
 function triggerMapBoss(map, x, y, isMini) {
@@ -3086,17 +3099,17 @@ function triggerMapBoss(map, x, y, isMini) {
       if (isMini) {
         showBattleOverlay('⚔️ 击败小BOSS！', '你击败了' + bossName + '！',
           '赛季积分 +' + scoreReward + '<br>心魔碎片 +' + fragReward + '<br>修为 +' + cultReward + ' 分钟',
-          [{ label: '继续探索', action: 'renderAdventureMap()', primary: true }]);
+          [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
       } else {
         showBattleOverlay('🏆 通关！', '你击败了' + bossName + '，征服了' + map.name + '！',
           '赛季积分 +' + scoreReward + '<br>心魔碎片 +' + fragReward + '<br>修为 +' + cultReward + ' 分钟',
-          [{ label: '返回地图', action: 'renderAdventureMap()', primary: true }]);
+          [{ label: '返回地图', action: 'closeBattleAndGoToMap()', primary: true }]);
       }
     },
     onLose: function() {
       showBattleOverlay('💀 挑战失败', bossName + '过于强大，你被击退了。',
         '坚持了 ' + battleState.round + ' 回合，提升实力后再来！',
-        [{ label: '返回地图', action: 'renderAdventureMap()', primary: true }]);
+        [{ label: '返回地图', action: 'closeBattleAndGoToMap()', primary: true }]);
     }
   });
 }
@@ -7345,6 +7358,14 @@ function generateArenaReward(round) {
     effect: '擂台第' + round + '轮战利品',
     affixes: affixes, image: '', createdAt: Date.now(),
   };
+}
+
+// 关闭战斗结算面板并返回冒险地图
+function closeBattleAndGoToMap() {
+  document.getElementById('battleOverlay').style.display = 'none';
+  battleState = null;
+  battleRunning = false;
+  navigate('adventure');
 }
 
 function showBattleOverlay(title, subtitle, statsHtml, buttons) {
