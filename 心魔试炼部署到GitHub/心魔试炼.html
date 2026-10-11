@@ -1203,8 +1203,19 @@ input, textarea, select { font-family: inherit; outline: none; }
       <div class="home-firefly" style="left:64%;top:30%;animation-delay:3.3s;"></div>
     </div>
     <div class="hero-section">
-      <div class="hero-title">心魔试炼</div>
-      <div class="hero-subtitle">以专注为剑 · 斩上古凶兽</div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+        <div style="position:relative;flex-shrink:0;">
+          <div id="playerAvatar" style="width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);background:linear-gradient(135deg,rgba(212,175,55,0.3),rgba(212,175,55,0.1));display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 0 20px rgba(212,175,55,0.3);overflow:hidden;cursor:pointer;" onclick="document.getElementById('playerAvatarInput').click()">
+            🧙
+          </div>
+          <div style="position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;" onclick="document.getElementById('playerAvatarInput').click()" title="更换头像">📷</div>
+          <input type="file" id="playerAvatarInput" accept="image/*" style="display:none;" onchange="handlePlayerAvatarChange(event)">
+        </div>
+        <div style="flex:1;">
+          <div class="hero-title" style="margin-bottom:4px;">心魔试炼</div>
+          <div class="hero-subtitle">以专注为剑 · 斩上古凶兽</div>
+        </div>
+      </div>
       <div class="hero-date" id="heroDate"></div>
       <div class="hero-actions">
         <button class="btn btn-primary btn-lg" onclick="navigate('prepare')">开启今日试炼</button>
@@ -1366,8 +1377,14 @@ input, textarea, select { font-family: inherit; outline: none; }
                 <span style="font-size:14px;font-weight:700;color:#CE93D8;">🌑 念·无尽挑战</span>
                 <span style="font-size:11px;color:var(--text-secondary);">历史最高：第<span id="nianBestLayer">1</span>层</span>
               </div>
-              <div style="font-size:11px;color:var(--text-secondary);line-height:1.6;margin-bottom:8px;">
-                不死不灭之念，每天从第1层开始，全装备挑战。击败一层+2积分。<br>难度基于你当日战力动态计算，层数越高回合越多、攻击越猛。
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div id="nianAvatar" style="width:48px;height:48px;border-radius:8px;background:rgba(157,78,221,0.2);border:1px solid rgba(157,78,221,0.4);display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;cursor:pointer;flex-shrink:0;" onclick="document.getElementById('nianImageInput').click()" title="点击更换「念」的形象">
+                  🌑
+                </div>
+                <div style="flex:1;font-size:11px;color:var(--text-secondary);line-height:1.6;">
+                  不死不灭之念，每天从第1层开始，全装备挑战。击败一层+2积分。<br>难度基于你当日战力动态计算。
+                </div>
+                <input type="file" id="nianImageInput" accept="image/*" style="display:none;" onchange="handleNianImageChange(event)">
               </div>
               <button class="btn btn-primary btn-sm" style="width:100%;background:linear-gradient(135deg,#7B1FA2,#9C27B0);" onclick="startNianChallenge()">挑战「念」</button>
             </div>
@@ -1540,7 +1557,7 @@ input, textarea, select { font-family: inherit; outline: none; }
         <div class="combatant player" id="playerCombatant">
           <div style="position:relative;">
             <div class="combatant-char">
-              <img src="https://aka.doubaocdn.com/s/VGMHWdmuA2" alt="修士" style="width:100%;height:100%;object-fit:contain;">
+              <img id="playerImage" src="https://aka.doubaocdn.com/s/VGMHWdmuA2" alt="修士" style="width:100%;height:100%;object-fit:contain;">
             </div>
             <div id="beastFollowers" style="position:absolute;top:-20px;right:-60px;display:flex;flex-direction:column;gap:6px;z-index:10;"></div>
           </div>
@@ -2545,8 +2562,53 @@ function navigate(view) {
   if (view === 'dungeon-book') renderBookDungeon();
   window.scrollTo(0, 0);
 }
+// ---------- 修士头像自定义 ----------
+function handlePlayerAvatarChange(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    gameState.playerImage = e.target.result;
+    saveGame();
+    updatePlayerAvatar();
+    showToast('修士形象已更新', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+function updatePlayerAvatar() {
+  var el = document.getElementById('playerAvatar');
+  if (!el) return;
+  if (gameState.playerImage) {
+    el.innerHTML = '<img src="' + gameState.playerImage + '" style="width:100%;height:100%;object-fit:cover;">';
+  } else {
+    el.innerHTML = '🧙';
+  }
+}
+// ---------- 念的形象自定义 ----------
+function handleNianImageChange(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    gameState.nianImage = e.target.result;
+    saveGame();
+    updateNianAvatar();
+    showToast('「念」的形象已更新', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+function updateNianAvatar() {
+  var el = document.getElementById('nianAvatar');
+  if (!el) return;
+  if (gameState.nianImage) {
+    el.innerHTML = '<img src="' + gameState.nianImage + '" style="width:100%;height:100%;object-fit:cover;">';
+  } else {
+    el.innerHTML = '🌑';
+  }
+}
 // ---------- 首页渲染 ----------
 function renderHome() {
+  updatePlayerAvatar();
   document.getElementById('heroDate').textContent = formatDate();
   renderRealm();
   renderDailyTasks();
@@ -2568,6 +2630,7 @@ function renderHome() {
 }
 // ---------- 备战页渲染 ----------
 function renderPrepare() {
+  updateNianAvatar();
   renderMonsterGroupSelect();
   renderMonsterSelector();
   renderBeastSelector();
@@ -2902,6 +2965,13 @@ function handleMapEvent(cellType, x, y) {
 }
 
 function triggerMapMonster(map, x, y) {
+  // 荒漠凶兽图片池
+  var desertMonsterImages = [
+    'https://aka.doubaocdn.com/s/oQwTYzd2rB', // 沙虫
+    'https://aka.doubaocdn.com/s/Mc8qyzDFL3', // 巨蝎
+    'https://aka.doubaocdn.com/s/S8k35gZAkV', // 岩石怪
+    'https://aka.doubaocdn.com/s/Th28X6piQT', // 沙虫2
+  ];
   // 随机选择凶兽
   var tier = map.monsterTiers[Math.floor(Math.random() * map.monsterTiers.length)];
   var monster = {
@@ -2913,7 +2983,7 @@ function triggerMapMonster(map, x, y) {
     fragReward: tier * 2,
     cultReward: tier * 3,
     element: ['fire','water','earth','wind','thunder'][Math.floor(Math.random()*5)],
-    image: '',
+    image: desertMonsterImages[Math.floor(Math.random() * desertMonsterImages.length)],
   };
   // 标记已清理（战斗胜利后）
   var key = x + ',' + y;
@@ -5710,7 +5780,7 @@ function launchNianLayer() {
     fragReward: 0,
     cultReward: 0,
     element: 'dark',
-    image: '',
+    image: gameState.nianImage || '',
     isNian: true,
   };
   prepareState.selectedGongfa = allGongfa;
@@ -5892,6 +5962,12 @@ function initBattleUI() {
   document.getElementById('playerName').textContent = getZhoumuStars() + ' ' + battleState.player.name;
   document.getElementById('monsterName').textContent = battleState.monster.name;
   document.getElementById('monsterImage').src = battleState.monster.image;
+  // 修士自定义头像
+  var playerImg = document.getElementById('playerImage');
+  if (playerImg && gameState.playerImage) {
+    playerImg.src = gameState.playerImage;
+    playerImg.style.objectFit = 'cover';
+  }
   document.getElementById('battlePlayerAtk').textContent = battleState.player.attack;
   document.getElementById('battlePlayerCrit').textContent = battleState.player.crit + '%';
   document.getElementById('playerCombatant').className = 'combatant player';
