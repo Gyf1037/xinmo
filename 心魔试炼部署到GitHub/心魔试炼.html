@@ -947,6 +947,175 @@ input, textarea, select { font-family: inherit; outline: none; }
   .result-title { font-size: 28px; }
   .lore-section { padding: 20px 18px; }
 }
+/* ========== 冒险地图 ========== */
+.map-container {
+  background: linear-gradient(135deg, rgba(20,15,35,0.95), rgba(10,10,25,0.98));
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 30px rgba(212,175,55,0.1), inset 0 0 60px rgba(0,0,0,0.5);
+}
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.map-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--gold-light);
+  letter-spacing: 2px;
+}
+.map-ap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(212,175,55,0.1);
+  border: 1px solid var(--border-gold);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 14px;
+  color: var(--gold-light);
+  font-weight: 700;
+}
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-bottom: 12px;
+}
+.map-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  border: 1px solid transparent;
+}
+.map-cell.unexplored {
+  background: rgba(0,0,0,0.6);
+  border-color: rgba(255,255,255,0.05);
+  color: transparent;
+}
+.map-cell.unexplored::after {
+  content: '?';
+  color: rgba(255,255,255,0.15);
+  font-size: 16px;
+  font-weight: 900;
+}
+.map-cell.explored {
+  background: rgba(30,25,50,0.8);
+  border-color: rgba(212,175,55,0.2);
+}
+.map-cell.monster { background: linear-gradient(135deg, rgba(139,30,30,0.4), rgba(60,10,10,0.6)); border-color: rgba(200,60,60,0.4); }
+.map-cell.treasure { background: linear-gradient(135deg, rgba(180,140,40,0.4), rgba(80,60,10,0.6)); border-color: rgba(212,175,55,0.5); }
+.map-cell.spirit { background: linear-gradient(135deg, rgba(40,120,100,0.4), rgba(10,50,40,0.6)); border-color: rgba(95,158,160,0.5); }
+.map-cell.trap { background: linear-gradient(135deg, rgba(120,40,100,0.4), rgba(50,10,40,0.6)); border-color: rgba(150,60,120,0.4); }
+.map-cell.boss { background: linear-gradient(135deg, rgba(160,30,30,0.5), rgba(80,10,10,0.7)); border-color: rgba(230,80,80,0.6); box-shadow: 0 0 12px rgba(230,80,80,0.3); }
+.map-cell.start { background: linear-gradient(135deg, rgba(60,100,160,0.4), rgba(20,40,80,0.6)); border-color: rgba(100,150,220,0.5); }
+.map-cell.reachable {
+  border-color: var(--gold-light);
+  box-shadow: 0 0 10px rgba(240,215,140,0.4);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+.map-cell.reachable:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 16px rgba(240,215,140,0.6);
+}
+.map-cell.player {
+  border: 2px solid var(--gold-light);
+  box-shadow: 0 0 16px rgba(240,215,140,0.6);
+  z-index: 2;
+}
+.map-cell.cleared::after {
+  content: '✓';
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  font-size: 10px;
+  color: var(--jade-light);
+  font-weight: 900;
+}
+.map-cell .cell-icon {
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.5));
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(240,215,140,0.3); }
+  50% { box-shadow: 0 0 16px rgba(240,215,140,0.6); }
+}
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.map-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.map-event-panel {
+  background: rgba(15,12,30,0.95);
+  border: 1px solid var(--border-gold);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.map-event-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.map-event-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin-bottom: 8px;
+}
+.map-event-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+.map-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.map-stat-card {
+  background: rgba(20,15,35,0.8);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+.map-stat-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--gold-light);
+}
+.map-stat-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
 </style>
 </head>
 <body>
@@ -961,6 +1130,7 @@ input, textarea, select { font-family: inherit; outline: none; }
     <a class="nav-link" data-view="beast" onclick="navigate('beast')">神兽阁</a>
     <a class="nav-link" data-view="history" onclick="navigate('history')">战绩录</a>
     <a class="nav-link" data-view="dungeon" onclick="navigate('dungeon')">副本秘境</a>
+    <a class="nav-link" data-view="adventure" onclick="navigate('adventure')">冒险地图</a>
     <a class="nav-link" data-view="swordwall" onclick="navigate('swordwall')">剑气长城</a>
   </div>
   <div class="nav-date" id="navDate"></div>
@@ -1620,6 +1790,11 @@ input, textarea, select { font-family: inherit; outline: none; }
     <div id="swordwallContent"></div>
   </div>
 
+  <!-- ========== 冒险地图页 ========== -->
+  <div id="view-adventure" class="view">
+    <div id="adventureContent"></div>
+  </div>
+
   <!-- ========== 神兽页 ========== -->
   <div id="view-beast" class="view">
     <div id="beastContent"></div>
@@ -1995,6 +2170,15 @@ let gameState = {
     zhoumuBestScores: {},    // 各周目最高分 {1: score, 2: score...}
     lastSettlement: '',      // 上次结算日期
   },
+  // 冒险地图系统
+  adventure: {
+    actionPoints: 0,         // 行动力
+    currentMap: 'desert',    // 当前地图
+    playerPos: { x: 0, y: 0 }, // 玩家位置
+    explored: {},            // 已探索格子 {"x,y": true}
+    mapState: {},            // 地图状态 {"x,y": {type, cleared}}
+    clearedMaps: [],         // 已通关地图
+  },
 };
 let prepareState = {
   selectedMonsterId: 'm1',
@@ -2356,6 +2540,7 @@ function navigate(view) {
   if (view === 'sect') { renderSects(); document.getElementById('sectorDetailPanel').style.display = 'none'; document.getElementById('sectEditorPanel').style.display = 'none'; }
   if (view === 'arena') renderArena();
   if (view === 'dungeon') renderDungeonList();
+  if (view === 'adventure') renderAdventureMap();
   if (view === 'dungeon-folder') renderDungeonFolder();
   if (view === 'dungeon-book') renderBookDungeon();
   window.scrollTo(0, 0);
@@ -2461,6 +2646,385 @@ function uploadMonsterImage() {
     });
   };
   input.click();
+}
+
+// ========== 冒险地图系统 ==========
+const ADVENTURE_MAPS = {
+  desert: {
+    name: '灵气荒漠',
+    desc: '黄沙漫天，灵气稀薄。凶兽盘踞其中，唯有专注者方能穿越。',
+    size: 8,
+    start: { x: 0, y: 0 },
+    boss: { x: 7, y: 7 },
+    bossName: '荒漠巨兽王',
+    bossTier: 7,
+    bossSkill: { name:'狂暴吞噬', type:'lifesteal', healPct:0.10, triggerHp:0.4, once:true, text:'荒漠巨兽王吞噬生机，恢复生命！' },
+    miniBoss: { x: 4, y: 4 },
+    miniBossName: '荒漠守卫',
+    miniBossTier: 5,
+    miniBossSkill: { name:'蓄力重击', type:'heavy', mult:1.7, cooldown:3, text:'荒漠守卫蓄力重击，地动山摇！' },
+    // 地图布局：0=空, 1=凶兽, 2=宝箱, 3=灵气, 4=陷阱, 5=问号, 6=终点BOSS, 7=小BOSS
+    layout: [
+      [6, 1, 5, 2, 1, 3, 1, 4],
+      [1, 4, 1, 3, 5, 1, 2, 1],
+      [5, 2, 1, 4, 1, 3, 5, 2],
+      [3, 1, 5, 2, 1, 4, 1, 3],
+      [1, 3, 2, 1, 7, 2, 3, 1],
+      [4, 1, 3, 5, 1, 4, 2, 5],
+      [2, 5, 1, 3, 2, 1, 4, 1],
+      [1, 2, 4, 1, 3, 5, 1, 6],
+    ],
+    monsterTiers: [1, 2, 3], // 随机凶兽等级范围
+  },
+};
+
+const CELL_TYPES = {
+  0: { name: '空地', icon: '·', class: 'explored' },
+  1: { name: '凶兽', icon: '👹', class: 'monster' },
+  2: { name: '宝箱', icon: '📦', class: 'treasure' },
+  3: { name: '灵气', icon: '✨', class: 'spirit' },
+  4: { name: '陷阱', icon: '⚠️', class: 'trap' },
+  5: { name: '未知', icon: '❓', class: 'explored' },
+  6: { name: 'BOSS', icon: '👑', class: 'boss' },
+  7: { name: '小BOSS', icon: '⚔️', class: 'boss' },
+};
+
+function getActionPoints() {
+  // 每30分钟专注=1行动力，最多50，减去已消耗的
+  var todayFocus = getTodayFocus();
+  var totalAp = Math.floor(todayFocus / 30);
+  var spent = gameState.adventure.apSpent || 0;
+  // 每天重置已消耗
+  var today = getTodayStr();
+  if (gameState.adventure.apSpentDate !== today) {
+    gameState.adventure.apSpentDate = today;
+    gameState.adventure.apSpent = 0;
+    spent = 0;
+  }
+  return Math.max(0, Math.min(totalAp, 50) - spent);
+}
+
+function initMapState(mapId) {
+  var map = ADVENTURE_MAPS[mapId];
+  if (!map) return;
+  if (!gameState.adventure.mapState[mapId]) {
+    gameState.adventure.mapState[mapId] = {};
+  }
+  gameState.adventure.currentMap = mapId;
+  gameState.adventure.playerPos = { ...map.start };
+  // 标记起点为已探索
+  var key = map.start.x + ',' + map.start.y;
+  gameState.adventure.explored[key] = true;
+  saveGame();
+}
+
+function renderAdventureMap() {
+  var container = document.getElementById('adventureContent');
+  if (!container) return;
+  var mapId = gameState.adventure.currentMap || 'desert';
+  var map = ADVENTURE_MAPS[mapId];
+  if (!map) { container.innerHTML = '<div class="panel">地图不存在</div>'; return; }
+
+  // 初始化地图状态
+  if (!gameState.adventure.mapState[mapId]) {
+    initMapState(mapId);
+  }
+
+  var ap = getActionPoints();
+  var playerPos = gameState.adventure.playerPos;
+  var explored = gameState.adventure.explored;
+  var mapState = gameState.adventure.mapState[mapId] || {};
+  var cleared = gameState.adventure.clearedMaps.indexOf(mapId) >= 0;
+
+  var html = '';
+  // 顶部信息
+  html += '<div class="map-container">';
+  html += '<div class="map-header">';
+  html += '<div class="map-title">🏔️ ' + map.name + '</div>';
+  html += '<div class="map-ap">⚡ ' + ap + ' 行动力</div>';
+  html += '</div>';
+  html += '<div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;line-height:1.6;">' + map.desc + '</div>';
+
+  // 地图网格
+  html += '<div class="map-grid">';
+  for (var y = 0; y < map.size; y++) {
+    for (var x = 0; x < map.size; x++) {
+      var key = x + ',' + y;
+      var isExplored = explored[key];
+      var cellType = map.layout[y][x];
+      var cellInfo = CELL_TYPES[cellType];
+      var isPlayer = playerPos.x === x && playerPos.y === y;
+      var isCleared = mapState[key] && mapState[key].cleared;
+      // 是否可达（相邻且有行动力）
+      var dx = Math.abs(x - playerPos.x);
+      var dy = Math.abs(y - playerPos.y);
+      var isReachable = (dx + dy === 1) && ap > 0 && !isPlayer;
+
+      var cellClass = 'map-cell ';
+      if (!isExplored && !isReachable) {
+        cellClass += 'unexplored';
+      } else {
+        cellClass += cellInfo.class;
+        if (isReachable) cellClass += ' reachable';
+        if (isPlayer) cellClass += ' player';
+        if (isCleared) cellClass += ' cleared';
+      }
+      // 起点特殊样式
+      if (x === map.start.x && y === map.start.y && !isPlayer) {
+        cellClass = cellClass.replace('unexplored', 'start').replace('explored', 'start');
+      }
+
+      var icon = isExplored || isReachable ? cellInfo.icon : '';
+      if (isPlayer) icon = '🧙';
+      if (x === map.start.x && y === map.start.y && !isPlayer && !isExplored) icon = '🏠';
+
+      var onclick = isReachable ? 'onclick="moveToCell(' + x + ',' + y + ')"' : '';
+      html += '<div class="' + cellClass + '" ' + onclick + '>';
+      html += '<span class="cell-icon">' + icon + '</span>';
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+
+  // 图例
+  html += '<div class="map-legend">';
+  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(100,150,220,0.5)"></div>起点</div>';
+  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(200,60,60,0.5)"></div>凶兽</div>';
+  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(212,175,55,0.5)"></div>宝箱</div>';
+  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(95,158,160,0.5)"></div>灵气</div>';
+  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(150,60,120,0.5)"></div>陷阱</div>';
+  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(200,100,50,0.6)"></div>小BOSS</div>';
+  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(230,80,80,0.6)"></div>终BOSS</div>';
+  html += '</div>';
+  html += '</div>';
+
+  // 统计
+  html += '<div class="map-stats">';
+  html += '<div class="map-stat-card"><div class="map-stat-value">' + ap + '</div><div class="map-stat-label">行动力</div></div>';
+  html += '<div class="map-stat-card"><div class="map-stat-value">' + Object.keys(explored).length + '/' + (map.size * map.size) + '</div><div class="map-stat-label">已探索</div></div>';
+  html += '<div class="map-stat-card"><div class="map-stat-value">' + (cleared ? '已通关' : '未通关') + '</div><div class="map-stat-label">地图状态</div></div>';
+  html += '</div>';
+
+  // 操作按钮
+  html += '<div style="display:flex;gap:10px;justify-content:center;">';
+  html += '<button class="btn btn-ghost btn-sm" onclick="resetAdventureMap()">🔄 重置地图</button>';
+  if (ap === 0) {
+    html += '<div style="font-size:12px;color:var(--cinnabar-light);align-self:center;">行动力不足，专注30分钟可获得1点行动力</div>';
+  }
+  html += '</div>';
+
+  // 说明
+  html += '<div class="panel" style="margin-top:16px;padding:14px;">';
+  html += '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">';
+  html += '<b style="color:var(--gold-light);">玩法说明：</b><br>';
+  html += '• 每专注10分钟获得1点行动力（最多50点）<br>';
+  html += '• 点击相邻格子移动，每次消耗1点行动力<br>';
+  html += '• 遇到凶兽触发战斗，宝箱获得奖励，灵气恢复状态<br>';
+  html += '• 击败终点BOSS即可通关地图，获得赛季积分+15';
+  html += '</div></div>';
+
+  container.innerHTML = html;
+}
+
+function moveToCell(x, y) {
+  var ap = getActionPoints();
+  if (ap <= 0) { showToast('行动力不足，专注10分钟可获得1点', 'error'); return; }
+  var mapId = gameState.adventure.currentMap;
+  var map = ADVENTURE_MAPS[mapId];
+  var playerPos = gameState.adventure.playerPos;
+  var dx = Math.abs(x - playerPos.x);
+  var dy = Math.abs(y - playerPos.y);
+  if (dx + dy !== 1) { showToast('只能移动到相邻格子', 'error'); return; }
+
+  // 消耗行动力
+  var today = getTodayStr();
+  if (gameState.adventure.apSpentDate !== today) {
+    gameState.adventure.apSpentDate = today;
+    gameState.adventure.apSpent = 0;
+  }
+  gameState.adventure.apSpent = (gameState.adventure.apSpent || 0) + 1;
+
+  // 移动玩家
+  gameState.adventure.playerPos = { x: x, y: y };
+  var key = x + ',' + y;
+  gameState.adventure.explored[key] = true;
+
+  // 触发事件
+  var cellType = map.layout[y][x];
+  handleMapEvent(cellType, x, y);
+  saveGame();
+  renderAdventureMap();
+}
+
+function handleMapEvent(cellType, x, y) {
+  var mapId = gameState.adventure.currentMap;
+  var map = ADVENTURE_MAPS[mapId];
+  var key = x + ',' + y;
+  if (!gameState.adventure.mapState[mapId]) gameState.adventure.mapState[mapId] = {};
+  var cellState = gameState.adventure.mapState[mapId][key] || {};
+
+  if (cellState.cleared && cellType !== 6) {
+    showToast('此处已探索过', 'info');
+    return;
+  }
+
+  switch (cellType) {
+    case 1: // 凶兽
+      triggerMapMonster(map, x, y);
+      break;
+    case 2: // 宝箱
+      triggerMapTreasure();
+      cellState.cleared = true;
+      gameState.adventure.mapState[mapId][key] = cellState;
+      break;
+    case 3: // 灵气
+      triggerMapSpirit();
+      cellState.cleared = true;
+      gameState.adventure.mapState[mapId][key] = cellState;
+      break;
+    case 4: // 陷阱
+      triggerMapTrap();
+      cellState.cleared = true;
+      gameState.adventure.mapState[mapId][key] = cellState;
+      break;
+    case 5: // 问号
+      triggerMapRandom();
+      cellState.cleared = true;
+      gameState.adventure.mapState[mapId][key] = cellState;
+      break;
+    case 6: // 终点BOSS
+      triggerMapBoss(map, x, y, false);
+      break;
+    case 7: // 小BOSS
+      triggerMapBoss(map, x, y, true);
+      break;
+  }
+}
+
+function triggerMapMonster(map, x, y) {
+  // 随机选择凶兽
+  var tier = map.monsterTiers[Math.floor(Math.random() * map.monsterTiers.length)];
+  var monster = {
+    id: 'map_monster_' + x + '_' + y,
+    monsterId: 'map_' + tier,
+    name: '荒漠凶兽·' + getTierConfig(tier).name,
+    tier: tier,
+    reqMinutes: 0,
+    fragReward: tier * 2,
+    cultReward: tier * 3,
+    element: ['fire','water','earth','wind','thunder'][Math.floor(Math.random()*5)],
+    image: '',
+  };
+  // 标记已清理（战斗胜利后）
+  var key = x + ',' + y;
+  var mapId = gameState.adventure.currentMap;
+  if (!gameState.adventure.mapState[mapId]) gameState.adventure.mapState[mapId] = {};
+  startBattle(monster, {
+    baseAtk: 0, baseHp: 0, focusMinutes: getTodayFocus(), note: map.name + '·凶兽',
+    context: 'map', onWin: function() {
+      gameState.adventure.mapState[mapId][key] = { cleared: true };
+      saveGame();
+      addSeasonScore('beasts', 1);
+      showToast('击败荒漠凶兽！', 'success');
+    }
+  });
+}
+
+function triggerMapTreasure() {
+  var roll = Math.random();
+  if (roll < 0.4) {
+    var frag = 5 + Math.floor(Math.random() * 11);
+    dailyState.fragments = (dailyState.fragments || 0) + frag;
+    saveDaily();
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + frag + ' 枚心魔碎片', '继续探索', function() { renderAdventureMap(); });
+  } else if (roll < 0.7) {
+    var stone = 1;
+    gameState.swordStones = (gameState.swordStones || 0) + stone;
+    saveGame();
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + stone + ' 枚铸字石', '继续探索', function() { renderAdventureMap(); });
+  } else {
+    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '宝箱是空的...只有一张破旧的地图', '继续探索', function() { renderAdventureMap(); });
+  }
+}
+
+function triggerMapSpirit() {
+  var heal = 30 + Math.floor(Math.random() * 20);
+  showBattleOverlay('✨ 灵气', '一股精纯的灵气涌入体内！', '恢复 ' + heal + ' 点生命值，灵力充盈', '继续探索', function() { renderAdventureMap(); });
+}
+
+function triggerMapTrap() {
+  var dmg = 10 + Math.floor(Math.random() * 15);
+  showBattleOverlay('⚠️ 陷阱', '你触发了一个隐藏的陷阱！', '损失 ' + dmg + ' 点生命值', '继续探索', function() { renderAdventureMap(); });
+}
+
+function triggerMapRandom() {
+  var events = [
+    { title: '偶遇散修', desc: '一位路过的散修赠予你一些丹药。', reward: '获得 5 枚心魔碎片' },
+    { title: '灵气泉眼', desc: '你发现了一处隐藏的灵气泉眼。', reward: '状态完全恢复' },
+    { title: '古修遗迹', desc: '你在遗迹中找到了一些宝物。', reward: '获得 1 枚铸字石' },
+    { title: '沙尘暴', desc: '突如其来的沙尘暴让你迷失了方向。', reward: '损失 1 点行动力' },
+  ];
+  var evt = events[Math.floor(Math.random() * events.length)];
+  if (evt.reward.indexOf('碎片') >= 0) {
+    dailyState.fragments = (dailyState.fragments || 0) + 5;
+    saveDaily();
+  } else if (evt.reward.indexOf('铸字石') >= 0) {
+    gameState.swordStones = (gameState.swordStones || 0) + 1;
+    saveGame();
+  }
+  showBattleOverlay('❓ ' + evt.title, evt.desc, evt.reward, '继续探索', function() { renderAdventureMap(); });
+}
+
+function triggerMapBoss(map, x, y, isMini) {
+  var bossName = isMini ? map.miniBossName : map.bossName;
+  var bossTier = isMini ? map.miniBossTier : map.bossTier;
+  var bossSkill = isMini ? map.miniBossSkill : map.bossSkill;
+  var fragReward = isMini ? 10 : 20;
+  var cultReward = isMini ? 15 : 30;
+  var scoreReward = isMini ? 5 : 15;
+  var boss = {
+    id: 'map_boss_' + (isMini ? 'mini_' : '') + x + '_' + y,
+    monsterId: 'map_boss_' + (isMini ? 'mini' : 'final'),
+    name: bossName,
+    tier: bossTier,
+    reqMinutes: 0,
+    fragReward: fragReward,
+    cultReward: cultReward,
+    element: 'dark',
+    image: '',
+    skill: bossSkill, // BOSS特殊技能
+  };
+  var key = x + ',' + y;
+  var mapId = gameState.adventure.currentMap;
+  if (!gameState.adventure.mapState[mapId]) gameState.adventure.mapState[mapId] = {};
+  startBattle(boss, {
+    baseAtk: 0, baseHp: 0, focusMinutes: getTodayFocus(), note: map.name + '·' + (isMini ? '小BOSS' : '最终BOSS'),
+    context: 'map', onWin: function() {
+      gameState.adventure.mapState[mapId][key] = { cleared: true };
+      if (!isMini && gameState.adventure.clearedMaps.indexOf(mapId) < 0) {
+        gameState.adventure.clearedMaps.push(mapId);
+      }
+      addSeasonScore('dungeons', scoreReward);
+      saveGame();
+      if (isMini) {
+        showBattleOverlay('⚔️ 击败小BOSS！', '你击败了' + bossName + '！', '赛季积分+' + scoreReward + '，心魔碎片+' + fragReward + '，修为+' + cultReward + '分钟', '继续探索', function() { renderAdventureMap(); });
+      } else {
+        showBattleOverlay('🏆 通关！', '你击败了' + bossName + '，征服了' + map.name + '！', '赛季积分+' + scoreReward + '，心魔碎片+' + fragReward + '，修为+' + cultReward + '分钟', '返回地图', function() { renderAdventureMap(); });
+      }
+    }
+  });
+}
+
+function resetAdventureMap() {
+  if (!confirm('确定要重置当前地图吗？已探索进度将清空。')) return;
+  var mapId = gameState.adventure.currentMap;
+  gameState.adventure.mapState[mapId] = {};
+  gameState.adventure.explored = {};
+  gameState.adventure.playerPos = { ...ADVENTURE_MAPS[mapId].start };
+  gameState.adventure.apSpent = 0;
+  saveGame();
+  renderAdventureMap();
+  showToast('地图已重置', 'info');
 }
 
 // ---------- 剑气长城 ----------
