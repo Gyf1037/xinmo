@@ -1325,14 +1325,17 @@ input, textarea, select { font-family: inherit; outline: none; }
     <div class="panel" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div class="panel-title" style="font-size:14px;margin-bottom:0;">存档管理</div>
-        <span style="font-size:11px;color:var(--text-dim);">文件 / 剪贴板 双模式</span>
+        <span style="font-size:11px;color:var(--text-dim);">导出含图片 / 复制精简</span>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
-        <button class="btn btn-ghost btn-sm" onclick="exportSave()">导出文件</button>
-        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSaveInput').click()">导入文件</button>
-        <button class="btn btn-ghost btn-sm" onclick="copySave()">复制存档</button>
-        <button class="btn btn-ghost btn-sm" onclick="togglePasteImport()">粘贴导入</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportSave()">📄 导出完整存档</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSaveInput').click()">📥 导入文件</button>
+        <button class="btn btn-ghost btn-sm" onclick="copySave()">📋 复制精简存档</button>
+        <button class="btn btn-ghost btn-sm" onclick="togglePasteImport()">📥 粘贴导入</button>
         <input type="file" id="importSaveInput" accept=".json" style="display:none;" onchange="importSave(this.files[0])">
+      </div>
+      <div style="font-size:10px;color:var(--text-dim);line-height:1.5;margin-bottom:4px;">
+        💡 复制存档自动省略图片数据（更短不卡顿），导入后需重新设置头像/凶兽图片；完整图片请用「导出文件」
       </div>
       <div id="pasteImportArea" style="display:none;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;">
         <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">粘贴存档JSON（手机端推荐）</div>
@@ -2316,6 +2319,22 @@ function loadSave() {
   gameState.beasts = data?.beasts || getDefaultBeasts();
   gameState.activeBeasts = data?.activeBeasts || [];
   gameState.reviveCharges = data?.reviveCharges || 0;
+  // 冒险地图状态恢复
+  if (data?.adventure) {
+    gameState.adventure = {
+      actionPoints: data.adventure.actionPoints || 0,
+      currentMap: data.adventure.currentMap || 'desert',
+      playerPos: data.adventure.playerPos || { x: 0, y: 0 },
+      explored: data.adventure.explored || {},
+      mapState: data.adventure.mapState || {},
+      clearedMaps: data.adventure.clearedMaps || [],
+      apSpent: data.adventure.apSpent || 0,
+      apSpentDate: data.adventure.apSpentDate || '',
+    };
+  }
+  // 自定义图片恢复
+  gameState.playerImage = data?.playerImage || '';
+  gameState.nianImage = data?.nianImage || '';
   // 兼容旧存档：补上缺失的类型数组
   ['gongfa', 'permanent', 'consumable'].forEach(t => {
     if (!Array.isArray(gameState.categories[t])) gameState.categories[t] = [];
@@ -2439,9 +2458,14 @@ function copySave() {
     if (v !== null) data.data[k] = v;
   });
   var text = JSON.stringify(data);
+  // 过滤base64图片数据（大幅减少体积），保留空字符串占位
+  var originalLen = text.length;
+  text = text.replace(/"data:image\/[^"]*"/g, '""');
+  var filteredLen = text.length;
+  var savedKB = Math.round((originalLen - filteredLen) / 1024);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(function() {
-      showToast('存档已复制到剪贴板', 'success');
+      showToast('存档已复制（精简' + savedKB + 'KB，图片已省略）', 'success');
     }).catch(function() {
       fallbackCopy(text);
     });
@@ -6195,31 +6219,35 @@ function applyAutoClear(beatenId, diffMult) {
   if (!gameState.autoCleared || gameState.autoCleared.date !== todayK) {
     gameState.autoCleared = { date: todayK, ids: {} };
   }
+  // 获取被击败凶兽的难度等级
+  var beatenMonster = getMonsterById(beatenId);
+  var beatenTier = beatenMonster ? (beatenMonster.tier || 1) : 1;
   var autoCount = 0;
   var totalFrag = 0, totalCult = 0;
   grp.monsterIds.forEach(function(mid) {
     if (mid === beatenId) return; // 自己不算
+    var mObj = getMonsterById(mid);
+    if (!mObj) return;
+    var mTier = mObj.tier || 1;
+    // 只越级通关比它难度低的凶兽（tier更小）
+    if (mTier >= beatenTier) return;
     if (gameState.dailyMonsterWins.wins[mid]) return; // 已经赢过的不重复
     if (gameState.autoCleared.ids[mid]) return; // 已经越级通关过的不重复
     // 标记为今日已通关
     gameState.dailyMonsterWins.wins[mid] = true;
     gameState.autoCleared.ids[mid] = true;
     // 算每日次数（1次）
-    gameState.dailyMonsterKills.kills[mid] = Math.max(1, gameState.dailyMonsterKills.kills[mid] || 0) + 0;
     if (!gameState.dailyMonsterKills.kills[mid]) gameState.dailyMonsterKills.kills[mid] = 1;
     // 基础奖励（不乘难度系数）
-    var mObj = getMonsterById(mid);
-    if (mObj) {
-      var mReq = mObj.reqMinutes || 0;
-      var baseFrag = mObj.fragReward > 0 ? mObj.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
-      var baseCult = mObj.cultReward > 0 ? mObj.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
-      totalFrag += baseFrag;
-      totalCult += baseCult;
-      autoCount++;
-      // 按同难度计入赛季积分
-      var diffScore = diffMult >= 2.0 ? 5 : diffMult >= 1.8 ? 4 : diffMult >= 1.4 ? 2 : 1;
-      addSeasonScore('beast', diffScore);
-    }
+    var mReq = mObj.reqMinutes || 0;
+    var baseFrag = mObj.fragReward > 0 ? mObj.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
+    var baseCult = mObj.cultReward > 0 ? mObj.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
+    totalFrag += baseFrag;
+    totalCult += baseCult;
+    autoCount++;
+    // 按同难度计入赛季积分
+    var diffScore = diffMult >= 2.0 ? 5 : diffMult >= 1.8 ? 4 : diffMult >= 1.4 ? 2 : 1;
+    addSeasonScore('beast', diffScore);
   });
   if (autoCount > 0) {
     if (!dailyState.fragments) dailyState.fragments = 0;
@@ -6228,7 +6256,7 @@ function applyAutoClear(beatenId, diffMult) {
     gameState.bonusFocus += totalCult;
     saveDaily();
     saveGame();
-    showToast('⚡ 越级通关：' + autoCount + '只凶兽默认通过，获得' + totalFrag + '碎片+' + totalCult + '修为（基础奖励）', 'info');
+    showToast('⚡ 越级通关：' + autoCount + '只低阶凶兽默认通过，获得' + totalFrag + '碎片+' + totalCult + '修为（基础奖励）', 'info');
   }
 }
 function checkDungeonClear() {
