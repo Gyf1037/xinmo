@@ -525,23 +525,23 @@ input, textarea, select { font-family: inherit; outline: none; }
 @keyframes attackLungeLeft { 0%{transform:translateX(0)} 40%{transform:translateX(-50px) scale(1.05)} 100%{transform:translateX(0)} }
 @keyframes shake { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-8px,4px)} 40%{transform:translate(8px,-4px)} 60%{transform:translate(-6px,-2px)} 80%{transform:translate(6px,2px)} }
 /* ===== 属性特效动画 ===== */
-@keyframes fxLightBeam { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 20%{transform:translateX(-50%) scaleY(1);opacity:1} 80%{opacity:1} 100%{transform:translateX(-50%) scaleY(1);opacity:0} }
-@keyframes fxLightBurst { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(-50%,-50%) scale(3);opacity:0} }
-@keyframes fxDarkRise { 0%{transform:translateY(30px) scale(0.5);opacity:0} 50%{opacity:0.8} 100%{transform:translateY(-40px) scale(1.5);opacity:0} }
-@keyframes fxFireBurst { 0%{transform:translate(-50%,-50%) scale(0.3) rotate(0deg);opacity:1} 100%{transform:translate(-50%,-50%) scale(2.5) rotate(180deg);opacity:0} }
-@keyframes fxFireRise { 0%{transform:translateY(0) scale(1);opacity:0.9} 100%{transform:translateY(-60px) scale(0.3);opacity:0} }
-@keyframes fxWaterSplash { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(-50%,-50%) scale(2.5);opacity:0} }
-@keyframes fxWaterDrop { 0%{transform:translateY(-20px);opacity:0} 30%{opacity:1} 100%{transform:translateY(40px);opacity:0} }
-@keyframes fxElectric { 0%,100%{opacity:0;transform:translateX(-50%) scaleX(0.5)} 10%,30%,50%,70%{opacity:1;transform:translateX(-50%) scaleX(1.2)} 20%,40%,60%{opacity:0.3;transform:translateX(-50%) scaleX(0.8)} }
-@keyframes fxWoodGrow { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 40%{transform:translateX(-50%) scaleY(1);opacity:1} 100%{transform:translateX(-50%) scaleY(1);opacity:0} }
-@keyframes fxLeafFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(50px) rotate(360deg);opacity:0} }
-@keyframes fxIceBurst { 0%{transform:translate(-50%,-50%) scale(0) rotate(0deg);opacity:1} 100%{transform:translate(-50%,-50%) scale(2) rotate(45deg);opacity:0} }
-@keyframes fxIceShard { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(1) rotate(var(--rot));opacity:0} }
-@keyframes fxThunderStrike { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 15%{transform:translateX(-50%) scaleY(1);opacity:1} 30%{opacity:0.3} 45%{opacity:1} 60%{opacity:0} 100%{opacity:0} }
-@keyframes fxWindSpin { 0%{transform:translate(-50%,-50%) rotate(0deg) scale(0.5);opacity:0.8} 100%{transform:translate(-50%,-50%) rotate(720deg) scale(2);opacity:0} }
-@keyframes fxWindBlade { 0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(0);opacity:1} 100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) rotate(var(--rot)) scale(1.5);opacity:0} }
-@keyframes fxEarthRise { 0%{transform:translateX(-50%) translateY(20px) scale(0);opacity:0} 40%{transform:translateX(-50%) translateY(0) scale(1);opacity:1} 100%{transform:translateX(-50%) translateY(-10px) scale(1.2);opacity:0} }
-@keyframes fxEarthShard { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(1) rotate(var(--rot));opacity:0} }
+@keyframes fxLightBeam { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 15%{transform:translateX(-50%) scaleY(1);opacity:1} 70%{opacity:1} 100%{transform:translateX(-50%) scaleY(1);opacity:0} }
+@keyframes fxLightBurst { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 60%{opacity:0.8} 100%{transform:translate(-50%,-50%) scale(3.5);opacity:0} }
+@keyframes fxDarkRise { 0%{transform:translateY(40px) scale(0.5);opacity:0} 40%{opacity:0.9} 100%{transform:translateY(-60px) scale(1.8);opacity:0} }
+@keyframes fxFireBurst { 0%{transform:translate(-50%,-50%) scale(0.3) rotate(0deg);opacity:1} 50%{opacity:1} 100%{transform:translate(-50%,-50%) scale(3) rotate(270deg);opacity:0} }
+@keyframes fxFireRise { 0%{transform:translateY(0) scale(1);opacity:0.9} 100%{transform:translateY(-100px) scale(0.2);opacity:0} }
+@keyframes fxWaterSplash { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 50%{opacity:1} 100%{transform:translate(-50%,-50%) scale(3);opacity:0} }
+@keyframes fxWaterDrop { 0%{transform:translateY(-30px);opacity:0} 20%{opacity:1} 100%{transform:translateY(80px);opacity:0} }
+@keyframes fxElectric { 0%,100%{opacity:0;transform:translateX(-50%) scaleX(0.5)} 10%,25%,40%,55%,70%{opacity:1;transform:translateX(-50%) scaleX(1.3)} 17%,32%,47%,62%{opacity:0.4;transform:translateX(-50%) scaleX(0.8)} }
+@keyframes fxWoodGrow { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 30%{transform:translateX(-50%) scaleY(1);opacity:1} 70%{opacity:1} 100%{transform:translateX(-50%) scaleY(1);opacity:0} }
+@keyframes fxLeafFall { 0%{transform:translateY(-30px) rotate(0deg);opacity:1} 100%{transform:translateY(80px) rotate(540deg);opacity:0} }
+@keyframes fxIceBurst { 0%{transform:translate(-50%,-50%) scale(0) rotate(0deg);opacity:1} 50%{opacity:1} 100%{transform:translate(-50%,-50%) scale(2.5) rotate(90deg);opacity:0} }
+@keyframes fxIceShard { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(1.2) rotate(var(--rot));opacity:0} }
+@keyframes fxThunderStrike { 0%{transform:translateX(-50%) scaleY(0);opacity:0} 10%{transform:translateX(-50%) scaleY(1);opacity:1} 25%{opacity:0.4} 40%{opacity:1} 55%{opacity:0.3} 70%{opacity:1} 85%{opacity:0} 100%{opacity:0} }
+@keyframes fxWindSpin { 0%{transform:translate(-50%,-50%) rotate(0deg) scale(0.5);opacity:0.9} 100%{transform:translate(-50%,-50%) rotate(1080deg) scale(2.5);opacity:0} }
+@keyframes fxWindBlade { 0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(0);opacity:1} 100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) rotate(var(--rot)) scale(2);opacity:0} }
+@keyframes fxEarthRise { 0%{transform:translateX(-50%) translateY(30px) scale(0);opacity:0} 30%{transform:translateX(-50%) translateY(0) scale(1);opacity:1} 70%{opacity:1} 100%{transform:translateX(-50%) translateY(-20px) scale(1.3);opacity:0} }
+@keyframes fxEarthShard { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(1.3) rotate(var(--rot));opacity:0} }
 .combatant.player.hurt .combatant-char { animation: hurtShakeP 0.4s ease; }
 .combatant.monster.hurt .combatant-char { animation: hurtShakeM 0.4s ease; }
 @keyframes hurtShakeP { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-12px)} 40%{transform:translateX(12px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
@@ -678,6 +678,139 @@ input, textarea, select { font-family: inherit; outline: none; }
 .battle-action-btn.defensive:hover:not(:disabled) { background: rgba(95,158,160,0.18); border-color: var(--jade); }
 .battle-action-btn.skill { border-color: rgba(139,107,184,0.6); color: #c9b0f0; background: rgba(139,107,184,0.12); }
 .battle-action-btn.skill:hover:not(:disabled) { background: rgba(139,107,184,0.25); border-color: var(--purple); }
+/* ========== 冒险地图样式 ========== */
+.map-container {
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(212,175,55,0.25);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  position: relative;
+  overflow: hidden;
+}
+.map-container::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(212,175,55,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(139,107,184,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+.map-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; position: relative; z-index: 1;
+}
+.map-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px; font-weight: 800;
+  color: var(--gold-light);
+  text-shadow: 0 0 20px rgba(212,175,55,0.4);
+}
+.map-weather {
+  font-size: 12px; padding: 4px 10px; border-radius: 12px;
+  background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-secondary);
+}
+.map-stats {
+  display: flex; gap: 12px; margin-bottom: 12px; position: relative; z-index: 1;
+}
+.map-stat {
+  flex: 1; text-align: center; padding: 8px;
+  background: rgba(0,0,0,0.3); border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.map-stat-value { font-size: 18px; font-weight: 800; color: var(--gold-light); }
+.map-stat-label { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+  position: relative; z-index: 1;
+}
+.map-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.3);
+}
+.map-cell:hover { transform: scale(1.1); z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.map-cell.unexplored {
+  background: linear-gradient(135deg, #1a1a2e, #0d0d1a);
+  border-color: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.15);
+}
+.map-cell.fog {
+  background: linear-gradient(135deg, #2d2d44, #1a1a2e);
+  border-color: rgba(157,78,221,0.3);
+  color: rgba(157,78,221,0.5);
+  animation: fogPulse 2s ease-in-out infinite;
+}
+@keyframes fogPulse { 0%,100% { opacity: 0.7; } 50% { opacity: 1; } }
+.map-cell.explored { background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(0,0,0,0.2)); }
+.map-cell.cleared { opacity: 0.5; }
+.map-cell.cleared::after {
+  content: '✓'; position: absolute; top: 1px; right: 3px;
+  font-size: 8px; color: var(--jade-light); font-weight: 700;
+}
+.map-cell.player {
+  background: linear-gradient(135deg, rgba(212,175,55,0.4), rgba(255,200,0,0.2));
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(212,175,55,0.6);
+  animation: playerPulse 1.5s ease-in-out infinite;
+  z-index: 3;
+}
+@keyframes playerPulse { 0%,100% { box-shadow: 0 0 8px rgba(212,175,55,0.5); } 50% { box-shadow: 0 0 16px rgba(212,175,55,0.9); } }
+.map-cell.adjacent {
+  border-color: rgba(212,175,55,0.5);
+  box-shadow: inset 0 0 8px rgba(212,175,55,0.2);
+}
+.map-cell.boss {
+  background: linear-gradient(135deg, rgba(194,59,34,0.3), rgba(100,0,0,0.3));
+  border-color: var(--cinnabar);
+  animation: bossPulse 1s ease-in-out infinite;
+}
+@keyframes bossPulse { 0%,100% { box-shadow: 0 0 6px rgba(194,59,34,0.4); } 50% { box-shadow: 0 0 14px rgba(194,59,34,0.8); } }
+.map-cell.elite {
+  background: linear-gradient(135deg, rgba(233,30,99,0.25), rgba(100,0,50,0.2));
+  border-color: #E91E63;
+}
+.map-cell.merchant { background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(0,50,0,0.2)); border-color: #4CAF50; }
+.map-cell.elder { background: linear-gradient(135deg, rgba(156,39,176,0.2), rgba(50,0,80,0.2)); border-color: #9C27B0; }
+.map-cell.portal { background: linear-gradient(135deg, rgba(0,188,212,0.2), rgba(0,50,80,0.2)); border-color: #00BCD4; }
+.map-cell.treasure { background: linear-gradient(135deg, rgba(255,193,7,0.25), rgba(80,50,0,0.2)); border-color: #FFC107; }
+.map-cell.spirit { background: linear-gradient(135deg, rgba(95,158,160,0.2), rgba(0,50,60,0.2)); border-color: #5F9EA0; }
+.map-cell.trap { background: linear-gradient(135deg, rgba(255,87,34,0.2), rgba(80,20,0,0.2)); border-color: #FF5722; }
+.map-cell.question { background: linear-gradient(135deg, rgba(255,235,59,0.2), rgba(80,70,0,0.2)); border-color: #FFEB3B; }
+.map-cell.nest { background: linear-gradient(135deg, rgba(121,85,72,0.3), rgba(40,20,10,0.3)); border-color: #795548; }
+.map-cell.hidden { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.3)); border-color: rgba(255,255,255,0.1); }
+.map-cell.start { background: linear-gradient(135deg, rgba(76,175,80,0.3), rgba(0,80,0,0.2)); border-color: #4CAF50; }
+.map-cell-icon { font-size: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+.map-legend {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+  padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;
+  position: relative; z-index: 1;
+}
+.map-legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-secondary); }
+.map-legend-icon { font-size: 14px; }
+.map-event-panel {
+  margin-top: 12px; padding: 14px;
+  background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(20,20,40,0.5));
+  border-radius: 10px; border: 1px solid rgba(212,175,55,0.2);
+  position: relative; z-index: 1;
+}
+.map-event-title { font-size: 15px; font-weight: 700; color: var(--gold-light); margin-bottom: 8px; }
+.map-event-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 10px; }
+.map-event-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.map-buff-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.map-buff-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.4);
+  color: var(--gold-light);
+}
 .battle-overlay {
   position: absolute; inset: 0; z-index: 20;
   display: flex; align-items: center; justify-content: center;
@@ -947,175 +1080,6 @@ input, textarea, select { font-family: inherit; outline: none; }
   .result-title { font-size: 28px; }
   .lore-section { padding: 20px 18px; }
 }
-/* ========== 冒险地图 ========== */
-.map-container {
-  background: linear-gradient(135deg, rgba(20,15,35,0.95), rgba(10,10,25,0.98));
-  border: 1px solid var(--border-gold);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 0 30px rgba(212,175,55,0.1), inset 0 0 60px rgba(0,0,0,0.5);
-}
-.map-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.map-title {
-  font-family: 'Noto Serif SC', serif;
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--gold-light);
-  letter-spacing: 2px;
-}
-.map-ap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(212,175,55,0.1);
-  border: 1px solid var(--border-gold);
-  border-radius: 20px;
-  padding: 4px 14px;
-  font-size: 14px;
-  color: var(--gold-light);
-  font-weight: 700;
-}
-.map-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 4px;
-  margin-bottom: 12px;
-}
-.map-cell {
-  aspect-ratio: 1;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
-  border: 1px solid transparent;
-}
-.map-cell.unexplored {
-  background: rgba(0,0,0,0.6);
-  border-color: rgba(255,255,255,0.05);
-  color: transparent;
-}
-.map-cell.unexplored::after {
-  content: '?';
-  color: rgba(255,255,255,0.15);
-  font-size: 16px;
-  font-weight: 900;
-}
-.map-cell.explored {
-  background: rgba(30,25,50,0.8);
-  border-color: rgba(212,175,55,0.2);
-}
-.map-cell.monster { background: linear-gradient(135deg, rgba(139,30,30,0.4), rgba(60,10,10,0.6)); border-color: rgba(200,60,60,0.4); }
-.map-cell.treasure { background: linear-gradient(135deg, rgba(180,140,40,0.4), rgba(80,60,10,0.6)); border-color: rgba(212,175,55,0.5); }
-.map-cell.spirit { background: linear-gradient(135deg, rgba(40,120,100,0.4), rgba(10,50,40,0.6)); border-color: rgba(95,158,160,0.5); }
-.map-cell.trap { background: linear-gradient(135deg, rgba(120,40,100,0.4), rgba(50,10,40,0.6)); border-color: rgba(150,60,120,0.4); }
-.map-cell.boss { background: linear-gradient(135deg, rgba(160,30,30,0.5), rgba(80,10,10,0.7)); border-color: rgba(230,80,80,0.6); box-shadow: 0 0 12px rgba(230,80,80,0.3); }
-.map-cell.start { background: linear-gradient(135deg, rgba(60,100,160,0.4), rgba(20,40,80,0.6)); border-color: rgba(100,150,220,0.5); }
-.map-cell.reachable {
-  border-color: var(--gold-light);
-  box-shadow: 0 0 10px rgba(240,215,140,0.4);
-  animation: pulse-glow 1.5s ease-in-out infinite;
-}
-.map-cell.reachable:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 16px rgba(240,215,140,0.6);
-}
-.map-cell.player {
-  border: 2px solid var(--gold-light);
-  box-shadow: 0 0 16px rgba(240,215,140,0.6);
-  z-index: 2;
-}
-.map-cell.cleared::after {
-  content: '✓';
-  position: absolute;
-  top: 1px;
-  right: 3px;
-  font-size: 10px;
-  color: var(--jade-light);
-  font-weight: 900;
-}
-.map-cell .cell-icon {
-  filter: drop-shadow(0 0 4px rgba(0,0,0,0.5));
-}
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(240,215,140,0.3); }
-  50% { box-shadow: 0 0 16px rgba(240,215,140,0.6); }
-}
-.map-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-top: 8px;
-}
-.map-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.map-legend-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-}
-.map-event-panel {
-  background: rgba(15,12,30,0.95);
-  border: 1px solid var(--border-gold);
-  border-radius: 10px;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 16px;
-}
-.map-event-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-}
-.map-event-title {
-  font-family: 'Noto Serif SC', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--gold-light);
-  margin-bottom: 8px;
-}
-.map-event-desc {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.8;
-  margin-bottom: 16px;
-}
-.map-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.map-stat-card {
-  background: rgba(20,15,35,0.8);
-  border: 1px solid var(--border-gold);
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-}
-.map-stat-value {
-  font-size: 18px;
-  font-weight: 900;
-  color: var(--gold-light);
-}
-.map-stat-label {
-  font-size: 10px;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
 </style>
 </head>
 <body>
@@ -1129,8 +1093,9 @@ input, textarea, select { font-family: inherit; outline: none; }
     <a class="nav-link" data-view="inventory" onclick="navigate('inventory')">法宝背包</a>
     <a class="nav-link" data-view="beast" onclick="navigate('beast')">神兽阁</a>
     <a class="nav-link" data-view="history" onclick="navigate('history')">战绩录</a>
-    <a class="nav-link" data-view="dungeon" onclick="navigate('dungeon')">副本秘境</a>
+    <a class="nav-link" data-view="zhoumu" onclick="navigate('zhoumu')">周目殿</a>
     <a class="nav-link" data-view="adventure" onclick="navigate('adventure')">冒险地图</a>
+    <a class="nav-link" data-view="dungeon" onclick="navigate('dungeon')">副本秘境</a>
     <a class="nav-link" data-view="swordwall" onclick="navigate('swordwall')">剑气长城</a>
   </div>
   <div class="nav-date" id="navDate"></div>
@@ -1203,19 +1168,8 @@ input, textarea, select { font-family: inherit; outline: none; }
       <div class="home-firefly" style="left:64%;top:30%;animation-delay:3.3s;"></div>
     </div>
     <div class="hero-section">
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
-        <div style="position:relative;flex-shrink:0;">
-          <div id="playerAvatar" style="width:72px;height:72px;border-radius:50%;border:3px solid var(--gold);background:linear-gradient(135deg,rgba(212,175,55,0.3),rgba(212,175,55,0.1));display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 0 20px rgba(212,175,55,0.3);overflow:hidden;cursor:pointer;" onclick="document.getElementById('playerAvatarInput').click()">
-            🧙
-          </div>
-          <div style="position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;" onclick="document.getElementById('playerAvatarInput').click()" title="更换头像">📷</div>
-          <input type="file" id="playerAvatarInput" accept="image/*" style="display:none;" onchange="handlePlayerAvatarChange(event)">
-        </div>
-        <div style="flex:1;">
-          <div class="hero-title" style="margin-bottom:4px;">心魔试炼</div>
-          <div class="hero-subtitle">以专注为剑 · 斩上古凶兽</div>
-        </div>
-      </div>
+      <div class="hero-title">心魔试炼</div>
+      <div class="hero-subtitle">以专注为剑 · 斩上古凶兽</div>
       <div class="hero-date" id="heroDate"></div>
       <div class="hero-actions">
         <button class="btn btn-primary btn-lg" onclick="navigate('prepare')">开启今日试炼</button>
@@ -1306,7 +1260,7 @@ input, textarea, select { font-family: inherit; outline: none; }
         </div>
       </div>
       <div style="margin-top:8px;font-size:10px;color:var(--text-dim);line-height:1.6;">
-        每日证道一次可获随机消耗法宝 · 每提升1级需5次证道 · 今日未证道扣1次 · 连续7天有额外奖励
+        每日证道一次可获随机消耗法宝 · 境界突破证道需求递增（4/5/6...10次封顶） · 今日未证道扣1次 · 连续7天有额外奖励
       </div>
       <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,167,38,0.2);text-align:center;">
         <button class="btn" id="letGoBtn" onclick="letGo()" style="background:linear-gradient(135deg,#FFA726 0%,#E65100 100%);color:#fff;padding:8px 20px;font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">
@@ -1325,17 +1279,14 @@ input, textarea, select { font-family: inherit; outline: none; }
     <div class="panel" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div class="panel-title" style="font-size:14px;margin-bottom:0;">存档管理</div>
-        <span style="font-size:11px;color:var(--text-dim);">导出含图片 / 复制精简</span>
+        <span style="font-size:11px;color:var(--text-dim);">文件 / 剪贴板 双模式</span>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
-        <button class="btn btn-ghost btn-sm" onclick="exportSave()">📄 导出完整存档</button>
-        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSaveInput').click()">📥 导入文件</button>
-        <button class="btn btn-ghost btn-sm" onclick="copySave()">📋 复制精简存档</button>
-        <button class="btn btn-ghost btn-sm" onclick="togglePasteImport()">📥 粘贴导入</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportSave()">导出文件</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('importSaveInput').click()">导入文件</button>
+        <button class="btn btn-ghost btn-sm" onclick="copySave()">复制存档</button>
+        <button class="btn btn-ghost btn-sm" onclick="togglePasteImport()">粘贴导入</button>
         <input type="file" id="importSaveInput" accept=".json" style="display:none;" onchange="importSave(this.files[0])">
-      </div>
-      <div style="font-size:10px;color:var(--text-dim);line-height:1.5;margin-bottom:4px;">
-        💡 复制存档自动省略图片数据（更短不卡顿），导入后需重新设置头像/凶兽图片；完整图片请用「导出文件」
       </div>
       <div id="pasteImportArea" style="display:none;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;">
         <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">粘贴存档JSON（手机端推荐）</div>
@@ -1374,31 +1325,6 @@ input, textarea, select { font-family: inherit; outline: none; }
               <label class="form-label">参战神兽（最多2只，未解锁在神兽阁查看）</label>
               <div id="beastSelector" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
             </div>
-            <!-- 念·无尽挑战 -->
-            <div style="margin-top:10px;padding:12px;background:linear-gradient(135deg,rgba(157,78,221,0.15),rgba(0,0,0,0.3));border:1px solid rgba(157,78,221,0.4);border-radius:8px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <span style="font-size:14px;font-weight:700;color:#CE93D8;">🌑 念·无尽挑战</span>
-                <span style="font-size:11px;color:var(--text-secondary);">历史最高：第<span id="nianBestLayer">1</span>层</span>
-              </div>
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-                <div id="nianAvatar" style="width:48px;height:48px;border-radius:8px;background:rgba(157,78,221,0.2);border:1px solid rgba(157,78,221,0.4);display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;cursor:pointer;flex-shrink:0;" onclick="document.getElementById('nianImageInput').click()" title="点击更换「念」的形象">
-                  🌑
-                </div>
-                <div style="flex:1;font-size:11px;color:var(--text-secondary);line-height:1.6;">
-                  不死不灭之念，每天从第1层开始，全装备挑战。击败一层+2积分。<br>难度基于你当日战力动态计算。
-                </div>
-                <input type="file" id="nianImageInput" accept="image/*" style="display:none;" onchange="handleNianImageChange(event)">
-              </div>
-              <button class="btn btn-primary btn-sm" style="width:100%;background:linear-gradient(135deg,#7B1FA2,#9C27B0);" onclick="startNianChallenge()">挑战「念」</button>
-            </div>
-            <!-- 赛季周目面板 -->
-            <div style="margin-top:10px;padding:12px;background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(0,0,0,0.3));border:1px solid rgba(212,175,55,0.3);border-radius:8px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <span style="font-size:14px;font-weight:700;color:var(--gold-light);">🏆 赛季周目</span>
-                <span id="zhoumuStars" style="font-size:16px;color:var(--gold);">★</span>
-              </div>
-              <div id="seasonPanel" style="font-size:12px;color:var(--text-secondary);line-height:1.8;"></div>
-            </div>
             <!-- 凶兽奖励说明 -->
             <div style="margin-top:10px;">
               <div onclick="toggleHelp('monsterRewardHelp')" style="cursor:pointer;font-size:12px;color:var(--gold-light);font-weight:600;margin-bottom:6px;">▸ 凶兽战利品说明</div>
@@ -1415,7 +1341,7 @@ input, textarea, select { font-family: inherit; outline: none; }
               <div onclick="toggleHelp('battleHelp')" style="cursor:pointer;font-size:12px;color:var(--gold-light);font-weight:600;margin-bottom:6px;">▸ 战斗系统说明</div>
               <div id="battleHelp" class="help-content" style="display:none;font-size:11px;color:var(--text-secondary);line-height:1.8;margin-top:6px;padding:10px;background:rgba(212,175,55,0.05);border-radius:6px;border:1px solid rgba(212,175,55,0.15);">
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">灵力系统：</b>普攻获得+15灵力，技能耗灵35~45，调息回灵+35并获得护盾。</div>
-                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">技能效果：</b>归元（回血20%+减伤30%/2回合）、破军（高伤+破甲25%/2回合）、残影（连击2次+闪避30%/2回合）、乾坤（伤害+灼烧）。</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">技能效果：</b>归元（回血5%+减伤15%/2回合，冷却4回合）、破军（高伤+破甲25%/2回合）、残影（连击2次+闪避30%/2回合）、乾坤（伤害+灼烧）。</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">属性效果：</b>光（受伤+15%）、暗（攻击-15%）、火（灼烧5%/回合）、水（攻击-20%）、电（20%麻痹）、木（中毒3%/回合）、冰（15%冻结）、雷（受伤+25%）、风（流血4%/回合）、土（受伤+25%）。</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">属性克制：</b>每只凶兽有弱点属性，使用对应属性攻击伤害+30%。</div>
                 <div style="color:var(--jade-light);">策略：合理使用技能附加状态，利用属性克制，普攻攒灵后释放大招。</div>
@@ -1560,7 +1486,7 @@ input, textarea, select { font-family: inherit; outline: none; }
         <div class="combatant player" id="playerCombatant">
           <div style="position:relative;">
             <div class="combatant-char">
-              <img id="playerImage" src="https://aka.doubaocdn.com/s/VGMHWdmuA2" alt="修士" style="width:100%;height:100%;object-fit:contain;">
+              <img src="https://aka.doubaocdn.com/s/VGMHWdmuA2" alt="修士" style="width:100%;height:100%;object-fit:contain;">
             </div>
             <div id="beastFollowers" style="position:absolute;top:-20px;right:-60px;display:flex;flex-direction:column;gap:6px;z-index:10;"></div>
           </div>
@@ -1760,6 +1686,16 @@ input, textarea, select { font-family: inherit; outline: none; }
       <div class="empty-state" id="historyEmpty" style="display:none;">尚无战报，去开启第一场试炼吧</div>
     </div>
   </div>
+  <!-- ========== 冒险地图 ========== -->
+  <div id="view-adventure" class="view">
+    <div id="adventureContent"></div>
+  </div>
+
+  <!-- ========== 周目殿 ========== -->
+  <div id="view-zhoumu" class="view">
+    <div id="zhoumuContent"></div>
+  </div>
+
   <!-- ========== 副本列表页 ========== -->
   <div id="view-dungeon" class="view">
     <div class="panel" style="margin-bottom:20px;">
@@ -1808,11 +1744,6 @@ input, textarea, select { font-family: inherit; outline: none; }
   <!-- ========== 剑气长城页 ========== -->
   <div id="view-swordwall" class="view">
     <div id="swordwallContent"></div>
-  </div>
-
-  <!-- ========== 冒险地图页 ========== -->
-  <div id="view-adventure" class="view">
-    <div id="adventureContent"></div>
   </div>
 
   <!-- ========== 神兽页 ========== -->
@@ -1954,18 +1885,21 @@ input, textarea, select { font-family: inherit; outline: none; }
       </div>
       <div class="sector-grid" id="sectorGrid"></div>
     </div>
+  </div>
+  <!-- ========== 宗门详情页（独立） ========== -->
+  <div id="view-sect-detail" class="view">
     <!-- 宗门详情 -->
-    <div class="panel" id="sectorDetailPanel" style="display:none;">
+    <div class="panel" id="sectorDetailPanel">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div class="panel-title" style="margin-bottom:0;" id="sectorDetailTitle">宗门详情</div>
         <div>
-          <button class="btn btn-ghost btn-sm" onclick="closeSectDetail()">返回</button>
+          <button class="btn btn-ghost btn-sm" onclick="closeSectDetail()">← 返回列表</button>
         </div>
       </div>
       <div id="sectorDetailContent"></div>
     </div>
     <!-- 宗门编辑器 -->
-    <div class="panel" id="sectEditorPanel" style="display:none;">
+    <div class="panel" id="sectEditorPanel" style="display:none;margin-top:16px;">
       <div class="panel-title" id="sectEditorTitle">新增宗门</div>
       <div class="form-row">
         <div class="form-group">
@@ -2075,16 +2009,16 @@ function getTypeName(t) { return TYPE_NAMES[t] || '法宝'; }
 // ---------- 六档难度配置（上古凶兽）----------
 // ========== 凶兽强度等级配置（动态血量系统） ==========
 const MONSTER_TIERS = [
-  { tier:1,  name:'练气级', targetRounds:2,  dmgRatio:0.12 },
-  { tier:2,  name:'筑基级', targetRounds:3,  dmgRatio:0.16 },
-  { tier:3,  name:'金丹级', targetRounds:3,  dmgRatio:0.20 },
-  { tier:4,  name:'元婴级', targetRounds:4,  dmgRatio:0.24 },
-  { tier:5,  name:'化神级', targetRounds:5,  dmgRatio:0.28 },
-  { tier:6,  name:'炼虚级', targetRounds:5,  dmgRatio:0.32 },
-  { tier:7,  name:'合体级', targetRounds:6,  dmgRatio:0.36 },
-  { tier:8,  name:'大乘级', targetRounds:7,  dmgRatio:0.40 },
-  { tier:9,  name:'渡劫级', targetRounds:8,  dmgRatio:0.44 },
-  { tier:10, name:'真仙级', targetRounds:10, dmgRatio:0.50 },
+  { tier:1,  name:'练气级', targetRounds:2,  dmgRatio:0.18 },
+  { tier:2,  name:'筑基级', targetRounds:3,  dmgRatio:0.24 },
+  { tier:3,  name:'金丹级', targetRounds:3,  dmgRatio:0.30 },
+  { tier:4,  name:'元婴级', targetRounds:4,  dmgRatio:0.36 },
+  { tier:5,  name:'化神级', targetRounds:5,  dmgRatio:0.42 },
+  { tier:6,  name:'炼虚级', targetRounds:5,  dmgRatio:0.48 },
+  { tier:7,  name:'合体级', targetRounds:6,  dmgRatio:0.54 },
+  { tier:8,  name:'大乘级', targetRounds:7,  dmgRatio:0.60 },
+  { tier:9,  name:'渡劫级', targetRounds:8,  dmgRatio:0.66 },
+  { tier:10, name:'真仙级', targetRounds:10, dmgRatio:0.75 },
 ];
 function getTierConfig(tier) {
   return MONSTER_TIERS[Math.max(0, Math.min(9, (tier||1)-1))];
@@ -2121,15 +2055,15 @@ function calcMonsterStats(monster) {
   var tier = getTierConfig(monster.tier || 3);
   var zhoumuMult = 1 + ((gameState.season?.zhoumu || 1) - 1) * 0.15;
   var diffMult = difficultyMult;
-  // 专注5小时的DPS基准（用于换算血量基准回合）
-  var focus5hAtk = 300 * 0.8;
-  var focus5hDps = (cp.nakedAtk + focus5hAtk) * (1 + cp.nakedCrit/100 * 0.5);
-  var baseRounds = tier.targetRounds * (focus5hDps / cp.nakedDps);
-  var maxHp = Math.floor(cp.nakedDps * baseRounds * zhoumuMult * diffMult);
-  // 攻击基于玩家当日实际生命，dmgRatio为每回合承伤比例
+  // 专注200分钟的DPS基准（确保专注0分钟打不过，需要200分钟以上才能通关）
+  var focus200Atk = 200 * 1.2;  // 每分钟1.2攻击加成
+  var focus200Dps = (cp.nakedAtk + focus200Atk) * (1 + cp.nakedCrit/100 * 0.5);
+  // 凶兽血量 = 专注200分钟DPS × 目标回合数（专注越久越容易）
+  var maxHp = Math.floor(focus200Dps * tier.targetRounds * zhoumuMult * diffMult);
+  // 攻击基于玩家当日实际生命，dmgRatio为每回合承伤比例（已提高）
   var todayFocus = getTodayFocus();
   var todayTotalHp = cp.nakedHp + Math.floor(todayFocus * 0.5);
-  var attack = Math.max(8, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult)));
+  var attack = Math.max(10, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult)));
   return { maxHp: maxHp, attack: attack, tierName: tier.name, targetRounds: tier.targetRounds };
 }
 const DEFAULT_MONSTERS = [
@@ -2139,12 +2073,28 @@ const DEFAULT_MONSTERS = [
   { id:'m4', name:'梼杌',   tier:4, reqMinutes:90,  desc:'长毛猛虎，顽凶难驯',     image:'https://aka.doubaocdn.com/s/K3UvXuRGkF' },
   { id:'m5', name:'混沌',   tier:6, reqMinutes:180, desc:'混沌无形，不辨是非',     image:'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
   { id:'m6', name:'相柳',   tier:8, reqMinutes:300, desc:'九头蛇身，毒泽千里',     image:'https://aka.doubaocdn.com/s/nVu89uZgvN' },
+  // ========== 异火空间 ==========
+  { id:'yh1', name:'青莲地心火', tier:5, reqMinutes:150, desc:'异火榜排名十九，生于大地深处，青莲为形', image:'https://aka.doubaocdn.com/s/pewy6UUM2G' },
+  { id:'yh2', name:'阴阳双炎',   tier:5, reqMinutes:150, desc:'阴阳交融，黑白双鱼，太极化生', image:'https://aka.doubaocdn.com/s/OQ7ykf9ktt' },
+  { id:'yh3', name:'火云水炎',   tier:6, reqMinutes:180, desc:'异火榜排名十五，水火相济，红蓝交织', image:'https://aka.doubaocdn.com/s/43VhZfalQU' },
+  { id:'yh4', name:'陨落心炎',   tier:6, reqMinutes:180, desc:'异火榜排名十四，天降陨星，紫焰焚心', image:'https://aka.doubaocdn.com/s/ehVimGpRhs' },
+  { id:'yh5', name:'九龙雷罡火', tier:7, reqMinutes:210, desc:'异火榜排名十二，九龙啸天，雷火焚天', image:'https://aka.doubaocdn.com/s/QJLRm1gGSU' },
+  { id:'yh6', name:'骨灵冷火',   tier:7, reqMinutes:210, desc:'异火榜排名十一，白骨生焰，极寒之炎', image:'https://aka.doubaocdn.com/s/ZzURJAveGf' },
+  { id:'yh7', name:'三千焱炎火', tier:8, reqMinutes:240, desc:'异火榜排名第九，星辰化炎，紫龙吞天', image:'https://aka.doubaocdn.com/s/Uy7yeDC3Er' },
+  { id:'yh8', name:'红莲业火',   tier:8, reqMinutes:240, desc:'异火榜排名第八，红莲绽放，业火焚罪', image:'https://aka.doubaocdn.com/s/Slkq5ZV3cv' },
+  { id:'yh9', name:'八荒破灭焱', tier:9, reqMinutes:270, desc:'异火榜排名第六，黑翼遮天，破灭八荒', image:'https://aka.doubaocdn.com/s/DXgP3pQ1kn' },
+  { id:'yh10', name:'生灵之焱',  tier:9, reqMinutes:270, desc:'异火榜排名第五，万物复苏，生命之源', image:'https://aka.doubaocdn.com/s/EuDt2Lvq2j' },
+  { id:'yh11', name:'金帝焚天炎', tier:10, reqMinutes:300, desc:'异火榜排名第四，金色神焰，焚天煮海', image:'https://aka.doubaocdn.com/s/o1iQlLTBvV' },
+  { id:'yh12', name:'净莲妖火',  tier:10, reqMinutes:300, desc:'异火榜排名第三，妖莲净化，粉色梦魇', image:'https://aka.doubaocdn.com/s/XtTVuTHSFj' },
+  { id:'yh13', name:'虚无吞炎',  tier:10, reqMinutes:330, desc:'异火榜排名第二，吞噬万物，虚无之炎', image:'https://aka.doubaocdn.com/s/BPXY5MvDfU' },
+  { id:'yh14', name:'帝炎',      tier:10, reqMinutes:360, desc:'异火榜排名第一，万火之帝，统御诸炎', image:'https://aka.doubaocdn.com/s/O2lV40msu5' },
 ];
 const DEFAULT_MONSTER_IMAGE = 'https://aka.doubaocdn.com/s/uXKUSDTAi2';
 // 凶兽副本分组
 const DEFAULT_MONSTER_GROUPS = [
   { id: 'shanhai', name: '山海经', icon: '🐉', desc: '上古凶兽，经典六档', builtin: true, monsterIds: ['m1','m2','m3','m4','m5','m6'] },
   { id: 'chenglong', name: '成龙历险记', icon: '🀄', desc: '八大恶魔，圣主领衔', builtin: true, monsterIds: [] },
+  { id: 'yihuo', name: '异火空间', icon: '🔥', desc: '斗破苍穹异火榜，十四神炎，难度极高', builtin: true, monsterIds: ['yh1','yh2','yh3','yh4','yh5','yh6','yh7','yh8','yh9','yh10','yh11','yh12','yh13','yh14'] },
 ];
 const DEFAULT_CHENGLONG_BOSSES = [
   { id:'dl1', name:'波刚',   label:'山之恶魔', tier:2, reqMinutes:30,  desc:'山之恶魔，体型巨大，力大无穷', image:'' },
@@ -2189,15 +2139,24 @@ let gameState = {
     nianBestLayer: 0,        // 念的历史最高层
     zhoumuBestScores: {},    // 各周目最高分 {1: score, 2: score...}
     lastSettlement: '',      // 上次结算日期
+    equippedTitle: '',       // 当前佩戴的称号
   },
+  playerImage: '',           // 修士头像（base64）
   // 冒险地图系统
   adventure: {
-    actionPoints: 0,         // 行动力
-    currentMap: 'desert',    // 当前地图
+    currentMap: 'desert',     // 当前地图
     playerPos: { x: 0, y: 0 }, // 玩家位置
-    explored: {},            // 已探索格子 {"x,y": true}
-    mapState: {},            // 地图状态 {"x,y": {type, cleared}}
-    clearedMaps: [],         // 已通关地图
+    explored: {},             // 已探索格子 {"x,y": true}
+    mapState: {},             // 地图状态 {"mapId": {"x,y": {type, cleared, revealed}}}
+    clearedMaps: [],          // 已通关地图
+    apSpent: 0,               // 今日已消耗行动力
+    apSpentDate: '',          // 行动力消耗日期
+    weather: '',              // 当前天气
+    mapBuffs: [],             // 地图内临时buff [{type, value, duration}]
+    mapItems: [],             // 地图内收集的道具
+    bestRecords: {},          // 各地图最佳记录 {mapId: {apUsed, cleared}}
+    monsterDex: {},           // 地图凶兽图鉴 {"monsterId": true}
+    hiddenRevealed: {},       // 已发现的隐藏房间
   },
 };
 let prepareState = {
@@ -2288,6 +2247,16 @@ function loadSave() {
     });
     // 更新chenglong分组的monsterIds
     gameState.monsterGroups[1].monsterIds = DEFAULT_CHENGLONG_BOSSES.map(function(b){ return b.id; });
+  } else {
+    // 合并新增的默认副本分组到旧存档
+    var needSaveGroup = false;
+    DEFAULT_MONSTER_GROUPS.forEach(function(dg) {
+      if (!gameState.monsterGroups.find(function(g) { return g.id === dg.id; })) {
+        gameState.monsterGroups.push(JSON.parse(JSON.stringify(dg)));
+        needSaveGroup = true;
+      }
+    });
+    if (needSaveGroup) saveGame();
   }
   gameState.history = data?.history || [];
   gameState.focusSessions = data?.focusSessions || [];
@@ -2309,6 +2278,8 @@ function loadSave() {
   gameState.bloodCharCount = data?.bloodCharCount || 0;
   gameState.todayCultivation = data?.todayCultivation || null;
   gameState.todayBookRead = data?.todayBookRead || null;
+  gameState.todayBeastCult = data?.todayBeastCult || null;
+  gameState.autoCleared = data?.autoCleared || null;
   gameState.inscriptionAtkBonus = data?.inscriptionAtkBonus || 0;
   gameState.inscriptionHpBonus = data?.inscriptionHpBonus || 0;
   gameState.customBooks = data?.customBooks || {};
@@ -2319,31 +2290,60 @@ function loadSave() {
   gameState.beasts = data?.beasts || getDefaultBeasts();
   gameState.activeBeasts = data?.activeBeasts || [];
   gameState.reviveCharges = data?.reviveCharges || 0;
-  // 冒险地图状态恢复
+  gameState.playerImage = data?.playerImage || '';
+  // 完整恢复赛季周目数据
+  if (data?.season) {
+    gameState.season = {
+      weekStart: data.season.weekStart || '',
+      weekScore: data.season.weekScore || 0,
+      weekBreakdown: data.season.weekBreakdown || { beasts:0, focus:0, enlighten:0, dungeons:0, nian:0 },
+      weekRank: data.season.weekRank || '',
+      zhoumu: data.season.zhoumu || 1,
+      zhoumuMonth: data.season.zhoumuMonth || '',
+      monthlyTitles: data.season.monthlyTitles || [],
+      nianBestLayer: data.season.nianBestLayer || 0,
+      zhoumuBestScores: data.season.zhoumuBestScores || {},
+      lastSettlement: data.season.lastSettlement || '',
+      equippedTitle: data.season.equippedTitle || '',
+    };
+  }
+  // 完整恢复冒险地图数据
   if (data?.adventure) {
     gameState.adventure = {
-      actionPoints: data.adventure.actionPoints || 0,
       currentMap: data.adventure.currentMap || 'desert',
-      playerPos: data.adventure.playerPos || { x: 0, y: 0 },
+      playerPos: data.adventure.playerPos || { x: 0, y: 9 },
       explored: data.adventure.explored || {},
       mapState: data.adventure.mapState || {},
       clearedMaps: data.adventure.clearedMaps || [],
       apSpent: data.adventure.apSpent || 0,
       apSpentDate: data.adventure.apSpentDate || '',
+      weather: data.adventure.weather || '',
+      mapBuffs: data.adventure.mapBuffs || [],
+      mapItems: data.adventure.mapItems || [],
+      bestRecords: data.adventure.bestRecords || {},
+      monsterDex: data.adventure.monsterDex || {},
+      hiddenRevealed: data.adventure.hiddenRevealed || {},
     };
   }
-  // 自定义图片恢复
-  gameState.playerImage = data?.playerImage || '';
-  gameState.nianImage = data?.nianImage || '';
   // 兼容旧存档：补上缺失的类型数组
   ['gongfa', 'permanent', 'consumable'].forEach(t => {
     if (!Array.isArray(gameState.categories[t])) gameState.categories[t] = [];
     if (!Array.isArray(gameState.equipment[t])) gameState.equipment[t] = [];
   });
-  // 初始化凶兽（如果为空）
+  // 初始化凶兽（如果为空），并合并新增的默认凶兽
   if (gameState.monsters.length === 0) {
     gameState.monsters = JSON.parse(JSON.stringify(DEFAULT_MONSTERS));
     saveGame();
+  } else {
+    // 合并新增的默认凶兽到旧存档
+    var needSave = false;
+    DEFAULT_MONSTERS.forEach(function(dm) {
+      if (!gameState.monsters.find(function(m) { return m.id === dm.id; })) {
+        gameState.monsters.push(JSON.parse(JSON.stringify(dm)));
+        needSave = true;
+      }
+    });
+    if (needSave) saveGame();
   }
   const catsEmpty = ['gongfa', 'permanent', 'consumable'].every(t => gameState.categories[t].length === 0);
   const eqEmpty = ['gongfa', 'permanent', 'consumable'].every(t => gameState.equipment[t].length === 0);
@@ -2458,14 +2458,9 @@ function copySave() {
     if (v !== null) data.data[k] = v;
   });
   var text = JSON.stringify(data);
-  // 过滤base64图片数据（大幅减少体积），保留空字符串占位
-  var originalLen = text.length;
-  text = text.replace(/"data:image\/[^"]*"/g, '""');
-  var filteredLen = text.length;
-  var savedKB = Math.round((originalLen - filteredLen) / 1024);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(function() {
-      showToast('存档已复制（精简' + savedKB + 'KB，图片已省略）', 'success');
+      showToast('存档已复制到剪贴板', 'success');
     }).catch(function() {
       fallbackCopy(text);
     });
@@ -2579,60 +2574,17 @@ function navigate(view) {
   if (view === 'inventory') renderInventory();
   if (view === 'history') renderHistory();
   if (view === 'sect') { renderSects(); document.getElementById('sectorDetailPanel').style.display = 'none'; document.getElementById('sectEditorPanel').style.display = 'none'; }
+  if (view === 'sect-detail') { if (currentSectId) showSectDetail(currentSectId); }
   if (view === 'arena') renderArena();
-  if (view === 'dungeon') renderDungeonList();
+  if (view === 'zhoumu') renderZhoumu();
   if (view === 'adventure') renderAdventureMap();
+  if (view === 'dungeon') renderDungeonList();
   if (view === 'dungeon-folder') renderDungeonFolder();
   if (view === 'dungeon-book') renderBookDungeon();
   window.scrollTo(0, 0);
 }
-// ---------- 修士头像自定义 ----------
-function handlePlayerAvatarChange(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    gameState.playerImage = e.target.result;
-    saveGame();
-    updatePlayerAvatar();
-    showToast('修士形象已更新', 'success');
-  };
-  reader.readAsDataURL(file);
-}
-function updatePlayerAvatar() {
-  var el = document.getElementById('playerAvatar');
-  if (!el) return;
-  if (gameState.playerImage) {
-    el.innerHTML = '<img src="' + gameState.playerImage + '" style="width:100%;height:100%;object-fit:cover;">';
-  } else {
-    el.innerHTML = '🧙';
-  }
-}
-// ---------- 念的形象自定义 ----------
-function handleNianImageChange(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    gameState.nianImage = e.target.result;
-    saveGame();
-    updateNianAvatar();
-    showToast('「念」的形象已更新', 'success');
-  };
-  reader.readAsDataURL(file);
-}
-function updateNianAvatar() {
-  var el = document.getElementById('nianAvatar');
-  if (!el) return;
-  if (gameState.nianImage) {
-    el.innerHTML = '<img src="' + gameState.nianImage + '" style="width:100%;height:100%;object-fit:cover;">';
-  } else {
-    el.innerHTML = '🌑';
-  }
-}
 // ---------- 首页渲染 ----------
 function renderHome() {
-  updatePlayerAvatar();
   document.getElementById('heroDate').textContent = formatDate();
   renderRealm();
   renderDailyTasks();
@@ -2654,7 +2606,6 @@ function renderHome() {
 }
 // ---------- 备战页渲染 ----------
 function renderPrepare() {
-  updateNianAvatar();
   renderMonsterGroupSelect();
   renderMonsterSelector();
   renderBeastSelector();
@@ -2735,421 +2686,6 @@ function uploadMonsterImage() {
   input.click();
 }
 
-// ========== 冒险地图系统 ==========
-const ADVENTURE_MAPS = {
-  desert: {
-    name: '灵气荒漠',
-    desc: '黄沙漫天，灵气稀薄。凶兽盘踞其中，唯有专注者方能穿越。',
-    size: 8,
-    start: { x: 0, y: 0 },
-    boss: { x: 7, y: 7 },
-    bossName: '荒漠巨兽王',
-    bossTier: 7,
-    bossSkill: { name:'狂暴吞噬', type:'lifesteal', healPct:0.10, triggerHp:0.4, once:true, text:'荒漠巨兽王吞噬生机，恢复生命！' },
-    miniBoss: { x: 4, y: 4 },
-    miniBossName: '荒漠守卫',
-    miniBossTier: 5,
-    miniBossSkill: { name:'蓄力重击', type:'heavy', mult:1.7, cooldown:3, text:'荒漠守卫蓄力重击，地动山摇！' },
-    // 地图布局：0=空, 1=凶兽, 2=宝箱, 3=灵气, 4=陷阱, 5=问号, 6=终点BOSS, 7=小BOSS
-    layout: [
-      [6, 1, 5, 2, 1, 3, 1, 4],
-      [1, 4, 1, 3, 5, 1, 2, 1],
-      [5, 2, 1, 4, 1, 3, 5, 2],
-      [3, 1, 5, 2, 1, 4, 1, 3],
-      [1, 3, 2, 1, 7, 2, 3, 1],
-      [4, 1, 3, 5, 1, 4, 2, 5],
-      [2, 5, 1, 3, 2, 1, 4, 1],
-      [1, 2, 4, 1, 3, 5, 1, 6],
-    ],
-    monsterTiers: [1, 2, 3], // 随机凶兽等级范围
-  },
-};
-
-const CELL_TYPES = {
-  0: { name: '空地', icon: '·', class: 'explored' },
-  1: { name: '凶兽', icon: '👹', class: 'monster' },
-  2: { name: '宝箱', icon: '📦', class: 'treasure' },
-  3: { name: '灵气', icon: '✨', class: 'spirit' },
-  4: { name: '陷阱', icon: '⚠️', class: 'trap' },
-  5: { name: '未知', icon: '❓', class: 'explored' },
-  6: { name: 'BOSS', icon: '👑', class: 'boss' },
-  7: { name: '小BOSS', icon: '⚔️', class: 'boss' },
-};
-
-function getActionPoints() {
-  // 每30分钟专注=1行动力，最多50，减去已消耗的
-  var todayFocus = getTodayFocus();
-  var totalAp = Math.floor(todayFocus / 30);
-  var spent = gameState.adventure.apSpent || 0;
-  // 每天重置已消耗
-  var today = getTodayStr();
-  if (gameState.adventure.apSpentDate !== today) {
-    gameState.adventure.apSpentDate = today;
-    gameState.adventure.apSpent = 0;
-    spent = 0;
-  }
-  return Math.max(0, Math.min(totalAp, 50) - spent);
-}
-
-function initMapState(mapId) {
-  var map = ADVENTURE_MAPS[mapId];
-  if (!map) return;
-  if (!gameState.adventure.mapState[mapId]) {
-    gameState.adventure.mapState[mapId] = {};
-  }
-  gameState.adventure.currentMap = mapId;
-  gameState.adventure.playerPos = { ...map.start };
-  // 标记起点为已探索
-  var key = map.start.x + ',' + map.start.y;
-  gameState.adventure.explored[key] = true;
-  saveGame();
-}
-
-function renderAdventureMap() {
-  var container = document.getElementById('adventureContent');
-  if (!container) return;
-  var mapId = gameState.adventure.currentMap || 'desert';
-  var map = ADVENTURE_MAPS[mapId];
-  if (!map) { container.innerHTML = '<div class="panel">地图不存在</div>'; return; }
-
-  // 初始化地图状态
-  if (!gameState.adventure.mapState[mapId]) {
-    initMapState(mapId);
-  }
-
-  var ap = getActionPoints();
-  var playerPos = gameState.adventure.playerPos;
-  var explored = gameState.adventure.explored;
-  var mapState = gameState.adventure.mapState[mapId] || {};
-  var cleared = gameState.adventure.clearedMaps.indexOf(mapId) >= 0;
-
-  var html = '';
-  // 顶部信息
-  html += '<div class="map-container">';
-  html += '<div class="map-header">';
-  html += '<div class="map-title">🏔️ ' + map.name + '</div>';
-  html += '<div class="map-ap">⚡ ' + ap + ' 行动力</div>';
-  html += '</div>';
-  html += '<div style="font-size:12px;color:var(--text-dim);margin-bottom:12px;line-height:1.6;">' + map.desc + '</div>';
-
-  // 地图网格
-  html += '<div class="map-grid">';
-  for (var y = 0; y < map.size; y++) {
-    for (var x = 0; x < map.size; x++) {
-      var key = x + ',' + y;
-      var isExplored = explored[key];
-      var cellType = map.layout[y][x];
-      var cellInfo = CELL_TYPES[cellType];
-      var isPlayer = playerPos.x === x && playerPos.y === y;
-      var isCleared = mapState[key] && mapState[key].cleared;
-      // 是否可达（相邻且有行动力）
-      var dx = Math.abs(x - playerPos.x);
-      var dy = Math.abs(y - playerPos.y);
-      var isReachable = (dx + dy === 1) && ap > 0 && !isPlayer;
-
-      var cellClass = 'map-cell ';
-      if (!isExplored && !isReachable) {
-        cellClass += 'unexplored';
-      } else {
-        cellClass += cellInfo.class;
-        if (isReachable) cellClass += ' reachable';
-        if (isPlayer) cellClass += ' player';
-        if (isCleared) cellClass += ' cleared';
-      }
-      // 起点特殊样式
-      if (x === map.start.x && y === map.start.y && !isPlayer) {
-        cellClass = cellClass.replace('unexplored', 'start').replace('explored', 'start');
-      }
-
-      var icon = isExplored || isReachable ? cellInfo.icon : '';
-      if (isPlayer) icon = '🧙';
-      if (x === map.start.x && y === map.start.y && !isPlayer && !isExplored) icon = '🏠';
-
-      var onclick = isReachable ? 'onclick="moveToCell(' + x + ',' + y + ')"' : '';
-      html += '<div class="' + cellClass + '" ' + onclick + '>';
-      html += '<span class="cell-icon">' + icon + '</span>';
-      html += '</div>';
-    }
-  }
-  html += '</div>';
-
-  // 图例
-  html += '<div class="map-legend">';
-  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(100,150,220,0.5)"></div>起点</div>';
-  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(200,60,60,0.5)"></div>凶兽</div>';
-  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(212,175,55,0.5)"></div>宝箱</div>';
-  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(95,158,160,0.5)"></div>灵气</div>';
-  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(150,60,120,0.5)"></div>陷阱</div>';
-  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(200,100,50,0.6)"></div>小BOSS</div>';
-  html += '<div class="map-legend-item"><div class="map-legend-dot" style="background:rgba(230,80,80,0.6)"></div>终BOSS</div>';
-  html += '</div>';
-  html += '</div>';
-
-  // 统计
-  html += '<div class="map-stats">';
-  html += '<div class="map-stat-card"><div class="map-stat-value">' + ap + '</div><div class="map-stat-label">行动力</div></div>';
-  html += '<div class="map-stat-card"><div class="map-stat-value">' + Object.keys(explored).length + '/' + (map.size * map.size) + '</div><div class="map-stat-label">已探索</div></div>';
-  html += '<div class="map-stat-card"><div class="map-stat-value">' + (cleared ? '已通关' : '未通关') + '</div><div class="map-stat-label">地图状态</div></div>';
-  html += '</div>';
-
-  // 操作按钮
-  html += '<div style="display:flex;gap:10px;justify-content:center;">';
-  html += '<button class="btn btn-ghost btn-sm" onclick="resetAdventureMap()">🔄 重置地图</button>';
-  if (ap === 0) {
-    html += '<div style="font-size:12px;color:var(--cinnabar-light);align-self:center;">行动力不足，专注30分钟可获得1点行动力</div>';
-  }
-  html += '</div>';
-
-  // 说明
-  html += '<div class="panel" style="margin-top:16px;padding:14px;">';
-  html += '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">';
-  html += '<b style="color:var(--gold-light);">玩法说明：</b><br>';
-  html += '• 每专注30分钟获得1点行动力（最多50点）<br>';
-  html += '• 点击相邻格子移动，未探索格子消耗1点行动力<br>';
-  html += '• 已探索格子可免费回溯，不重复触发事件<br>';
-  html += '• 遇到凶兽触发战斗，宝箱获得奖励，灵气恢复状态<br>';
-  html += '• 击败终点BOSS即可通关地图，获得赛季积分+15';
-  html += '</div></div>';
-
-  container.innerHTML = html;
-}
-
-function moveToCell(x, y) {
-  var mapId = gameState.adventure.currentMap;
-  var map = ADVENTURE_MAPS[mapId];
-  var playerPos = gameState.adventure.playerPos;
-  var dx = Math.abs(x - playerPos.x);
-  var dy = Math.abs(y - playerPos.y);
-  if (dx + dy !== 1) { showToast('只能移动到相邻格子', 'error'); return; }
-
-  // 检查目标格子是否已清理（回溯不消耗行动力）
-  var key = x + ',' + y;
-  var cellState = (gameState.adventure.mapState[mapId] || {})[key] || {};
-  var isCleared = cellState.cleared;
-  // 起点也不算消耗
-  var isStart = (x === map.start.x && y === map.start.y);
-
-  if (!isCleared && !isStart) {
-    var ap = getActionPoints();
-    if (ap <= 0) { showToast('行动力不足，专注30分钟可获得1点', 'error'); return; }
-    // 消耗行动力
-    var today = getTodayStr();
-    if (gameState.adventure.apSpentDate !== today) {
-      gameState.adventure.apSpentDate = today;
-      gameState.adventure.apSpent = 0;
-    }
-    gameState.adventure.apSpent = (gameState.adventure.apSpent || 0) + 1;
-  }
-
-  // 移动玩家
-  gameState.adventure.playerPos = { x: x, y: y };
-  gameState.adventure.explored[key] = true;
-
-  // 触发事件（已清理的格子不重复触发）
-  var cellType = map.layout[y][x];
-  if (!isCleared && !isStart) {
-    handleMapEvent(cellType, x, y);
-  } else if (isCleared || isStart) {
-    showToast('已探索区域，免费回溯', 'info');
-  }
-  saveGame();
-  renderAdventureMap();
-}
-
-function handleMapEvent(cellType, x, y) {
-  var mapId = gameState.adventure.currentMap;
-  var map = ADVENTURE_MAPS[mapId];
-  var key = x + ',' + y;
-  if (!gameState.adventure.mapState[mapId]) gameState.adventure.mapState[mapId] = {};
-  var cellState = gameState.adventure.mapState[mapId][key] || {};
-
-  if (cellState.cleared && cellType !== 6) {
-    showToast('此处已探索过', 'info');
-    return;
-  }
-
-  switch (cellType) {
-    case 1: // 凶兽
-      triggerMapMonster(map, x, y);
-      break;
-    case 2: // 宝箱
-      triggerMapTreasure();
-      cellState.cleared = true;
-      gameState.adventure.mapState[mapId][key] = cellState;
-      break;
-    case 3: // 灵气
-      triggerMapSpirit();
-      cellState.cleared = true;
-      gameState.adventure.mapState[mapId][key] = cellState;
-      break;
-    case 4: // 陷阱
-      triggerMapTrap();
-      cellState.cleared = true;
-      gameState.adventure.mapState[mapId][key] = cellState;
-      break;
-    case 5: // 问号
-      triggerMapRandom();
-      cellState.cleared = true;
-      gameState.adventure.mapState[mapId][key] = cellState;
-      break;
-    case 6: // 终点BOSS
-      triggerMapBoss(map, x, y, false);
-      break;
-    case 7: // 小BOSS
-      triggerMapBoss(map, x, y, true);
-      break;
-  }
-}
-
-function triggerMapMonster(map, x, y) {
-  // 荒漠凶兽图片池
-  var desertMonsterImages = [
-    'https://aka.doubaocdn.com/s/oQwTYzd2rB', // 沙虫
-    'https://aka.doubaocdn.com/s/Mc8qyzDFL3', // 巨蝎
-    'https://aka.doubaocdn.com/s/S8k35gZAkV', // 岩石怪
-    'https://aka.doubaocdn.com/s/Th28X6piQT', // 沙虫2
-  ];
-  // 随机选择凶兽
-  var tier = map.monsterTiers[Math.floor(Math.random() * map.monsterTiers.length)];
-  var monster = {
-    id: 'map_monster_' + x + '_' + y,
-    monsterId: 'map_' + tier,
-    name: '荒漠凶兽·' + getTierConfig(tier).name,
-    tier: tier,
-    reqMinutes: 0,
-    fragReward: tier * 2,
-    cultReward: tier * 3,
-    element: ['fire','water','earth','wind','thunder'][Math.floor(Math.random()*5)],
-    image: desertMonsterImages[Math.floor(Math.random() * desertMonsterImages.length)],
-  };
-  // 标记已清理（战斗胜利后）
-  var key = x + ',' + y;
-  var mapId = gameState.adventure.currentMap;
-  if (!gameState.adventure.mapState[mapId]) gameState.adventure.mapState[mapId] = {};
-  startBattle(monster, {
-    baseAtk: 0, baseHp: 0, focusMinutes: getTodayFocus(), note: map.name + '·凶兽',
-    context: 'map', onWin: function() {
-      gameState.adventure.mapState[mapId][key] = { cleared: true };
-      saveGame();
-      addSeasonScore('beasts', 1);
-      showBattleOverlay('⚔️ 击败凶兽！', '你击败了' + monster.name + '！',
-        '心魔碎片 +' + monster.fragReward + '<br>修为 +' + monster.cultReward + ' 分钟<br>赛季积分 +1',
-        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-    },
-    onLose: function() {
-      showBattleOverlay('💀 试炼失败', '你被' + monster.name + '击退了，休整后再来。',
-        '坚持了 ' + battleState.round + ' 回合',
-        [{ label: '返回地图', action: 'closeBattleAndGoToMap()', primary: true }]);
-    }
-  });
-}
-
-function triggerMapTreasure() {
-  var roll = Math.random();
-  if (roll < 0.4) {
-    var frag = 5 + Math.floor(Math.random() * 11);
-    dailyState.fragments = (dailyState.fragments || 0) + frag;
-    saveDaily();
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + frag + ' 枚心魔碎片', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-  } else if (roll < 0.7) {
-    var stone = 1;
-    gameState.swordStones = (gameState.swordStones || 0) + stone;
-    saveGame();
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '获得 ' + stone + ' 枚铸字石', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-  } else {
-    showBattleOverlay('📦 宝箱', '你发现了一个古老的宝箱！', '宝箱是空的...只有一张破旧的地图', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-  }
-}
-
-function triggerMapSpirit() {
-  var heal = 30 + Math.floor(Math.random() * 20);
-  showBattleOverlay('✨ 灵气', '一股精纯的灵气涌入体内！', '恢复 ' + heal + ' 点生命值，灵力充盈', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-}
-
-function triggerMapTrap() {
-  var dmg = 10 + Math.floor(Math.random() * 15);
-  showBattleOverlay('⚠️ 陷阱', '你触发了一个隐藏的陷阱！', '损失 ' + dmg + ' 点生命值', [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-}
-
-function triggerMapRandom() {
-  var events = [
-    { title: '偶遇散修', desc: '一位路过的散修赠予你一些丹药。', reward: '获得 5 枚心魔碎片' },
-    { title: '灵气泉眼', desc: '你发现了一处隐藏的灵气泉眼。', reward: '状态完全恢复' },
-    { title: '古修遗迹', desc: '你在遗迹中找到了一些宝物。', reward: '获得 1 枚铸字石' },
-    { title: '沙尘暴', desc: '突如其来的沙尘暴让你迷失了方向。', reward: '损失 1 点行动力' },
-  ];
-  var evt = events[Math.floor(Math.random() * events.length)];
-  if (evt.reward.indexOf('碎片') >= 0) {
-    dailyState.fragments = (dailyState.fragments || 0) + 5;
-    saveDaily();
-  } else if (evt.reward.indexOf('铸字石') >= 0) {
-    gameState.swordStones = (gameState.swordStones || 0) + 1;
-    saveGame();
-  }
-  showBattleOverlay('❓ ' + evt.title, evt.desc, evt.reward, [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-}
-
-function triggerMapBoss(map, x, y, isMini) {
-  var bossName = isMini ? map.miniBossName : map.bossName;
-  var bossTier = isMini ? map.miniBossTier : map.bossTier;
-  var bossSkill = isMini ? map.miniBossSkill : map.bossSkill;
-  var fragReward = isMini ? 10 : 20;
-  var cultReward = isMini ? 15 : 30;
-  var scoreReward = isMini ? 5 : 15;
-  var boss = {
-    id: 'map_boss_' + (isMini ? 'mini_' : '') + x + '_' + y,
-    monsterId: 'map_boss_' + (isMini ? 'mini' : 'final'),
-    name: bossName,
-    tier: bossTier,
-    reqMinutes: 0,
-    fragReward: fragReward,
-    cultReward: cultReward,
-    element: 'dark',
-    image: '',
-    skill: bossSkill, // BOSS特殊技能
-  };
-  var key = x + ',' + y;
-  var mapId = gameState.adventure.currentMap;
-  if (!gameState.adventure.mapState[mapId]) gameState.adventure.mapState[mapId] = {};
-  startBattle(boss, {
-    baseAtk: 0, baseHp: 0, focusMinutes: getTodayFocus(), note: map.name + '·' + (isMini ? '小BOSS' : '最终BOSS'),
-    context: 'map', onWin: function() {
-      gameState.adventure.mapState[mapId][key] = { cleared: true };
-      if (!isMini && gameState.adventure.clearedMaps.indexOf(mapId) < 0) {
-        gameState.adventure.clearedMaps.push(mapId);
-      }
-      addSeasonScore('dungeons', scoreReward);
-      saveGame();
-      if (isMini) {
-        showBattleOverlay('⚔️ 击败小BOSS！', '你击败了' + bossName + '！',
-          '赛季积分 +' + scoreReward + '<br>心魔碎片 +' + fragReward + '<br>修为 +' + cultReward + ' 分钟',
-          [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]);
-      } else {
-        showBattleOverlay('🏆 通关！', '你击败了' + bossName + '，征服了' + map.name + '！',
-          '赛季积分 +' + scoreReward + '<br>心魔碎片 +' + fragReward + '<br>修为 +' + cultReward + ' 分钟',
-          [{ label: '返回地图', action: 'closeBattleAndGoToMap()', primary: true }]);
-      }
-    },
-    onLose: function() {
-      showBattleOverlay('💀 挑战失败', bossName + '过于强大，你被击退了。',
-        '坚持了 ' + battleState.round + ' 回合，提升实力后再来！',
-        [{ label: '返回地图', action: 'closeBattleAndGoToMap()', primary: true }]);
-    }
-  });
-}
-
-function resetAdventureMap() {
-  if (!confirm('确定要重置当前地图吗？已探索进度将清空。')) return;
-  var mapId = gameState.adventure.currentMap;
-  gameState.adventure.mapState[mapId] = {};
-  gameState.adventure.explored = {};
-  gameState.adventure.playerPos = { ...ADVENTURE_MAPS[mapId].start };
-  gameState.adventure.apSpent = 0;
-  saveGame();
-  renderAdventureMap();
-  showToast('地图已重置', 'info');
-}
-
 // ---------- 剑气长城 ----------
 function renderSwordWall() {
   var container = document.getElementById('swordwallContent');
@@ -3169,27 +2705,6 @@ function renderSwordWall() {
   html += '<div style="font-size:12px;color:var(--text-dim);line-height:1.8;">';
   html += '连续证道7天可获1枚铸字石，用它在长城上刻下一句诗。一句最多7字（五言/七言），点击石刻可放大观看。';
   html += '</div>';
-  html += '</div>';
-
-  // 成就榜（月度称号）
-  var titles = gameState.season?.monthlyTitles || [];
-  html += '<div class="panel" style="margin-bottom:16px;">';
-  html += '<div class="panel-title" style="font-size:14px;margin-bottom:10px;">🏅 成就榜 · 月度称号</div>';
-  if (titles.length > 0) {
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-    titles.slice().reverse().forEach(function(t) {
-      html += '<div style="padding:10px;background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(0,0,0,0.3));border:1px solid rgba(212,175,55,0.3);border-radius:8px;text-align:center;">';
-      html += '<div style="font-size:13px;font-weight:700;color:var(--gold-light);font-family:Noto Serif SC,serif;margin-bottom:4px;">' + t.title + '</div>';
-      html += '<div style="font-size:10px;color:var(--text-dim);">' + t.month + ' · 周目' + t.zhoumu + ' · ' + t.score + '分</div>';
-      html += '</div>';
-    });
-    html += '</div>';
-  } else {
-    html += '<div style="text-align:center;padding:16px 8px;color:var(--text-dim);font-size:12px;line-height:1.8;">';
-    html += '暂无称号<br>';
-    html += '<span style="font-size:11px;">每月月底根据当月周目最高分自动颁发称号<br>称号永久保留，挂于剑气长城成就榜</span>';
-    html += '</div>';
-  }
   html += '</div>';
 
   // 刻字按钮
@@ -3695,7 +3210,7 @@ const AFFIX_TYPES = {
   hp:       { name:'生命',  desc:'最大生命 +{v}',   unit:'' },
   spirit:   { name:'灵力',  desc:'最大灵力 +{v}',   unit:'' },
   regen:    { name:'回灵',  desc:'每回合回灵 +{v}', unit:'' },
-  lifesteal:{ name:'吸血',  desc:'{v}%概率触发，回复伤害{v}%×1.5的生命',   unit:'%' },
+  lifesteal:{ name:'吸血',  desc:'{v}%概率触发，回复伤害{v}%×0.8的生命（上限5%）',   unit:'%' },
   burn:     { name:'灼烧',  desc:'攻击 {v}% 几率灼烧', unit:'%' },
   poison:   { name:'淬毒',  desc:'攻击 {v}% 几率中毒', unit:'%' },
   execute:  { name:'斩杀',  desc:'目标血量≤{v}%时伤害+50%', unit:'%' },
@@ -3769,10 +3284,10 @@ function parsePassives(usedEquips) {
 // 功法 → 神通（按分类与名称推导）
 // 功法神通配置（可自定义，持久化保存）
 var GONGFA_SKILL_CONFIG = {
-  heal:     { name:'归元', cost:35, dmgMult:0.8, healPct:0.20 },
-  slash:    { name:'破军', cost:45, dmgMult:1.8, critBonus:15 },
-  multihit: { name:'残影', cost:40, dmgMult:1.1, hits:2 },
-  burst:    { name:'乾坤', cost:45, dmgMult:1.5, burnChance:0.15 },
+  heal:     { name:'归元', cost:35, dmgMult:0.8, healPct:0.05, cooldown:4 },
+  slash:    { name:'破军', cost:45, dmgMult:1.8, critBonus:15, cooldown:0 },
+  multihit: { name:'残影', cost:40, dmgMult:1.1, hits:2, cooldown:0 },
+  burst:    { name:'乾坤', cost:45, dmgMult:1.5, burnChance:0.15, cooldown:0 },
 };
 // ========== 属性效果配置 ==========
 var ELEMENT_EFFECTS = {
@@ -3906,17 +3421,35 @@ function getTotalFocus() {
   total += (gameState.totalBookRead || 0);
   return total + (gameState.bonusFocus || 0);
 }
+// 计算达到指定境界（idx从0开始）需要的累计证道次数
+// 第1层需4次，第2层需5次，...，第7层需10次，之后每层10次
+function getEnlightenReqForRealm(realmIdx) {
+  var total = 0;
+  for (var i = 1; i <= realmIdx; i++) {
+    total += Math.min(4 + (i - 1), 10);
+  }
+  return total;
+}
+// 计算给定累计证道次数能达到的最高境界
+function getMaxRealmByEnlighten(count) {
+  var realm = 0;
+  while (realm < REALM_NAMES.length - 1) {
+    if (count >= getEnlightenReqForRealm(realm + 1)) realm++;
+    else break;
+  }
+  return realm;
+}
 function getRealmInfo() {
   var total = getTotalFocus();
   var focusIdx = Math.floor(total / 1500);
-  // 第N级需N*5次证道：1级5次，2级10次，3级15次...
-  var maxRealmByEnlighten = Math.floor((gameState.enlightenCount || 0) / 5);
+  // 证道境界：第1层4次，第2层5次...递增到10次封顶
+  var maxRealmByEnlighten = getMaxRealmByEnlighten(gameState.enlightenCount || 0);
   var idx = Math.min(focusIdx, maxRealmByEnlighten);
   var name = REALM_NAMES[Math.min(idx, REALM_NAMES.length - 1)];
   var progress = (total % 1500) / 1500;
   var pendingEnlighten = focusIdx > idx;
   // 下一级还需多少证道
-  var nextLevelEnlightenReq = (idx + 1) * 5;
+  var nextLevelEnlightenReq = getEnlightenReqForRealm(idx + 1);
   var enlightenNeeded = Math.max(0, nextLevelEnlightenReq - (gameState.enlightenCount || 0));
   return {
     idx: idx, name: name, progress: progress, total: total,
@@ -4095,7 +3628,7 @@ function updateEnlightenUI() {
   if (totalEl) totalEl.textContent = gameState.enlightenCount || 0;
   if (!btn || !status) return;
   var streak = gameState.enlightenStreak || 0;
-  var nextRealm = (getRealmInfo().idx + 1) * 5;
+  var nextRealm = getEnlightenReqForRealm(getRealmInfo().idx + 1);
   var need = Math.max(0, nextRealm - (gameState.enlightenCount || 0));
   if (dailyState.enlightenedToday) {
     btn.disabled = true;
@@ -4342,10 +3875,13 @@ function toggleTimer() {
 }
 function startTimer() {
   if (timerState.mode === 'countdown') {
-    var mins = parseInt(document.getElementById('timerMinutes').value) || 0;
-    if (mins <= 0) { showToast('请设定倒计时时长（分钟）', 'error'); return; }
-    if (timerState.accumulated === 0 && timerState.seconds === 0) timerState.targetSeconds = mins * 60;
-    else if (timerState.targetSeconds === 0) timerState.targetSeconds = mins * 60;
+    // 只有首次开始或重置后才设置目标时间，暂停后继续保留剩余时间
+    if (timerState.targetSeconds === 0) {
+      var mins = parseInt(document.getElementById('timerMinutes').value) || 0;
+      if (mins <= 0) { showToast('请设定倒计时时长（分钟）', 'error'); return; }
+      timerState.targetSeconds = mins * 60;
+      timerState.seconds = timerState.targetSeconds;
+    }
   }
   timerState.running = true;
   timerState.startTime = Date.now();
@@ -4358,17 +3894,16 @@ function startTimer() {
 function pauseTimer() {
   if (timerState.running) {
     timerState.accumulated += Math.floor((Date.now() - timerState.startTime) / 1000);
-    // 暂停时立即记录本次时长，防止关页面丢失
-    var mins = Math.round(timerState.accumulated / 60);
-    if (mins > 0) {
-      recordFocusSession(mins);
-      timerState.accumulated = 0;
-      timerState.seconds = 0;
-      timerState.targetSeconds = 0;
+    timerState.startTime = 0;
+    // 更新显示：倒计时显示剩余时间，正计时显示已过时间
+    if (timerState.mode === 'countdown') {
+      timerState.seconds = Math.max(0, timerState.targetSeconds - timerState.accumulated);
+    } else {
+      timerState.seconds = timerState.accumulated;
     }
   }
   timerState.running = false;
-  document.getElementById('timerStartBtn').textContent = '开始';
+  document.getElementById('timerStartBtn').textContent = '继续';
   if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
   saveTimerState();
   updateTimerDisplay();
@@ -4391,11 +3926,19 @@ function timerTick() {
 function finishTimer() {
   if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
   timerState.running = false;
-  var minutes = Math.round(timerState.accumulated / 60);
+  // 计算实际专注秒数：倒计时用目标时长，正计时用已累积时长
+  var totalSeconds;
+  if (timerState.mode === 'countdown') {
+    totalSeconds = timerState.targetSeconds;
+  } else {
+    totalSeconds = timerState.accumulated + (timerState.startTime > 0 ? Math.floor((Date.now() - timerState.startTime) / 1000) : 0);
+  }
+  var minutes = Math.max(1, Math.round(totalSeconds / 60));
   recordFocusSession(minutes);
   timerState.accumulated = 0;
   timerState.seconds = 0;
   timerState.startTime = 0;
+  timerState.targetSeconds = 0;
   document.getElementById('timerStartBtn').textContent = '开始';
   saveTimerState();
   updateTimerDisplay();
@@ -4492,17 +4035,21 @@ function restoreBookTimerState() {
   } catch(e) {}
 }
 function resetTimer() {
-  if (timerState.running) {
-    timerState.accumulated += Math.floor((Date.now() - timerState.startTime) / 1000);
+  // 计算总已过秒数
+  var totalSec = timerState.accumulated;
+  if (timerState.running && timerState.startTime > 0) {
+    totalSec += Math.floor((Date.now() - timerState.startTime) / 1000);
+  }
+  // 倒计时最多记录目标时长
+  if (timerState.mode === 'countdown' && timerState.targetSeconds > 0) {
+    totalSec = Math.min(totalSec, timerState.targetSeconds);
   }
   if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
-  // 正计时：重置时记录本次专注时长
-  if (timerState.mode === 'countup' && timerState.accumulated > 0) {
-    var mins = Math.round(timerState.accumulated / 60);
-    if (mins > 0) {
-      recordFocusSession(mins);
-      showToast('已记录专注 ' + mins + ' 分钟（今日共' + getTodayFocus() + '分钟）', 'success');
-    }
+  // 重置时记录本次专注时长（两种模式都记录）
+  if (totalSec > 0) {
+    var mins = Math.max(1, Math.round(totalSec / 60));
+    recordFocusSession(mins);
+    showToast('已记录专注 ' + mins + ' 分钟（今日共' + getTodayFocus() + '分钟）', 'success');
   }
   timerState.running = false;
   timerState.seconds = 0;
@@ -4532,7 +4079,7 @@ renderMonsterSelector = function() {
   var groupId = gameState.currentGroup || 'shanhai';
   var group = (gameState.monsterGroups || []).find(function(g){ return g.id === groupId; });
   var list = group ? gameState.monsters.filter(function(m){ return group.monsterIds.indexOf(m.id) >= 0; }) : gameState.monsters;
-  container.innerHTML = list.map(function(m) {
+  var html = list.map(function(m) {
     var unlocked = isMonsterUnlocked(m);
     var req = m.reqMinutes;
     if (req === undefined || req === null) {
@@ -4563,6 +4110,19 @@ renderMonsterSelector = function() {
       '<span class="monster-edit-btn" data-action="edit-monster" data-monster-id="' + m.id + '" style="z-index:10;position:relative;" onclick="event.stopPropagation();editMonster(\'' + m.id + '\')">✎</span>' +
     '</button>';
   }).join('');
+  // 选中凶兽后显示快速踏入试炼按钮
+  var selM = list.find(function(m){ return m.id === prepareState.selectedMonsterId; });
+  if (selM) {
+    var selUnlocked = isMonsterUnlocked(selM);
+    var selTodayCnt = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.date === todayD && gameState.dailyMonsterKills.kills[selM.id]) || 0;
+    var canFight = selUnlocked && selTodayCnt < 2;
+    html += '<div style="grid-column:1/-1;margin-top:8px;">' +
+      '<button class="btn btn-primary btn-lg" style="width:100%;' + (canFight ? '' : 'opacity:0.5;cursor:not-allowed;') + '" onclick="' + (canFight ? 'startBattle()' : 'showToast(\'' + (selUnlocked ? '今日已挑战2次' : '专注时长不足，无法挑战') + '\',\'error\')') + '">' +
+        '⚔️ 踏入试炼 · ' + selM.name +
+      '</button>' +
+    '</div>';
+  }
+  container.innerHTML = html;
 };
 
 // ========== 副本系统 ==========
@@ -5675,7 +5235,7 @@ function renderActions() {
   const p = battleState.player;
   const swords = battleState.availableSwords || [];
   let html = '';
-  // 挥剑：如果有多把武器，显示选择器
+  // 挥剑：如果有多把剑，显示选择器
   if (swords.length > 1) {
     html += '<div style="grid-column:1/-1;margin-bottom:4px;">';
     swords.forEach(function(sw, i) {
@@ -5687,22 +5247,25 @@ function renderActions() {
     });
     html += '</div>';
     html += '<button class="battle-action-btn" onclick="playerAct(\'basic\')">' +
-      '<span class="aa-name">攻击·' + (swords[battleState.selectedSwordIdx] ? swords[battleState.selectedSwordIdx].name : '') + '</span>' +
-      '<span class="aa-sub">普攻 · +15灵</span></button>';
+      '<span class="aa-name">挥剑·' + (swords[battleState.selectedSwordIdx] ? swords[battleState.selectedSwordIdx].name : '') + '</span>' +
+      '<span class="aa-sub">攻击 · +15灵</span></button>';
   } else {
     html += '<button class="battle-action-btn" onclick="playerAct(\'basic\')">' +
       '<span class="aa-name">挥剑</span><span class="aa-sub">攻击 · +15灵</span></button>';
   }
-  // 万器齐发：第3回合解锁，所有武器一起攻击
+  // 万剑齐发：第3回合解锁，所有剑一起攻击
   if (swords.length >= 2 && battleState.round >= 3 && !battleState.allSwordsUsed) {
     html += '<button class="battle-action-btn" style="border-color:var(--gold-light);background:linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.05));" onclick="playerAct(\'allSwords\')">' +
-      '<span class="aa-name">⚔ 万器齐发</span>' +
-      '<span class="aa-sub">' + swords.length + '件齐攻 · 每场1次</span></button>';
+      '<span class="aa-name">⚔ 万剑齐发</span>' +
+      '<span class="aa-sub">' + swords.length + '剑齐攻 · 每场1次</span></button>';
   }
   battleState.skills.forEach((sk, i) => {
+    var cd = battleState.skillCooldowns[i] || 0;
+    var onCd = cd > 0;
+    var cdText = onCd ? `冷却 ${cd}回合` : `灵力 ${sk.cost}`;
     html += `
-      <button class="battle-action-btn skill" onclick="playerAct('skill', ${i})" data-cost="${sk.cost}">
-        <span class="aa-name">${sk.name}</span><span class="aa-cost">灵力 ${sk.cost}</span>
+      <button class="battle-action-btn skill" onclick="playerAct('skill', ${i})" data-cost="${sk.cost}" ${onCd ? 'disabled style="opacity:0.5;filter:grayscale(0.5);"' : ''}>
+        <span class="aa-name">${sk.name}</span><span class="aa-cost">${cdText}</span>
       </button>`;
   });
   html += `
@@ -5799,12 +5362,16 @@ function launchNianLayer() {
   var totalHp = baseHp + equipHp;
   // 周目系数
   var zhoumuMult = 1 + ((gameState.season?.zhoumu || 1) - 1) * 0.15;
-  // 无尽模式难度曲线：5回合起步，每层+1回合，攻击凶猛
-  var targetRounds = 4 + layer;  // 第1层5回合，第2层6回合...
-  var dmgRatio = Math.min(0.30 + layer * 0.035, 0.65); // 第1层33.5%，第10层65%封顶
-  // 动态公式计算血攻
-  var hp = Math.floor(playerDps * targetRounds * zhoumuMult);
-  var atk = Math.max(15, Math.floor(totalHp * dmgRatio * zhoumuMult));
+  // 念的血量基于专注200分钟的基准DPS，确保专注0分钟打不过
+  var cp = calcDailyCombatPower();
+  var focus200Atk = 200 * 1.2;
+  var focus200Dps = (cp.nakedAtk + focus200Atk) * (1 + cp.nakedCrit/100 * 0.5);
+  // 无尽模式难度曲线：6.5回合起步，每层+1.5回合，攻击凶猛
+  var targetRounds = 5 + layer * 1.5;  // 第1层6.5回合，第2层8回合...
+  var dmgRatio = Math.min(0.35 + layer * 0.04, 0.75); // 第1层39%，第10层75%封顶
+  // 动态公式计算血攻（额外20%血量加成，念更耐打）
+  var hp = Math.floor(focus200Dps * targetRounds * zhoumuMult * 1.2);
+  var atk = Math.max(20, Math.floor(totalHp * dmgRatio * zhoumuMult));
   var nianMonster = {
     id: 'nian_' + layer,
     monsterId: 'nian',
@@ -5817,7 +5384,7 @@ function launchNianLayer() {
     fragReward: 0,
     cultReward: 0,
     element: 'dark',
-    image: gameState.nianImage || '',
+    image: '',
     isNian: true,
   };
   prepareState.selectedGongfa = allGongfa;
@@ -5898,7 +5465,7 @@ function startBattle(monsterInput, opts) {
     note = document.getElementById('difficultyDesc').value.trim();
     minutes = getTodayFocus();
     if (minutes <= 0) { showToast('今日专注时长为0，请先在试炼大殿开始专注计时', 'error'); return; }
-    baseAtk = Math.floor(minutes * 0.8);
+    baseAtk = Math.floor(minutes * 1.2);
     baseHp = Math.floor(100 + minutes * 0.5);
   }
   var equipBonus = 0, critBonus = 0;
@@ -5970,6 +5537,7 @@ function startBattle(monsterInput, opts) {
     },
     round: 0, log: [], usedEquips: usedEquips, focusMinutes: minutes, note: note,
     finished: false, result: null, awaitingAction: false,
+    skillCooldowns: {},  // 技能冷却跟踪 {skillIndex: remainingTurns}
     context: opts.context || 'normal',
     isNian: opts.isNian || false,
     onWin: opts.onWin || null,
@@ -5981,9 +5549,13 @@ function startBattle(monsterInput, opts) {
   battleState.skills = buildGongfaSkills();
   battleState.beastUlts = getBeastBonus().ults;
   // 收集可用的剑（永久法宝中分类名称为"剑"的）
-  // 可用武器：所有永久法宝（剑、异火、宝石等），只要有攻击力都可选
+  var swordCatIds = (gameState.categories.permanent || []).filter(function(c) {
+    return c.name === '剑' || c.name === '神剑' || c.name === '名剑';
+  }).map(function(c) { return c.id; });
+  // 也包含默认的cat_sword
+  if (swordCatIds.indexOf('cat_sword') < 0) swordCatIds.push('cat_sword');
   battleState.availableSwords = (usedEquips || []).filter(function(e) {
-    return e.type === 'permanent' && (e.power || 0) > 0;
+    return e.type === 'permanent' && swordCatIds.indexOf(e.categoryId) >= 0;
   });
   battleState.selectedSwordIdx = 0;
   battleState.allSwordsUsed = false;
@@ -5996,14 +5568,16 @@ function initBattleUI() {
   battleRunning = true;
   document.getElementById('battleOverlay').style.display = 'none';
   document.getElementById('battleLog').innerHTML = '';
-  document.getElementById('playerName').textContent = getZhoumuStars() + ' ' + battleState.player.name;
+  // 修士名字：称号 + 周目星级 + 名字
+  var equippedTitle = gameState.season?.equippedTitle || '';
+  var namePrefix = equippedTitle ? '【' + equippedTitle + '】' : '';
+  document.getElementById('playerName').textContent = namePrefix + getZhoumuStars() + ' ' + battleState.player.name;
   document.getElementById('monsterName').textContent = battleState.monster.name;
   document.getElementById('monsterImage').src = battleState.monster.image;
   // 修士自定义头像
-  var playerImg = document.getElementById('playerImage');
-  if (playerImg && gameState.playerImage) {
-    playerImg.src = gameState.playerImage;
-    playerImg.style.objectFit = 'cover';
+  if (gameState.playerImage) {
+    var playerImg = document.querySelector('#playerCombatant img');
+    if (playerImg) playerImg.src = gameState.playerImage;
   }
   document.getElementById('battlePlayerAtk').textContent = battleState.player.attack;
   document.getElementById('battlePlayerCrit').textContent = battleState.player.crit + '%';
@@ -6219,35 +5793,31 @@ function applyAutoClear(beatenId, diffMult) {
   if (!gameState.autoCleared || gameState.autoCleared.date !== todayK) {
     gameState.autoCleared = { date: todayK, ids: {} };
   }
-  // 获取被击败凶兽的难度等级
-  var beatenMonster = getMonsterById(beatenId);
-  var beatenTier = beatenMonster ? (beatenMonster.tier || 1) : 1;
   var autoCount = 0;
   var totalFrag = 0, totalCult = 0;
   grp.monsterIds.forEach(function(mid) {
     if (mid === beatenId) return; // 自己不算
-    var mObj = getMonsterById(mid);
-    if (!mObj) return;
-    var mTier = mObj.tier || 1;
-    // 只越级通关比它难度低的凶兽（tier更小）
-    if (mTier >= beatenTier) return;
     if (gameState.dailyMonsterWins.wins[mid]) return; // 已经赢过的不重复
     if (gameState.autoCleared.ids[mid]) return; // 已经越级通关过的不重复
     // 标记为今日已通关
     gameState.dailyMonsterWins.wins[mid] = true;
     gameState.autoCleared.ids[mid] = true;
     // 算每日次数（1次）
+    gameState.dailyMonsterKills.kills[mid] = Math.max(1, gameState.dailyMonsterKills.kills[mid] || 0) + 0;
     if (!gameState.dailyMonsterKills.kills[mid]) gameState.dailyMonsterKills.kills[mid] = 1;
     // 基础奖励（不乘难度系数）
-    var mReq = mObj.reqMinutes || 0;
-    var baseFrag = mObj.fragReward > 0 ? mObj.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
-    var baseCult = mObj.cultReward > 0 ? mObj.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
-    totalFrag += baseFrag;
-    totalCult += baseCult;
-    autoCount++;
-    // 按同难度计入赛季积分
-    var diffScore = diffMult >= 2.0 ? 5 : diffMult >= 1.8 ? 4 : diffMult >= 1.4 ? 2 : 1;
-    addSeasonScore('beast', diffScore);
+    var mObj = getMonsterById(mid);
+    if (mObj) {
+      var mReq = mObj.reqMinutes || 0;
+      var baseFrag = mObj.fragReward > 0 ? mObj.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
+      var baseCult = mObj.cultReward > 0 ? mObj.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
+      totalFrag += baseFrag;
+      totalCult += baseCult;
+      autoCount++;
+      // 按同难度计入赛季积分
+      var diffScore = diffMult >= 2.0 ? 5 : diffMult >= 1.8 ? 4 : diffMult >= 1.4 ? 2 : 1;
+      addSeasonScore('beast', diffScore);
+    }
   });
   if (autoCount > 0) {
     if (!dailyState.fragments) dailyState.fragments = 0;
@@ -6256,7 +5826,7 @@ function applyAutoClear(beatenId, diffMult) {
     gameState.bonusFocus += totalCult;
     saveDaily();
     saveGame();
-    showToast('⚡ 越级通关：' + autoCount + '只低阶凶兽默认通过，获得' + totalFrag + '碎片+' + totalCult + '修为（基础奖励）', 'info');
+    showToast('⚡ 越级通关：' + autoCount + '只凶兽默认通过，获得' + totalFrag + '碎片+' + totalCult + '修为（基础奖励）', 'info');
   }
 }
 function checkDungeonClear() {
@@ -6343,6 +5913,1098 @@ function renderSeasonPanel() {
   var nianEl = document.getElementById('nianBestLayer');
   if (nianEl) nianEl.textContent = s.nianBestLayer || 1;
 }
+
+// ========== 周目殿渲染 ==========
+function getMonthRemainingDays() {
+  var now = new Date();
+  var lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  return lastDay.getDate() - now.getDate();
+}
+function getWeekRemainingDays() {
+  var now = new Date();
+  var day = now.getDay() || 7; // 周日=7
+  return 7 - day; // 距周日还有几天
+}
+function handlePlayerAvatarChange(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    gameState.playerImage = e.target.result;
+    saveGame();
+    renderZhoumu();
+    showToast('修士头像已更新', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+function equipTitle(title) {
+  gameState.season.equippedTitle = title;
+  saveGame();
+  renderZhoumu();
+  showToast('已佩戴称号：' + title, 'success');
+}
+function renderZhoumu() {
+  var container = document.getElementById('zhoumuContent');
+  if (!container) return;
+  var s = gameState.season;
+  var score = s.weekScore || 0;
+  var rank = getRankByScore(score);
+  var nextRank = null;
+  for (var i = 0; i < SEASON_RANKS.length; i++) {
+    if (SEASON_RANKS[i].minScore > score) { nextRank = SEASON_RANKS[i]; break; }
+  }
+  var bd = s.weekBreakdown || { beasts:0, focus:0, enlighten:0, dungeons:0, nian:0 };
+  var z = s.zhoumu || 1;
+  var diffMult = 1 + (z-1) * 0.15;
+  var stars = getZhoumuStars();
+  var monthRemain = getMonthRemainingDays();
+  var weekRemain = getWeekRemainingDays();
+  var now = new Date();
+  var monthStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月';
+  var totalScore = bd.beasts + bd.focus + bd.enlighten + bd.dungeons + bd.nian;
+
+  var html = '';
+
+  // ===== 顶部：周目状态卡 + 修士头像 =====
+  html += '<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">';
+  // 修士头像
+  html += '<div style="flex-shrink:0;text-align:center;">';
+  html += '<div onclick="document.getElementById(\'avatarInput\').click()" style="width:80px;height:80px;border-radius:50%;border:2px solid var(--gold);overflow:hidden;cursor:pointer;background:rgba(212,175,55,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto;">';
+  if (gameState.playerImage) {
+    html += '<img src="' + gameState.playerImage + '" style="width:100%;height:100%;object-fit:cover;">';
+  } else {
+    html += '<span style="font-size:32px;">🧙</span>';
+  }
+  html += '</div>';
+  html += '<div style="font-size:10px;color:var(--text-dim);margin-top:4px;">点击更换头像</div>';
+  html += '<input type="file" id="avatarInput" accept="image/*" style="display:none;" onchange="handlePlayerAvatarChange(this)">';
+  // 佩戴称号
+  if (s.equippedTitle) {
+    html += '<div style="font-size:10px;color:var(--gold-light);margin-top:4px;max-width:80px;word-break:break-all;">' + s.equippedTitle + '</div>';
+  }
+  html += '</div>';
+  // 周目状态
+  html += '<div style="flex:1;min-width:200px;padding:14px;background:linear-gradient(135deg,rgba(212,175,55,0.12),rgba(0,0,0,0.3));border:1px solid rgba(212,175,55,0.3);border-radius:10px;">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+  html += '<span style="font-size:16px;font-weight:700;color:var(--gold-light);">周目殿</span>';
+  html += '<span style="font-size:20px;color:var(--gold);">' + stars + '</span>';
+  html += '</div>';
+  html += '<div style="font-size:12px;color:var(--text-secondary);line-height:1.8;">';
+  html += '<div>当前：<b style="color:var(--gold);">' + ZHOUMU_NAMES[z-1] + '</b> · ' + monthStr + '</div>';
+  html += '<div>难度系数：<b style="color:#FF9800;">×' + diffMult.toFixed(2) + '</b>（凶兽血量攻击加成）</div>';
+  html += '<div>距下月轮回重置：<b style="color:#4CAF50;">' + monthRemain + '天</b> · 4周目一轮回</div>';
+  html += '</div></div></div>';
+
+  // ===== 本周赛季面板 =====
+  html += '<div class="panel" style="margin-bottom:16px;">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+  html += '<span style="font-size:15px;font-weight:700;color:var(--gold-light);">🏆 本周赛季</span>';
+  html += '<span style="font-size:11px;color:var(--text-dim);">距周日结算还有' + weekRemain + '天</span>';
+  html += '</div>';
+  html += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">';
+  html += '<div style="text-align:center;">';
+  html += '<div style="font-size:28px;font-weight:800;color:' + rank.color + ';">' + rank.name + '</div>';
+  html += '<div style="font-size:10px;color:var(--text-dim);">当前段位</div>';
+  html += '</div>';
+  html += '<div style="flex:1;">';
+  html += '<div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;">本周积分：<b style="color:var(--gold-light);font-size:18px;">' + score + '</b>' + (nextRank ? ' / 距' + nextRank.name + '还需' + (nextRank.minScore - score) + '分' : '（已达最高段位）') + '</div>';
+  var progress = nextRank ? Math.min(100, (score - rank.minScore) / (nextRank.minScore - rank.minScore) * 100) : 100;
+  html += '<div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">';
+  html += '<div style="height:100%;width:' + progress + '%;background:linear-gradient(90deg,' + rank.color + ',var(--gold-light));transition:width 0.5s;"></div>';
+  html += '</div></div></div>';
+  // 积分明细
+  html += '<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:10px;margin-bottom:10px;">';
+  html += '<div style="font-size:12px;font-weight:600;color:var(--gold-light);margin-bottom:8px;">📊 积分明细</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:var(--text-secondary);">';
+  html += '<div>⚔️ 击败凶兽：<b style="color:var(--gold-light);">' + (bd.beasts||0) + '</b>分</div>';
+  html += '<div>⏱️ 专注时长：<b style="color:var(--gold-light);">' + (bd.focus||0) + '</b>分</div>';
+  html += '<div>🧘 每日证道：<b style="color:var(--gold-light);">' + (bd.enlighten||0) + '</b>分</div>';
+  html += '<div>📜 副本通关：<b style="color:var(--gold-light);">' + (bd.dungeons||0) + '</b>分</div>';
+  html += '<div>🌑 挑战「念」：<b style="color:var(--gold-light);">' + (bd.nian||0) + '</b>分</div>';
+  html += '<div>合计：<b style="color:#4CAF50;">' + totalScore + '</b>分</div>';
+  html += '</div></div>';
+  html += '<div style="font-size:10px;color:var(--text-dim);">周日结算：' + rank.fragments + '枚碎片' + (score >= SEASON_RANKS[2].minScore ? ' + 赛季法宝×1' : '') + '</div>';
+  html += '</div>';
+
+  // ===== 「念」无尽挑战 =====
+  html += '<div class="panel" style="margin-bottom:16px;background:linear-gradient(135deg,rgba(157,78,221,0.1),rgba(0,0,0,0.3));border:1px solid rgba(157,78,221,0.3);">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+  html += '<span style="font-size:14px;font-weight:700;color:#CE93D8;">🌑 念·无尽挑战</span>';
+  html += '<span style="font-size:11px;color:var(--text-secondary);">历史最高：第<b style="color:#CE93D8;">' + (s.nianBestLayer||0) + '</b>层</span>';
+  html += '</div>';
+  html += '<div style="font-size:11px;color:var(--text-secondary);line-height:1.6;margin-bottom:10px;">';
+  html += '不死不灭之念，每天从第1层开始，全装备挑战。击败一层+2积分。<br>难度基于当日战力动态计算，层数越高回合越多、攻击越猛。';
+  html += '</div>';
+  html += '<button class="btn btn-primary btn-sm" style="width:100%;background:linear-gradient(135deg,#7B1FA2,#9C27B0);" onclick="startNianChallenge()">挑战「念」</button>';
+  html += '</div>';
+
+  // ===== 赛季奖励预览 =====
+  html += '<div class="panel" style="margin-bottom:16px;">';
+  html += '<div style="font-size:14px;font-weight:700;color:var(--gold-light);margin-bottom:10px;">🎁 赛季奖励预览</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  SEASON_RANKS.forEach(function(r) {
+    var isCurrent = r.name === rank.name;
+    html += '<div style="padding:10px;border-radius:8px;border:1px solid ' + (isCurrent ? r.color : 'rgba(255,255,255,0.1)') + ';background:' + (isCurrent ? r.color + '15' : 'rgba(0,0,0,0.2)') + ';">';
+    html += '<div style="font-size:13px;font-weight:700;color:' + r.color + ';">' + r.name + (isCurrent ? ' ←当前' : '') + '</div>';
+    html += '<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">' + r.minScore + '分以上</div>';
+    html += '<div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">' + r.fragments + '枚碎片' + (r.minScore >= 250 ? ' + 法宝' : '') + '</div>';
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // ===== 月度称号墙 =====
+  html += '<div class="panel" style="margin-bottom:16px;">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+  html += '<span style="font-size:14px;font-weight:700;color:var(--gold-light);">🏅 月度称号墙</span>';
+  html += '<span style="font-size:10px;color:var(--text-dim);">每月底自动颁发</span>';
+  html += '</div>';
+  var titles = s.monthlyTitles || [];
+  if (titles.length === 0) {
+    html += '<div style="font-size:11px;color:var(--text-dim);text-align:center;padding:16px;">暂无称号，坚持修行月底自动颁发</div>';
+  } else {
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    titles.slice().reverse().forEach(function(t) {
+      var isEquipped = s.equippedTitle === t.title;
+      html += '<div style="padding:10px;border-radius:8px;border:1px solid ' + (isEquipped ? 'var(--gold)' : 'rgba(255,255,255,0.1)') + ';background:' + (isEquipped ? 'rgba(212,175,55,0.1)' : 'rgba(0,0,0,0.2)') + ';">';
+      html += '<div style="font-size:12px;font-weight:700;color:var(--gold-light);">' + t.title + '</div>';
+      html += '<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">' + t.month + ' · 周目' + t.zhoumu + ' · ' + t.score + '分</div>';
+      html += '<button class="btn btn-ghost btn-sm" style="margin-top:6px;font-size:10px;padding:4px 8px;width:100%;" onclick="equipTitle(\'' + t.title.replace(/'/g, "\\'") + '\')">' + (isEquipped ? '✓ 已佩戴' : '佩戴') + '</button>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // ===== 周目成就榜 =====
+  html += '<div class="panel" style="margin-bottom:16px;">';
+  html += '<div style="font-size:14px;font-weight:700;color:var(--gold-light);margin-bottom:10px;">⭐ 周目成就榜</div>';
+  html += '<div style="font-size:10px;color:var(--text-dim);margin-bottom:8px;">按各周目历史最高分解锁</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
+  for (var zi = 1; zi <= 4; zi++) {
+    var best = s.zhoumuBestScores ? (s.zhoumuBestScores[zi] || 0) : 0;
+    var ach = best > 0 ? getZhoumuAchievement(best) : null;
+    var zStars = '';
+    for (var si = 0; si < zi; si++) zStars += '★';
+    html += '<div style="padding:8px;border-radius:6px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.08);">';
+    html += '<div style="font-size:11px;color:var(--gold);">' + zStars + ' ' + ZHOUMU_NAMES[zi-1] + '</div>';
+    html += '<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">最高分：' + best + '</div>';
+    html += '<div style="font-size:11px;color:' + (ach ? '#4CAF50' : 'var(--text-dim)') + ';margin-top:2px;">' + (ach ? ach.name : '未解锁') + '</div>';
+    html += '</div>';
+  }
+  html += '</div></div>';
+
+  // ===== 数据统计 =====
+  html += '<div class="panel" style="margin-bottom:16px;">';
+  html += '<div style="font-size:14px;font-weight:700;color:var(--gold-light);margin-bottom:10px;">📈 本周数据统计</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">';
+  html += '<div style="padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;"><div style="font-size:18px;font-weight:700;color:var(--gold-light);">' + (bd.focus*30) + '</div><div style="font-size:10px;color:var(--text-dim);">专注时长(分)</div></div>';
+  html += '<div style="padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;"><div style="font-size:18px;font-weight:700;color:var(--gold-light);">' + (bd.beasts) + '</div><div style="font-size:10px;color:var(--text-dim);">凶兽积分</div></div>';
+  html += '<div style="padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;"><div style="font-size:18px;font-weight:700;color:var(--gold-light);">' + (bd.enlighten/3) + '</div><div style="font-size:10px;color:var(--text-dim);">证道次数</div></div>';
+  html += '</div></div>';
+
+  // ===== 积分规则说明 =====
+  html += '<div class="panel">';
+  html += '<div onclick="document.getElementById(\'zhoumuRules\').style.display=document.getElementById(\'zhoumuRules\').style.display===\'none\'?\'block\':\'none\'" style="cursor:pointer;font-size:12px;color:var(--gold-light);font-weight:600;">▸ 积分获取规则与周目说明</div>';
+  html += '<div id="zhoumuRules" style="display:none;margin-top:10px;font-size:11px;color:var(--text-secondary);line-height:1.8;">';
+  html += '<div><b style="color:var(--gold-light);">击败凶兽</b>：简单1分 / 普通2分 / 困难3分 / 高阶4分 / 极难5分</div>';
+  html += '<div><b style="color:var(--gold-light);">专注时长</b>：每累计30分钟 +1分</div>';
+  html += '<div><b style="color:var(--gold-light);">每日证道</b>：每次 +3分</div>';
+  html += '<div><b style="color:var(--gold-light);">副本通关</b>：每个副本 +8分（每天最多2个=16分）</div>';
+  html += '<div><b style="color:var(--gold-light);">挑战「念」</b>：击败一层 +2分</div>';
+  html += '<div style="margin-top:6px;"><b style="color:var(--gold-light);">段位阈值</b>：炼气0 / 筑基100 / 金丹250 / 元婴500 / 化神900</div>';
+  html += '<div><b style="color:var(--gold-light);">周目难度</b>：1周目×1.0 / 2周目×1.15 / 3周目×1.30 / 4周目×1.45</div>';
+  html += '<div><b style="color:var(--gold-light);">轮回规则</b>：每周目=1周，4周目=1个月，下月重置回1周目，保留所有法宝神兽碎片称号</div>';
+  html += '</div></div>';
+
+  container.innerHTML = html;
+}
+// ========== 周目殿渲染结束 ==========
+
+// ========== 冒险地图系统 ==========
+var MAP_WEATHERS = [
+  { id: 'sunny', name: '☀️ 晴天', desc: '暴击率+5%', atkBonus: 0, critBonus: 0.05 },
+  { id: 'rainy', name: '🌧️ 雨天', desc: '水属性+20%，火属性-20%', atkBonus: 0, critBonus: 0 },
+  { id: 'foggy', name: '🌫️ 雾天', desc: '闪避+10%，命中-5%', atkBonus: 0, critBonus: 0 },
+  { id: 'storm', name: '⛈️ 雷暴', desc: '电属性+30%', atkBonus: 0, critBonus: 0 },
+  { id: 'windy', name: '💨 大风', desc: '风属性+25%', atkBonus: 0, critBonus: 0 },
+];
+
+// 格子类型定义
+var CELL_TYPES = {
+  start:    { icon: '🏠', name: '起点',   class: 'start' },
+  monster:  { icon: '👹', name: '凶兽',   class: 'monster' },
+  elite:    { icon: '💀', name: '精英怪', class: 'elite' },
+  boss:     { icon: '🐉', name: 'BOSS',  class: 'boss' },
+  treasure: { icon: '📦', name: '宝箱',   class: 'treasure' },
+  spirit:   { icon: '✨', name: '灵气',   class: 'spirit' },
+  trap:     { icon: '⚠️', name: '陷阱',   class: 'trap' },
+  question: { icon: '❓', name: '问号',   class: 'question' },
+  merchant: { icon: '🏪', name: '商人',   class: 'merchant' },
+  elder:    { icon: '🧙', name: '老者',   class: 'elder' },
+  portal:   { icon: '🌀', name: '传送阵', class: 'portal' },
+  fog:      { icon: '🌫️', name: '迷雾',   class: 'fog' },
+  nest:     { icon: '🏚️', name: '凶兽巢穴', class: 'nest' },
+  hidden:   { icon: '❔', name: '隐藏',   class: 'hidden' },
+  empty:    { icon: '·',  name: '空地',   class: 'empty' },
+};
+
+// 地图配置：10×10 = 100格
+var ADVENTURE_MAPS = {
+  desert: {
+    name: '灵气荒漠',
+    desc: '黄沙漫天，灵气稀薄，凶兽横行。初入修仙者的试炼之地。',
+    size: 10,
+    start: { x: 0, y: 9 },
+    end: { x: 9, y: 0 },
+    weatherPool: ['sunny', 'windy', 'foggy'],
+    // 布局：0=空地, 1=凶兽, 2=精英, 3=BOSS, 4=宝箱, 5=灵气, 6=陷阱, 7=问号, 8=商人, 9=老者, 10=传送阵, 11=迷雾, 12=巢穴, 13=隐藏
+    layout: [
+      [0,1,0,4,0,1,0,7,1,3],
+      [1,0,6,0,1,0,11,0,1,0],
+      [0,4,0,1,0,8,0,1,0,1],
+      [1,0,1,0,6,0,1,0,4,0],
+      [0,1,0,2,0,1,0,9,0,1],
+      [6,0,1,0,1,0,10,0,1,0],
+      [0,1,0,4,0,1,0,1,6,0],
+      [1,0,7,0,1,0,1,0,1,4],
+      [0,1,0,1,0,2,0,1,0,1],
+      [1,0,4,0,1,0,5,0,1,0],
+    ],
+    monsters: [
+      { name: '沙虫', tier: 2, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
+      { name: '巨蝎', tier: 3, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
+      { name: '岩石怪', tier: 4, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
+      { name: '荒漠守卫', tier: 5, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2', isElite: true },
+      { name: '荒漠巨兽王', tier: 7, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2', isBoss: true },
+    ],
+  },
+  forest: {
+    name: '幽暗森林',
+    desc: '古木参天，瘴气弥漫，隐藏着无数危机与机缘。',
+    size: 10,
+    start: { x: 0, y: 9 },
+    end: { x: 9, y: 0 },
+    weatherPool: ['rainy', 'foggy', 'windy'],
+    layout: [
+      [0,1,0,4,0,1,0,7,1,3],
+      [1,0,6,0,1,0,11,0,1,0],
+      [0,4,0,1,0,8,0,1,0,1],
+      [1,0,1,0,6,0,1,0,4,0],
+      [0,1,0,2,0,1,0,9,0,1],
+      [6,0,1,0,1,0,10,0,1,0],
+      [0,1,0,4,0,1,0,1,6,0],
+      [1,0,7,0,1,0,1,0,1,4],
+      [0,1,0,1,0,2,0,1,0,1],
+      [1,0,4,0,1,0,5,0,1,0],
+    ],
+    monsters: [
+      { name: '树妖', tier: 3, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
+      { name: '毒蛇', tier: 4, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
+      { name: '狼王', tier: 5, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2' },
+      { name: '森林守护者', tier: 6, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2', isElite: true },
+      { name: '千年树魔', tier: 8, image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2', isBoss: true },
+    ],
+    locked: true,
+  },
+};
+
+var CELL_TYPE_MAP = {
+  0: 'empty', 1: 'monster', 2: 'elite', 3: 'boss', 4: 'treasure',
+  5: 'spirit', 6: 'trap', 7: 'question', 8: 'merchant', 9: 'elder',
+  10: 'portal', 11: 'fog', 12: 'nest', 13: 'hidden'
+};
+
+function getActionPoints() {
+  var todayFocus = getTodayFocus();
+  var totalAp = Math.floor(todayFocus / 30);
+  var spent = gameState.adventure.apSpent || 0;
+  var today = getTodayStr();
+  if (gameState.adventure.apSpentDate !== today) {
+    gameState.adventure.apSpentDate = today;
+    gameState.adventure.apSpent = 0;
+    spent = 0;
+  }
+  return Math.max(0, Math.min(totalAp, 50) - spent);
+}
+
+function getMapWeather() {
+  if (!gameState.adventure.weather) {
+    var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+    var pool = map ? map.weatherPool : ['sunny'];
+    gameState.adventure.weather = pool[Math.floor(Math.random() * pool.length)];
+    saveGame();
+  }
+  return MAP_WEATHERS.find(function(w) { return w.id === gameState.adventure.weather; }) || MAP_WEATHERS[0];
+}
+
+function getCellType(x, y) {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  if (!map) return 'empty';
+  var val = map.layout[y] ? map.layout[y][x] : 0;
+  return CELL_TYPE_MAP[val] || 'empty';
+}
+
+function getCellState(x, y) {
+  var mapId = gameState.adventure.currentMap;
+  var key = x + ',' + y;
+  if (!gameState.adventure.mapState[mapId]) gameState.adventure.mapState[mapId] = {};
+  if (!gameState.adventure.mapState[mapId][key]) {
+    gameState.adventure.mapState[mapId][key] = { cleared: false, revealed: false };
+  }
+  return gameState.adventure.mapState[mapId][key];
+}
+
+function getExplorationRate() {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  if (!map) return 0;
+  var total = map.size * map.size;
+  var explored = Object.keys(gameState.adventure.explored).length;
+  return Math.round(explored / total * 100);
+}
+
+function renderAdventureMap() {
+  var container = document.getElementById('adventureContent');
+  if (!container) return;
+  var mapId = gameState.adventure.currentMap;
+  var map = ADVENTURE_MAPS[mapId];
+  if (!map) { container.innerHTML = '<div class="panel">地图不存在</div>'; return; }
+
+  var weather = getMapWeather();
+  var ap = getActionPoints();
+  var playerPos = gameState.adventure.playerPos;
+  var exploreRate = getExplorationRate();
+  var isCleared = gameState.adventure.clearedMaps.indexOf(mapId) >= 0;
+
+  var html = '';
+  // 地图选择
+  html += '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">';
+  Object.keys(ADVENTURE_MAPS).forEach(function(mid) {
+    var m = ADVENTURE_MAPS[mid];
+    var locked = m.locked && gameState.adventure.clearedMaps.indexOf('desert') < 0;
+    var isCurrent = mid === mapId;
+    html += '<button class="btn btn-sm ' + (isCurrent ? 'btn-primary' : 'btn-ghost') + '" style="flex:1;min-width:100px;" ' + (locked ? 'disabled' : 'onclick="switchAdventureMap(\'' + mid + '\')"') + '>';
+    html += (locked ? '🔒 ' : '') + m.name;
+    if (gameState.adventure.clearedMaps.indexOf(mid) >= 0) html += ' ✓';
+    html += '</button>';
+  });
+  html += '</div>';
+
+  // 地图容器
+  html += '<div class="map-container">';
+  html += '<div class="map-header">';
+  html += '<div class="map-title">' + map.name + '</div>';
+  html += '<div class="map-weather">' + weather.name + ' · ' + weather.desc + '</div>';
+  html += '</div>';
+
+  // 状态栏
+  html += '<div class="map-stats">';
+  html += '<div class="map-stat"><div class="map-stat-value">' + ap + '</div><div class="map-stat-label">行动力</div></div>';
+  html += '<div class="map-stat"><div class="map-stat-value">' + exploreRate + '%</div><div class="map-stat-label">探索度</div></div>';
+  html += '<div class="map-stat"><div class="map-stat-value">' + (isCleared ? '已通关' : '未通关') + '</div><div class="map-stat-label">地图状态</div></div>';
+  html += '</div>';
+
+  // 地图buff
+  if (gameState.adventure.mapBuffs && gameState.adventure.mapBuffs.length > 0) {
+    html += '<div class="map-buff-list">';
+    gameState.adventure.mapBuffs.forEach(function(b) {
+      html += '<span class="map-buff-tag">' + b.name + '(' + b.duration + ')</span>';
+    });
+    html += '</div>';
+  }
+
+  // 地图格子
+  html += '<div class="map-grid">';
+  for (var y = 0; y < map.size; y++) {
+    for (var x = 0; x < map.size; x++) {
+      var key = x + ',' + y;
+      var isPlayer = playerPos.x === x && playerPos.y === y;
+      var isExplored = !!gameState.adventure.explored[key];
+      var cellState = getCellState(x, y);
+      var cellType = getCellType(x, y);
+      var typeInfo = CELL_TYPES[cellType] || CELL_TYPES.empty;
+      var isAdjacent = Math.abs(playerPos.x - x) + Math.abs(playerPos.y - y) === 1;
+      var isStart = x === map.start.x && y === map.start.y;
+      var isEnd = x === map.end.x && y === map.end.y;
+
+      var cellClass = 'map-cell';
+      if (isPlayer) cellClass += ' player';
+      else if (isExplored) {
+        cellClass += ' explored ' + typeInfo.class;
+        if (cellState.cleared) cellClass += ' cleared';
+      } else if (isAdjacent) {
+        cellClass += ' adjacent';
+        // 相邻格子显示类型（除了迷雾和隐藏）
+        if (cellType === 'fog' || cellType === 'hidden') {
+          cellClass += ' unexplored';
+        } else {
+          cellClass += ' ' + typeInfo.class;
+        }
+      } else {
+        cellClass += ' unexplored';
+      }
+      if (isEnd && !isPlayer) cellClass += ' boss';
+
+      var icon = '';
+      if (isPlayer) icon = '🧙';
+      else if (isExplored || isAdjacent) {
+        if (cellType === 'fog' && !isExplored) icon = '🌫️';
+        else if (cellType === 'hidden' && !cellState.revealed) icon = '❔';
+        else if (isStart) icon = '🏠';
+        else if (isEnd) icon = '🐉';
+        else icon = typeInfo.icon;
+      } else {
+        icon = '·';
+      }
+
+      var clickable = isAdjacent && !isPlayer;
+      html += '<div class="' + cellClass + '" ' + (clickable ? 'onclick="moveToMapCell(' + x + ',' + y + ')"' : '') + '>';
+      html += '<span class="map-cell-icon">' + icon + '</span>';
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+
+  // 图例
+  html += '<div class="map-legend">';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">🧙</span>你</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">👹</span>凶兽</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">💀</span>精英</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">🐉</span>BOSS</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">📦</span>宝箱</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">✨</span>灵气</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">⚠️</span>陷阱</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">❓</span>问号</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">🏪</span>商人</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">🧙</span>老者</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">🌀</span>传送</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">🌫️</span>迷雾</div>';
+  html += '<div class="map-legend-item"><span class="map-legend-icon">🏚️</span>巢穴</div>';
+  html += '</div>';
+  html += '</div>';
+
+  // 操作按钮
+  html += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">';
+  html += '<button class="btn btn-ghost btn-sm" onclick="resetAdventureMap()">🔄 重置地图</button>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="showMapDex()">📖 凶兽图鉴</button>';
+  html += '<div style="flex:1;"></div>';
+  html += '<div style="font-size:11px;color:var(--text-dim);align-self:center;">每专注30分钟=1行动力 · 已探索格子可免费回溯</div>';
+  html += '</div>';
+
+  // 事件面板
+  html += '<div id="mapEventPanel" style="display:none;margin-top:12px;"></div>';
+
+  container.innerHTML = html;
+}
+
+function switchAdventureMap(mapId) {
+  var map = ADVENTURE_MAPS[mapId];
+  if (!map) return;
+  if (map.locked && gameState.adventure.clearedMaps.indexOf('desert') < 0) {
+    showToast('需先通关灵气荒漠', 'error');
+    return;
+  }
+  var prevMap = gameState.adventure.currentMap;
+  gameState.adventure.currentMap = mapId;
+  // 只有首次进入该地图时才重置位置和天气
+  var mapState = gameState.adventure.mapState[mapId];
+  var hasProgress = mapState && Object.keys(mapState).length > 0;
+  if (!hasProgress) {
+    gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
+    gameState.adventure.weather = '';
+  }
+  // 切换地图时清空临时buff
+  gameState.adventure.mapBuffs = [];
+  saveGame();
+  renderAdventureMap();
+  showToast('进入' + map.name, 'info');
+}
+
+function resetAdventureMap() {
+  if (!confirm('确定重置当前地图？所有进度将清空。')) return;
+  var mapId = gameState.adventure.currentMap;
+  var map = ADVENTURE_MAPS[mapId];
+  gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
+  gameState.adventure.explored = {};
+  gameState.adventure.mapState[mapId] = {};
+  gameState.adventure.weather = '';
+  gameState.adventure.mapBuffs = [];
+  saveGame();
+  renderAdventureMap();
+  showToast('地图已重置', 'info');
+}
+
+function moveToMapCell(x, y) {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  var playerPos = gameState.adventure.playerPos;
+  var dx = Math.abs(x - playerPos.x);
+  var dy = Math.abs(y - playerPos.y);
+  if (dx + dy !== 1) { showToast('只能移动到相邻格子', 'error'); return; }
+
+  var key = x + ',' + y;
+  var cellState = getCellState(x, y);
+  var isCleared = cellState.cleared;
+  var isStart = x === map.start.x && y === map.start.y;
+
+  // 已清理或起点不消耗行动力
+  if (!isCleared && !isStart) {
+    var ap = getActionPoints();
+    if (ap <= 0) { showToast('行动力不足，专注30分钟可获得1点', 'error'); return; }
+    var today = getTodayStr();
+    if (gameState.adventure.apSpentDate !== today) {
+      gameState.adventure.apSpentDate = today;
+      gameState.adventure.apSpent = 0;
+    }
+    gameState.adventure.apSpent = (gameState.adventure.apSpent || 0) + 1;
+  }
+
+  gameState.adventure.playerPos = { x: x, y: y };
+  gameState.adventure.explored[key] = true;
+
+  var cellType = getCellType(x, y);
+  if (!isCleared && !isStart) {
+    handleMapCellEvent(cellType, x, y);
+  } else if (isCleared || isStart) {
+    showToast('已探索区域，免费回溯', 'info');
+  }
+  saveGame();
+  renderAdventureMap();
+}
+
+function markCellCleared(x, y) {
+  var cellState = getCellState(x, y);
+  cellState.cleared = true;
+  saveGame();
+}
+
+function handleMapCellEvent(cellType, x, y) {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  var isEnd = x === map.end.x && y === map.end.y;
+
+  switch(cellType) {
+    case 'monster':
+      startMapMonsterBattle(x, y, false);
+      break;
+    case 'elite':
+      startMapMonsterBattle(x, y, true);
+      break;
+    case 'boss':
+    case 'empty':
+      if (isEnd) startMapBossBattle(x, y);
+      else markCellCleared(x, y);
+      break;
+    case 'treasure':
+      openMapTreasure(x, y);
+      break;
+    case 'spirit':
+      getMapSpirit(x, y);
+      break;
+    case 'trap':
+      triggerMapTrap(x, y);
+      break;
+    case 'question':
+      triggerMapQuestion(x, y);
+      break;
+    case 'merchant':
+      openMapMerchant(x, y);
+      break;
+    case 'elder':
+      meetMapElder(x, y);
+      break;
+    case 'portal':
+      useMapPortal(x, y);
+      break;
+    case 'fog':
+      enterMapFog(x, y);
+      break;
+    case 'nest':
+      startMapNestBattle(x, y);
+      break;
+    case 'hidden':
+      discoverHiddenRoom(x, y);
+      break;
+    default:
+      markCellCleared(x, y);
+  }
+}
+
+function getMapMonster(tier, isElite, isBoss) {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  var candidates = map.monsters.filter(function(m) {
+    if (isBoss) return m.isBoss;
+    if (isElite) return m.isElite;
+    return !m.isBoss && !m.isElite && m.tier <= tier;
+  });
+  if (candidates.length === 0) candidates = map.monsters.filter(function(m) { return !m.isBoss; });
+  var m = candidates[Math.floor(Math.random() * candidates.length)];
+  return {
+    id: 'map_' + m.name + '_' + Date.now(),
+    name: m.name + (isElite ? '·精英' : ''),
+    tier: m.tier,
+    image: m.image,
+    isElite: isElite,
+    isBoss: isBoss,
+  };
+}
+
+function startMapMonsterBattle(x, y, isElite) {
+  var tier = isElite ? 5 : 3;
+  var m = getMapMonster(tier, isElite, false);
+  // 记录图鉴
+  gameState.adventure.monsterDex[m.name] = true;
+  // 全装备战斗
+  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
+  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
+  prepareState.selectedConsumable = [];
+
+  var monsterObj = {
+    id: m.id, name: m.name, tier: m.tier,
+    image: m.image,
+    skill: isElite ? { name: '狂暴', type: 'enrage', atkBonus: 0.3, triggerHp: 0.5, once: true, text: m.name + '狂暴了，攻击力大幅提升！' } : null,
+  };
+  // 精英怪额外+1 tier难度
+  if (isElite) monsterObj.tier = Math.min(10, m.tier + 1);
+
+  startBattle(monsterObj, {
+    onWin: function(bs) {
+      markCellCleared(x, y);
+      var frag = isElite ? 15 : 8;
+      dailyState.fragments += frag;
+      saveDaily();
+      addSeasonScore('beast', isElite ? 4 : 2);
+      showBattleOverlay('战胜 ' + m.name, '地图凶兽已击败',
+        '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">' + frag + '枚</span></div>' +
+        '<div class="result-stat-row"><span class="label">赛季积分</span><span class="value">+' + (isElite ? 4 : 2) + '</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    },
+    onLose: function(bs) {
+      showBattleOverlay('挑战失败', m.name + '过于强大',
+        '<div class="result-stat-row"><span class="label">提示</span><span class="value">提升专注时长和装备后再来</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    }
+  });
+}
+
+function startMapBossBattle(x, y) {
+  var m = getMapMonster(7, false, true);
+  gameState.adventure.monsterDex[m.name] = true;
+  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
+  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
+  prepareState.selectedConsumable = [];
+
+  var monsterObj = {
+    id: m.id, name: m.name, tier: 8,
+    image: m.image,
+    skill: { name: '狂暴吞噬', type: 'enrage', atkBonus: 0.5, triggerHp: 0.4, once: true, text: m.name + '进入狂暴状态，攻击力暴涨！' },
+  };
+
+  startBattle(monsterObj, {
+    onWin: function(bs) {
+      markCellCleared(x, y);
+      var mapId = gameState.adventure.currentMap;
+      if (gameState.adventure.clearedMaps.indexOf(mapId) < 0) {
+        gameState.adventure.clearedMaps.push(mapId);
+      }
+      dailyState.fragments += 50;
+      gameState.bonusFocus += 100;
+      saveDaily();
+      addSeasonScore('beast', 5);
+      showBattleOverlay('🎉 通关 ' + ADVENTURE_MAPS[mapId].name + '！', '终点BOSS已被击败',
+        '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">50枚</span></div>' +
+        '<div class="result-stat-row"><span class="label">修为经验</span><span class="value">+100分钟</span></div>' +
+        '<div class="result-stat-row"><span class="label">赛季积分</span><span class="value">+5</span></div>' +
+        '<div class="result-stat-row"><span class="label">探索度</span><span class="value">' + getExplorationRate() + '%</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    },
+    onLose: function(bs) {
+      showBattleOverlay('挑战失败', m.name + '过于强大',
+        '<div class="result-stat-row"><span class="label">提示</span><span class="value">提升专注时长和装备后再来</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    }
+  });
+}
+
+function startMapNestBattle(x, y) {
+  // 连战模式：连续打2-3只凶兽
+  var count = 2 + Math.floor(Math.random() * 2);
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  var monsters = [];
+  for (var i = 0; i < count; i++) {
+    var m = getMapMonster(3 + i, false, false);
+    monsters.push(m);
+  }
+  showMapEvent('🏚️ 凶兽巢穴', '发现一处凶兽巢穴，里面有' + count + '只凶兽！连续战斗，中间不恢复生命。',
+    [{ label: '挑战（连战' + count + '场）', action: 'startNestChain(' + x + ',' + y + ',' + count + ')', primary: true },
+     { label: '离开', action: 'closeMapEvent()' }]
+  );
+}
+
+function startNestChain(x, y, count) {
+  closeMapEvent();
+  var m = getMapMonster(3, false, false);
+  gameState.adventure.monsterDex[m.name] = true;
+  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
+  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
+  prepareState.selectedConsumable = [];
+
+  var monsterObj = {
+    id: m.id, name: m.name + '(1/' + count + ')', tier: 3,
+    image: m.image,
+  };
+
+  startBattle(monsterObj, {
+    onWin: function(bs) {
+      if (count > 1) {
+        showBattleOverlay('击败第1只！', '还有' + (count-1) + '只凶兽，继续战斗！',
+          '<div class="result-stat-row"><span class="label">生命保留</span><span class="value">' + Math.round(bs.player.hp) + '/' + bs.player.maxHp + '</span></div>',
+          [{ label: '继续战斗', action: 'continueNestChain(' + x + ',' + y + ',' + (count-1) + ')', primary: true }]
+        );
+      } else {
+        finishNestBattle(x, y);
+      }
+    },
+    onLose: function(bs) {
+      showBattleOverlay('巢穴挑战失败', '凶兽巢穴太过凶险',
+        '<div class="result-stat-row"><span class="label">提示</span><span class="value">提升实力后再来</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    }
+  });
+}
+
+function continueNestChain(x, y, remaining) {
+  document.getElementById('battleOverlay').style.display = 'none';
+  var m = getMapMonster(3 + (3-remaining), false, false);
+  gameState.adventure.monsterDex[m.name] = true;
+  var monsterObj = {
+    id: m.id, name: m.name + '(' + (4-remaining) + '/3)', tier: 3 + (3-remaining),
+    image: m.image,
+  };
+  // 保留上一场的生命值
+  var prevHp = battleState ? battleState.player.hp : 273;
+  startBattle(monsterObj, {
+    onWin: function(bs) {
+      if (remaining > 1) {
+        showBattleOverlay('击败第' + (4-remaining) + '只！', '还有' + (remaining-1) + '只凶兽！',
+          '<div class="result-stat-row"><span class="label">剩余生命</span><span class="value">' + Math.round(bs.player.hp) + '/' + bs.player.maxHp + '</span></div>',
+          [{ label: '继续战斗', action: 'continueNestChain(' + x + ',' + y + ',' + (remaining-1) + ')', primary: true }]
+        );
+      } else {
+        finishNestBattle(x, y);
+      }
+    },
+    onLose: function(bs) {
+      showBattleOverlay('巢穴挑战失败', '凶兽巢穴太过凶险',
+        '<div class="result-stat-row"><span class="label">提示</span><span class="value">提升实力后再来</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    }
+  });
+  // 设置保留的生命值
+  setTimeout(function() {
+    if (battleState) {
+      battleState.player.hp = Math.min(prevHp, battleState.player.maxHp);
+      updateBattleUI();
+    }
+  }, 100);
+}
+
+function finishNestBattle(x, y) {
+  markCellCleared(x, y);
+  dailyState.fragments += 30;
+  gameState.bonusFocus += 50;
+  saveDaily();
+  addSeasonScore('beast', 4);
+  showBattleOverlay('🎉 巢穴清空！', '连续击败所有凶兽',
+    '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">30枚</span></div>' +
+    '<div class="result-stat-row"><span class="label">修为经验</span><span class="value">+50分钟</span></div>' +
+    '<div class="result-stat-row"><span class="label">赛季积分</span><span class="value">+4</span></div>',
+    [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+  );
+}
+
+function openMapTreasure(x, y) {
+  var frag = 10 + Math.floor(Math.random() * 20);
+  var cult = 20 + Math.floor(Math.random() * 30);
+  dailyState.fragments += frag;
+  gameState.bonusFocus += cult;
+  saveDaily();
+  markCellCleared(x, y);
+  showMapEvent('📦 发现宝箱！', '打开宝箱，获得了' + frag + '枚心魔碎片和' + cult + '分钟修为经验。',
+    [{ label: '收下', action: 'closeMapEvent()', primary: true }]
+  );
+}
+
+function getMapSpirit(x, y) {
+  // 恢复状态或获得临时buff
+  gameState.adventure.mapBuffs.push({ name: '灵气护体', type: 'atk', value: 0.1, duration: 3 });
+  markCellCleared(x, y);
+  showMapEvent('✨ 灵气汇聚', '浓郁的灵气涌入体内，攻击力+10%（持续3场战斗）。',
+    [{ label: '继续', action: 'closeMapEvent()', primary: true }]
+  );
+}
+
+function triggerMapTrap(x, y) {
+  var dmg = 30 + Math.floor(Math.random() * 30);
+  markCellCleared(x, y);
+  showMapEvent('⚠️ 触发陷阱！', '你触发了隐藏陷阱，受到' + dmg + '点伤害。（仅作记录，不影响实际战斗）',
+    [{ label: '继续', action: 'closeMapEvent()', primary: true }]
+  );
+}
+
+function triggerMapQuestion(x, y) {
+  var events = [
+    { title: '❓ 神秘遗迹', desc: '发现一处古老遗迹，里面似乎藏着什么。', options: [
+      { label: '探索（可能有惊喜）', action: 'questionReward(' + x + ',' + y + ')', primary: true },
+      { label: '离开', action: 'closeMapEvent()' }
+    ]},
+    { title: '❓ 迷路旅人', desc: '遇到一位迷路的旅人，他似乎需要帮助。', options: [
+      { label: '帮助他（获得好感）', action: 'questionReward(' + x + ',' + y + ')', primary: true },
+      { label: '无视', action: 'closeMapEvent()' }
+    ]},
+    { title: '❓ 古老石碑', desc: '一块刻满符文的石碑，似乎记载着什么。', options: [
+      { label: '研读（获得感悟）', action: 'questionReward(' + x + ',' + y + ')', primary: true },
+      { label: '离开', action: 'closeMapEvent()' }
+    ]},
+  ];
+  var evt = events[Math.floor(Math.random() * events.length)];
+  showMapEvent(evt.title, evt.desc, evt.options);
+}
+
+function questionReward(x, y) {
+  closeMapEvent();
+  var rand = Math.random();
+  markCellCleared(x, y);
+  if (rand < 0.4) {
+    var frag = 15 + Math.floor(Math.random() * 15);
+    dailyState.fragments += frag;
+    saveDaily();
+    showToast('获得' + frag + '枚碎片！', 'success');
+  } else if (rand < 0.7) {
+    gameState.bonusFocus += 40;
+    showToast('获得40分钟修为经验！', 'success');
+  } else {
+    gameState.adventure.mapBuffs.push({ name: '奇遇之力', type: 'crit', value: 0.1, duration: 5 });
+    showToast('获得临时buff：暴击率+10%（5场）', 'success');
+  }
+  renderAdventureMap();
+}
+
+function openMapMerchant(x, y) {
+  showMapEvent('🏪 神秘商人', '"道友，看看我这有什么好东西？"',
+    [
+      { label: '买攻击符（30碎片，攻击+15%/3场）', action: 'buyMapItem(\'atk\',' + x + ',' + y + ')' },
+      { label: '买暴击符（30碎片，暴击+15%/3场）', action: 'buyMapItem(\'crit\',' + x + ',' + y + ')' },
+      { label: '买显形符（20碎片，驱散周围迷雾）', action: 'buyMapItem(\'reveal\',' + x + ',' + y + ')' },
+      { label: '离开', action: 'closeMapEvent()' }
+    ]
+  );
+}
+
+function buyMapItem(type, x, y) {
+  var costs = { atk: 30, crit: 30, reveal: 20 };
+  var cost = costs[type];
+  if (dailyState.fragments < cost) { showToast('碎片不足', 'error'); return; }
+  dailyState.fragments -= cost;
+  saveDaily();
+  if (type === 'atk') {
+    gameState.adventure.mapBuffs.push({ name: '攻击符', type: 'atk', value: 0.15, duration: 3 });
+    showToast('获得攻击符！', 'success');
+  } else if (type === 'crit') {
+    gameState.adventure.mapBuffs.push({ name: '暴击符', type: 'crit', value: 0.15, duration: 3 });
+    showToast('获得暴击符！', 'success');
+  } else if (type === 'reveal') {
+    // 驱散周围迷雾
+    var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+    for (var dy = -2; dy <= 2; dy++) {
+      for (var dx = -2; dx <= 2; dx++) {
+        var nx = x + dx, ny = y + dy;
+        if (nx >= 0 && nx < map.size && ny >= 0 && ny < map.size) {
+          var cs = getCellState(nx, ny);
+          cs.revealed = true;
+        }
+      }
+    }
+    showToast('周围迷雾已驱散！', 'success');
+  }
+  markCellCleared(x, y);
+  closeMapEvent();
+  renderAdventureMap();
+}
+
+function meetMapElder(x, y) {
+  showMapEvent('🧙 奇遇老者', '"年轻人，我看你骨骼清奇，可愿接受我的指点？"',
+    [
+      { label: '请教攻击之道（攻击+15%/5场）', action: 'elderBuff(\'atk\',' + x + ',' + y + ')', primary: true },
+      { label: '请教暴击之道（暴击+15%/5场）', action: 'elderBuff(\'crit\',' + x + ',' + y + ')' },
+      { label: '请教防御之道（生命+20%/5场）', action: 'elderBuff(\'hp\',' + x + ',' + y + ')' },
+      { label: '告辞', action: 'closeMapEvent()' }
+    ]
+  );
+}
+
+function elderBuff(type, x, y) {
+  closeMapEvent();
+  var names = { atk: '攻击之道', crit: '暴击之道', hp: '防御之道' };
+  gameState.adventure.mapBuffs.push({ name: names[type], type: type, value: type === 'hp' ? 0.2 : 0.15, duration: 5 });
+  markCellCleared(x, y);
+  showToast('老者传授了' + names[type] + '！', 'success');
+  renderAdventureMap();
+}
+
+function useMapPortal(x, y) {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  // 随机传送到一个未探索的格子
+  var candidates = [];
+  for (var ty = 0; ty < map.size; ty++) {
+    for (var tx = 0; tx < map.size; tx++) {
+      var key = tx + ',' + ty;
+      if (!gameState.adventure.explored[key] && !(tx === map.end.x && ty === map.end.y)) {
+        candidates.push({ x: tx, y: ty });
+      }
+    }
+  }
+  if (candidates.length > 0) {
+    var target = candidates[Math.floor(Math.random() * candidates.length)];
+    gameState.adventure.playerPos = { x: target.x, y: target.y };
+    gameState.adventure.explored[target.x + ',' + target.y] = true;
+    markCellCleared(x, y);
+    showToast('传送阵激活！被传送到了新的位置', 'info');
+    var cellType = getCellType(target.x, target.y);
+    handleMapCellEvent(cellType, target.x, target.y);
+  } else {
+    markCellCleared(x, y);
+    showToast('传送阵失效了', 'info');
+  }
+  saveGame();
+  renderAdventureMap();
+}
+
+function enterMapFog(x, y) {
+  // 迷雾格子：随机事件
+  var rand = Math.random();
+  markCellCleared(x, y);
+  if (rand < 0.3) {
+    // 遇到凶兽
+    showMapEvent('🌫️ 迷雾中...', '迷雾中传来低吼，一只凶兽扑了出来！',
+      [{ label: '迎战', action: 'fogMonsterBattle(' + x + ',' + y + ')', primary: true }]
+    );
+  } else if (rand < 0.6) {
+    // 发现宝物
+    var frag = 10 + Math.floor(Math.random() * 20);
+    dailyState.fragments += frag;
+    saveDaily();
+    showMapEvent('🌫️ 迷雾中...', '在迷雾中发现了一个包裹，获得' + frag + '枚碎片！',
+      [{ label: '继续', action: 'closeMapEvent()', primary: true }]
+    );
+  } else {
+    // 什么都没发生
+    showMapEvent('🌫️ 迷雾中...', '迷雾散去，什么都没有发生。',
+      [{ label: '继续', action: 'closeMapEvent()', primary: true }]
+    );
+  }
+}
+
+function fogMonsterBattle(x, y) {
+  closeMapEvent();
+  var m = getMapMonster(4, false, false);
+  gameState.adventure.monsterDex[m.name] = true;
+  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
+  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
+  prepareState.selectedConsumable = [];
+  var monsterObj = { id: m.id, name: m.name, tier: 4, image: m.image };
+  startBattle(monsterObj, {
+    onWin: function(bs) {
+      dailyState.fragments += 12;
+      saveDaily();
+      addSeasonScore('beast', 3);
+      showBattleOverlay('战胜 ' + m.name, '迷雾中的凶兽被击败',
+        '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">12枚</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    },
+    onLose: function(bs) {
+      showBattleOverlay('挑战失败', '迷雾中的凶兽逃走了',
+        '<div class="result-stat-row"><span class="label">提示</span><span class="value">提升实力后再来</span></div>',
+        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+      );
+    }
+  });
+}
+
+function discoverHiddenRoom(x, y) {
+  var cs = getCellState(x, y);
+  cs.revealed = true;
+  markCellCleared(x, y);
+  // 隐藏房间：高额奖励
+  var frag = 30 + Math.floor(Math.random() * 30);
+  dailyState.fragments += frag;
+  gameState.bonusFocus += 60;
+  saveDaily();
+  showMapEvent('❔ 发现隐藏房间！', '你发现了一个隐藏的密室，里面有大量宝物！获得' + frag + '枚碎片和60分钟修为经验。',
+    [{ label: '收下宝物', action: 'closeMapEvent()', primary: true }]
+  );
+}
+
+function showMapEvent(title, desc, buttons) {
+  var panel = document.getElementById('mapEventPanel');
+  if (!panel) return;
+  var html = '<div class="map-event-panel">';
+  html += '<div class="map-event-title">' + title + '</div>';
+  html += '<div class="map-event-desc">' + desc + '</div>';
+  html += '<div class="map-event-buttons">';
+  buttons.forEach(function(b) {
+    html += '<button class="btn btn-sm ' + (b.primary ? 'btn-primary' : 'btn-ghost') + '" onclick="' + b.action + '">' + b.label + '</button>';
+  });
+  html += '</div></div>';
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+}
+
+function closeMapEvent() {
+  var panel = document.getElementById('mapEventPanel');
+  if (panel) panel.style.display = 'none';
+  renderAdventureMap();
+}
+
+function closeBattleAndGoToMap() {
+  document.getElementById('battleOverlay').style.display = 'none';
+  battleState = null;
+  battleRunning = false;
+  navigate('adventure');
+}
+
+function showMapDex() {
+  var dex = gameState.adventure.monsterDex || {};
+  var names = Object.keys(dex);
+  var html = '<div class="map-event-panel">';
+  html += '<div class="map-event-title">📖 凶兽图鉴</div>';
+  if (names.length === 0) {
+    html += '<div class="map-event-desc">尚未发现任何凶兽，去地图中探索吧！</div>';
+  } else {
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    names.forEach(function(name) {
+      html += '<div style="padding:8px;background:rgba(0,0,0,0.3);border-radius:6px;text-align:center;">';
+      html += '<div style="font-size:14px;">👹</div>';
+      html += '<div style="font-size:11px;color:var(--gold-light);">' + name + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  html += '<div style="margin-top:10px;"><button class="btn btn-ghost btn-sm" onclick="closeMapEvent()">关闭</button></div>';
+  html += '</div>';
+  var panel = document.getElementById('mapEventPanel');
+  if (panel) {
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+  }
+}
+
+// ========== 冒险地图系统结束 ==========
+
 // ========== 赛季周目系统结束 ==========
 function getActiveElement() {
   if (!battleState || !battleState.usedEquips) return '';
@@ -6388,6 +7050,7 @@ function doAllSwordsAttack() {
   if (swords.length < 2 || battleState.allSwordsUsed) { runMonsterTurn(); return; }
   battleState.allSwordsUsed = true;
   addLog('system', '⚔ 万剑齐发！' + swords.length + '把神剑同时出鞘！');
+  playArrowRain(); // 箭雨特效
   var totalDmg = 0;
   var swordIdx = 0;
   function nextSword() {
@@ -6484,7 +7147,14 @@ function playerAct(type, idx) {
     updateSpiritBar();
   } else if (type === 'skill') {
     const sk = battleState.skills[idx];
-    if (!sk || p.spirit < sk.cost) {
+    var cd = battleState.skillCooldowns[idx] || 0;
+    if (cd > 0) {
+      addLog('system', `「${sk ? sk.name : '神通'}」冷却中（剩余${cd}回合），改以挥剑攻击！`);
+      pCrit = Math.random() * 100 < p.crit;
+      pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+      p.spirit = Math.min(p.maxSpirit, p.spirit + 15);
+      updateSpiritBar();
+    } else if (!sk || p.spirit < sk.cost) {
       addLog('system', `灵力不足，无法施展「${sk ? sk.name : '神通'}」，改以挥剑攻击！`);
       pCrit = Math.random() * 100 < p.crit;
       pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
@@ -6494,12 +7164,16 @@ function playerAct(type, idx) {
       p.spirit -= sk.cost;
       updateSpiritBar();
       pSkill = sk;
+      // 设置技能冷却
+      if (sk.cooldown && sk.cooldown > 0) {
+        battleState.skillCooldowns[idx] = sk.cooldown;
+      }
       if (sk.type === 'heal') {
-        healAmount = Math.floor(p.maxHp * Math.min(sk.healPct || 0.2, 0.20));
+        healAmount = Math.floor(p.maxHp * Math.min(sk.healPct || 0.05, 0.05));
         p.hp = Math.min(p.maxHp, p.hp + healAmount);
         pDmg = Math.floor(atk * (sk.dmgMult || 0.8) * (0.9 + Math.random() * 0.2));
         // 归元附加减伤2回合
-        applyStatus('player', { type:'dmgReduce', value:0.30, duration:2 });
+        applyStatus('player', { type:'dmgReduce', value:0.15, duration:2 });
       } else if (sk.type === 'slash') {
         pCrit = Math.random() * 100 < Math.min(p.crit + Math.min(sk.critBonus || 0, 30), 100);
         pDmg = Math.floor(atk * Math.min(sk.dmgMult, 2.5) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
@@ -6615,9 +7289,12 @@ function playerAct(type, idx) {
     // 回血类技能本身已回血，不再触发吸血词条，避免双重回血
     const isHealSkill = pSkill && pSkill.type === 'heal';
     if (lifestealPct > 0 && pDmg > 0 && !isHealSkill && Math.random() < lifestealPct) {
-      const lh = Math.floor(pDmg * lifestealPct * 1.5);
-      p.hp = Math.min(p.maxHp, p.hp + lh);
-      addLog('player', `吸星之力涌动，修士恢复 ${lh} 点生命。`);
+      // 吸血量：伤害×吸血比例×0.8，单次最多回最大生命的5%
+      const lh = Math.min(Math.floor(pDmg * lifestealPct * 0.8), Math.floor(p.maxHp * 0.05));
+      if (lh > 0) {
+        p.hp = Math.min(p.maxHp, p.hp + lh);
+        addLog('player', `吸星之力涌动，修士恢复 ${lh} 点生命。`);
+      }
     }
     updateHpBars();
     renderStatuses();
@@ -6773,6 +7450,13 @@ function afterMonsterTurn() {
   const p = battleState.player;
   p.spirit = Math.min(p.maxSpirit, p.spirit + 30 + (p.affixes.regen || 0));
   updateSpiritBar();
+  // 减少技能冷却
+  Object.keys(battleState.skillCooldowns || {}).forEach(function(idx) {
+    if (battleState.skillCooldowns[idx] > 0) {
+      battleState.skillCooldowns[idx]--;
+      if (battleState.skillCooldowns[idx] <= 0) delete battleState.skillCooldowns[idx];
+    }
+  });
   battleState.round++;
   document.getElementById('roundIndicator').textContent = `第 ${battleState.round} 回合`;
   battleState.awaitingAction = false;
@@ -6978,46 +7662,47 @@ function skillFromPreset(key) {
 const DEFAULT_SECTORS = [
   { id: 'qingyun', name: '青云宗', icon: '⛰️', desc: '正道魁首，剑法通神，以凌厉剑意为尊。',
     enemies: [
-      { name: '青云外门弟子', maxHp: 320, attack: 28, skillKey: 'none' },
-      { name: '青云内门弟子', maxHp: 520, attack: 42, skillKey: 'heavy' },
-      { name: '青云执法长老', maxHp: 820, attack: 62, skillKey: 'heavy' },
-      { name: '掌门·剑痴', maxHp: 1350, attack: 92, skillKey: 'enrage' },
+      { name: '青云外门弟子', tier: 2, skillKey: 'none' },
+      { name: '青云内门弟子', tier: 3, skillKey: 'heavy' },
+      { name: '青云执法长老', tier: 5, skillKey: 'heavy' },
+      { name: '掌门·剑痴', tier: 7, skillKey: 'enrage' },
     ],
     reward: { name: '青云剑诀', type: 'gongfa', categoryId: 'cat_jianjue', power: 32, crit: 10, affixes: [{ type: 'execute', value: 25 }, { type: 'multiHit', value: 15 }], effect: '青云宗镇宗剑诀，剑出如山，遇弱则强。' } },
   { id: 'tianjian', name: '天剑门', icon: '⚔️', desc: '攻伐无双，门下皆为剑中狂客，只求一剑破万法。',
     enemies: [
-      { name: '天剑门剑客', maxHp: 280, attack: 38, skillKey: 'none' },
-      { name: '天剑门剑狂', maxHp: 480, attack: 55, skillKey: 'enrage' },
-      { name: '天剑门长老', maxHp: 750, attack: 78, skillKey: 'heavy' },
-      { name: '门主·剑无极', maxHp: 1200, attack: 115, skillKey: 'enrage' },
+      { name: '天剑门剑客', tier: 2, skillKey: 'none' },
+      { name: '天剑门剑狂', tier: 4, skillKey: 'enrage' },
+      { name: '天剑门长老', tier: 5, skillKey: 'heavy' },
+      { name: '门主·剑无极', tier: 8, skillKey: 'enrage' },
     ],
     reward: { name: '天剑秘录', type: 'gongfa', categoryId: 'cat_jianjue', power: 45, crit: 18, affixes: [{ type: 'execute', value: 30 }], effect: '天剑门至高秘录，攻伐之凌厉冠绝天下。' } },
   { id: 'wandu', name: '万毒谷', icon: '☠️', desc: '毒道至尊，谷中遍地毒物，入谷者九死一生。',
     enemies: [
-      { name: '万毒谷药童', maxHp: 350, attack: 25, skillKey: 'poison' },
-      { name: '万毒谷弟子', maxHp: 560, attack: 40, skillKey: 'poison' },
-      { name: '万毒谷长老', maxHp: 880, attack: 58, skillKey: 'poison' },
-      { name: '谷主·毒圣', maxHp: 1400, attack: 80, skillKey: 'poison' },
+      { name: '万毒谷药童', tier: 2, skillKey: 'poison' },
+      { name: '万毒谷弟子', tier: 3, skillKey: 'poison' },
+      { name: '万毒谷长老', tier: 5, skillKey: 'poison' },
+      { name: '谷主·毒圣', tier: 7, skillKey: 'poison' },
     ],
     reward: { name: '万毒真经', type: 'gongfa', categoryId: 'cat_xinfa', power: 20, crit: 5, affixes: [{ type: 'poison', value: 35 }, { type: 'lifesteal', value: 10 }], effect: '万毒谷镇谷真经，淬毒于兵刃，触之即溃。' } },
   { id: 'liehuo', name: '烈火宗', icon: '🔥', desc: '以火入道，焚尽一切，门下弟子性情暴烈如火。',
     enemies: [
-      { name: '烈火宗杂役', maxHp: 300, attack: 32, skillKey: 'none' },
-      { name: '烈火宗弟子', maxHp: 500, attack: 48, skillKey: 'burn' },
-      { name: '烈火宗长老', maxHp: 800, attack: 70, skillKey: 'burn' },
-      { name: '宗主·炎尊', maxHp: 1300, attack: 100, skillKey: 'burn' },
+      { name: '烈火宗杂役', tier: 2, skillKey: 'none' },
+      { name: '烈火宗弟子', tier: 3, skillKey: 'burn' },
+      { name: '烈火宗长老', tier: 5, skillKey: 'burn' },
+      { name: '宗主·炎尊', tier: 7, skillKey: 'burn' },
     ],
     reward: { name: '烈焰心法', type: 'gongfa', categoryId: 'cat_xinfa', power: 25, crit: 8, affixes: [{ type: 'burn', value: 40 }, { type: 'hp', value: 60 }], effect: '烈火宗秘传心法，以烈焰淬炼己身。' } },
   { id: 'xuanbing', name: '玄冰阁', icon: '❄️', desc: '冰道圣地，寒气彻骨，擅长以冰寒之力冻结敌胆。',
     enemies: [
-      { name: '玄冰阁侍女', maxHp: 340, attack: 26, skillKey: 'none' },
-      { name: '玄冰阁弟子', maxHp: 540, attack: 44, skillKey: 'weaken' },
-      { name: '玄冰阁长老', maxHp: 860, attack: 64, skillKey: 'confuse' },
-      { name: '阁主·冰皇', maxHp: 1450, attack: 88, skillKey: 'weaken' },
+      { name: '玄冰阁侍女', tier: 2, skillKey: 'none' },
+      { name: '玄冰阁弟子', tier: 3, skillKey: 'weaken' },
+      { name: '玄冰阁长老', tier: 5, skillKey: 'confuse' },
+      { name: '阁主·冰皇', tier: 8, skillKey: 'weaken' },
     ],
     reward: { name: '玄冰护体诀', type: 'gongfa', categoryId: 'cat_xinfa', power: 18, crit: 5, affixes: [{ type: 'shield', value: 80 }, { type: 'thorns', value: 15 }, { type: 'hp', value: 80 }], effect: '玄冰阁护阁神功，冰盾护体，反噬来敌。' } },
 ];
 var sectors = [];
+var currentSectId = null;
 function loadSectors() {
   try {
     var raw = localStorage.getItem('xinmo_sectors');
@@ -7040,7 +7725,7 @@ function openSectEditor(sectId) {
     document.getElementById('sectEditorDesc').value = s.desc || '';
     document.getElementById('sectDeleteBtn').style.display = 'inline-block';
   } else {
-    sectEditorState = { editingId: null, enemies: [{ name: '宗门弟子', maxHp: 300, attack: 30, skillKey: 'none' }], reward: { name: '宗门秘宝', type: 'gongfa', power: 20, crit: 5, affixes: [], effect: '' } };
+    sectEditorState = { editingId: null, enemies: [{ name: '宗门弟子', tier: 2, skillKey: 'none' }], reward: { name: '宗门秘宝', type: 'gongfa', power: 20, crit: 5, affixes: [], effect: '' } };
     document.getElementById('sectEditorTitle').textContent = '新增宗门';
     document.getElementById('sectEditorName').value = '';
     document.getElementById('sectEditorIcon').value = '🏯';
@@ -7065,8 +7750,9 @@ function renderSectEnemyList() {
   container.innerHTML = sectEditorState.enemies.map(function(e, i) {
     return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap;">' +
       '<input type="text" class="form-input" style="flex:1;min-width:120px;" value="' + e.name + '" onchange="sectEditorState.enemies[' + i + '].name=this.value" placeholder="名称">' +
-      '<input type="number" class="form-input" style="width:80px;" value="' + e.maxHp + '" onchange="sectEditorState.enemies[' + i + '].maxHp=parseInt(this.value)||0" placeholder="血量" min="1">' +
-      '<input type="number" class="form-input" style="width:80px;" value="' + e.attack + '" onchange="sectEditorState.enemies[' + i + '].attack=parseInt(this.value)||0" placeholder="攻击" min="0">' +
+      '<select class="form-select" style="width:110px;" onchange="sectEditorState.enemies[' + i + '].tier=parseInt(this.value)">' +
+      MONSTER_TIERS.map(function(t) { return '<option value="' + t.tier + '"' + ((e.tier||3) === t.tier ? ' selected' : '') + '>' + t.name + '</option>'; }).join('') +
+      '</select>' +
       '<select class="form-select" style="width:100px;" onchange="sectEditorState.enemies[' + i + '].skillKey=this.value">' +
       Object.entries(ENEMY_SKILL_PRESETS).map(function(ent) { return '<option value="' + ent[0] + '"' + (e.skillKey === ent[0] ? ' selected' : '') + '>' + ent[1].label + '</option>'; }).join('') +
       '</select>' +
@@ -7075,7 +7761,7 @@ function renderSectEnemyList() {
   }).join('');
 }
 function addSectEnemy() {
-  sectEditorState.enemies.push({ name: '宗门弟子', maxHp: 300, attack: 30, skillKey: 'none' });
+  sectEditorState.enemies.push({ name: '宗门弟子', tier: 2, skillKey: 'none' });
   renderSectEnemyList();
 }
 function removeSectEnemy(idx) {
@@ -7141,6 +7827,8 @@ function renderSects() {
 function showSectDetail(sectId) {
   var s = getSectorById(sectId);
   if (!s) return;
+  currentSectId = sectId;
+  navigate('sect-detail');
   document.getElementById('sectorDetailPanel').style.display = 'block';
   document.getElementById('sectEditorPanel').style.display = 'none';
   document.getElementById('sectorDetailTitle').textContent = s.icon + ' ' + s.name;
@@ -7151,11 +7839,14 @@ function showSectDetail(sectId) {
   html += '<div style="margin-bottom:14px;">';
   s.enemies.forEach(function(e, i) {
     var skLabel = (e.skillKey && e.skillKey !== 'none' && ENEMY_SKILL_PRESETS[e.skillKey]) ? ENEMY_SKILL_PRESETS[e.skillKey].label : '';
-    html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;">' +
-      '<span>' + (i + 1) + '. ' + e.name + (skLabel ? ' <span style="color:var(--cinnabar-light);">[' + skLabel + ']</span>' : '') + '</span>' +
-      '<span style="color:var(--text-dim);">血' + e.maxHp + ' 攻' + e.attack + '</span></div>';
+    var tierCfg = getTierConfig(e.tier || 3);
+    var isBoss = i === s.enemies.length - 1;
+    html += '<div style="display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;align-items:center;">' +
+      '<span>' + (i + 1) + '. ' + (isBoss ? '<b style="color:var(--cinnabar-light);">【BOSS】</b> ' : '') + e.name + (skLabel ? ' <span style="color:var(--cinnabar-light);">[' + skLabel + ']</span>' : '') + '</span>' +
+      '<span style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';font-weight:600;">' + tierCfg.name + ' · ' + tierCfg.targetRounds + '回合</span></div>';
   });
   html += '</div>';
+  html += '<div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;padding:8px 10px;background:rgba(0,0,0,0.15);border-radius:6px;line-height:1.6;">💡 敌人血量和攻击根据你每日裸战力动态计算，专注越久越容易通关。连战中血量不恢复，灵力每战回满。</div>';
   if (s.reward) {
     html += '<div style="font-size:13px;font-weight:600;color:var(--gold-light);margin-bottom:6px;">通关奖励</div>';
     html += '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;">';
@@ -7173,7 +7864,7 @@ function showSectDetail(sectId) {
   document.getElementById('sectorDetailContent').innerHTML = html;
 }
 function closeSectDetail() {
-  document.getElementById('sectorDetailPanel').style.display = 'none';
+  navigate('sect');
 }
 
 var sectRun = null;
@@ -7186,11 +7877,14 @@ function startSectChallenge(sectId) {
 function runNextSectBattle() {
   var s = getSectorById(sectRun.sectId);
   var enemy = s.enemies[sectRun.enemyIndex];
+  // 使用动态血量公式计算敌人血攻
+  var stats = calcMonsterStats({ tier: enemy.tier || 3, name: enemy.name });
   var monsterObj = {
     id: 'sect_' + s.id + '_' + sectRun.enemyIndex,
-    name: enemy.name, maxHp: enemy.maxHp, attack: enemy.attack,
+    name: enemy.name, maxHp: stats.maxHp, attack: stats.attack,
     image: 'https://aka.doubaocdn.com/s/tUOlUrUx0F',
     skill: skillFromPreset(enemy.skillKey),
+    tier: enemy.tier || 3,
   };
   startBattle(monsterObj, {
     context: 'sect', baseAtk: 55, baseHp: 220,
@@ -7228,10 +7922,14 @@ function onSectBattleLose(bs) {
 function showSectIntermission(s, bs) {
   var next = s.enemies[sectRun.enemyIndex];
   var isBoss = sectRun.enemyIndex === s.enemies.length - 1;
+  var nextStats = calcMonsterStats({ tier: next.tier || 3, name: next.name });
+  var tierCfg = getTierConfig(next.tier || 3);
   showBattleOverlay('连战连胜', '已击败 ' + sectRun.enemyIndex + '/' + s.enemies.length + ' 名敌人，灵力已回满。',
     '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
       '剩余生命：<b style="color:var(--jade-light);">' + bs.player.hp + '/' + bs.player.maxHp + '</b><br>' +
-      '下一个对手：<b style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';">' + (isBoss ? '【BOSS】' : '') + next.name + '</b>（血' + next.maxHp + ' 攻' + next.attack + '）' +
+      '下一个对手：<b style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';">' + (isBoss ? '【BOSS】' : '') + next.name + '</b><br>' +
+      '强度：' + tierCfg.name + ' · 预计' + tierCfg.targetRounds + '回合<br>' +
+      '血量：约' + nextStats.maxHp + ' · 攻击：约' + nextStats.attack +
     '</div>',
     [{ label: '继续挑战', action: 'runNextSectBattle()', primary: true }, { label: '放弃撤退', action: "navigate('sect')" }]);
 }
@@ -7273,13 +7971,12 @@ function renderArena() {
 }
 function generateArenaEnemy(round) {
   var baseMonsters = gameState.monsters.filter(function(m) { return !m.custom; });
-  var pool = baseMonsters.length > 0 ? baseMonsters : [{ name: '凶兽', maxHp: 300, attack: 30, image: 'https://aka.doubaocdn.com/s/tUOlUrUx0F' }];
+  var pool = baseMonsters.length > 0 ? baseMonsters : [{ name: '凶兽', tier: 3, image: 'https://aka.doubaocdn.com/s/tUOlUrUx0F' }];
   var base = pool[Math.floor(Math.random() * pool.length)];
-  var hpScale = Math.pow(1.12, round - 1);
-  var atkScale = Math.pow(1.10, round - 1);
+  // 根据轮次设置tier，每2轮提升1级
+  var tier = Math.min(10, Math.floor(round / 2) + 2);
   var isElite = round % 3 === 0;
-  var hp = Math.floor(base.maxHp * hpScale * (isElite ? 1.5 : 1));
-  var atk = Math.floor(base.attack * atkScale * (isElite ? 1.3 : 1));
+  if (isElite) tier = Math.min(10, tier + 1);
   var skillKey = 'none';
   if (isElite || round >= 5) {
     var keys = ['heavy', 'weaken', 'confuse', 'poison', 'burn', 'enrage', 'lifesteal'];
@@ -7288,7 +7985,7 @@ function generateArenaEnemy(round) {
   return {
     id: 'arena_' + round,
     name: (isElite ? '精英·' : '') + base.name,
-    maxHp: hp, attack: atk, image: base.image,
+    tier: tier, image: base.image,
     skill: skillFromPreset(skillKey),
     elite: isElite,
   };
@@ -7386,14 +8083,6 @@ function generateArenaReward(round) {
     effect: '擂台第' + round + '轮战利品',
     affixes: affixes, image: '', createdAt: Date.now(),
   };
-}
-
-// 关闭战斗结算面板并返回冒险地图
-function closeBattleAndGoToMap() {
-  document.getElementById('battleOverlay').style.display = 'none';
-  battleState = null;
-  battleRunning = false;
-  navigate('adventure');
 }
 
 function showBattleOverlay(title, subtitle, statsHtml, buttons) {
@@ -7835,13 +8524,25 @@ function init() {
 // 关闭/刷新页面前自动结算所有进行中的计时，防止时长丢失
 window.addEventListener('beforeunload', function() {
   try {
-    // 1. 专注计时
+    // 1. 专注计时：记录后重置状态，避免重新打开时重复记录
     if (timerState.running) {
       var elapsed = timerState.accumulated + Math.floor((Date.now() - timerState.startTime) / 1000);
+      // 倒计时最多记录目标时长
+      if (timerState.mode === 'countdown' && timerState.targetSeconds > 0) {
+        elapsed = Math.min(elapsed, timerState.targetSeconds);
+      }
       var mins = Math.round(elapsed / 60);
       if (mins > 0) {
         gameState.focusSessions.push({ date: getTodayStr(), minutes: mins, timestamp: Date.now() });
       }
+      // 重置计时器状态并保存，防止恢复时重复记录
+      timerState.running = false;
+      timerState.accumulated = 0;
+      timerState.startTime = 0;
+      timerState.seconds = 0;
+      timerState.targetSeconds = 0;
+      if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
+      saveTimerState();
     }
     // 2. 功法修炼
     if (cultivationState.activeId && cultivationState.startTime) {
@@ -8159,7 +8860,7 @@ function playElementEffect(element) {
     var beam = document.createElement('div');
     beam.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:100px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, ' + color + '66, ' + color + ', #fff, ' + color + '88);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ',0 0 200px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxLightBeam 1.2s ease-out forwards;';
     document.body.appendChild(beam);
-    setTimeout(function(){ if(beam.parentNode) beam.remove(); }, 1300);
+    setTimeout(function(){ if(beam.parentNode) beam.remove(); }, 2600);
     for (var i = 0; i < 8; i++) {
       var ray = document.createElement('div');
       var rot = i * 45;
@@ -8180,7 +8881,7 @@ function playElementEffect(element) {
     var darkBurst = document.createElement('div');
     darkBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*3) + 'px;height:' + (w*3) + 'px;border-radius:50%;background:radial-gradient(circle, #000 20%, ' + color + 'aa 40%, ' + color + '44 60%, transparent);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 1.2s ease-out forwards;';
     document.body.appendChild(darkBurst);
-    setTimeout(function(){ if(darkBurst.parentNode) darkBurst.remove(); }, 1300);
+    setTimeout(function(){ if(darkBurst.parentNode) darkBurst.remove(); }, 2600);
     for (var i = 0; i < 6; i++) {
       var tentacle = document.createElement('div');
       var angle = (Math.PI * 2 * i) / 6;
@@ -8203,7 +8904,7 @@ function playElementEffect(element) {
     var fireBurst = document.createElement('div');
     fireBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2.5) + 'px;height:' + (w*2.5) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, #FFD700 20%, #FF5722 40%, #B71C1C 60%, transparent);box-shadow:0 0 80px #FF5722,0 0 160px #FF5722,0 0 240px #FF9800;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxFireBurst 0.9s ease-out forwards;';
     document.body.appendChild(fireBurst);
-    setTimeout(function(){ if(fireBurst.parentNode) fireBurst.remove(); }, 1000);
+    setTimeout(function(){ if(fireBurst.parentNode) fireBurst.remove(); }, 2000);
     for (var i = 0; i < 5; i++) {
       var fireCol = document.createElement('div');
       var fx = cx + (i - 2) * 25;
@@ -8225,11 +8926,11 @@ function playElementEffect(element) {
     var waterBurst = document.createElement('div');
     waterBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2.5) + 'px;height:' + (w*2.5) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ' 30%, ' + color + '66 50%, transparent);box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWaterSplash 1s ease-out forwards;';
     document.body.appendChild(waterBurst);
-    setTimeout(function(){ if(waterBurst.parentNode) waterBurst.remove(); }, 1100);
+    setTimeout(function(){ if(waterBurst.parentNode) waterBurst.remove(); }, 2200);
     var waterspout = document.createElement('div');
     waterspout.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:100px;height:' + (h*2) + 'px;background:conic-gradient(from 0deg, transparent, ' + color + '66, #fff, ' + color + '88, transparent, ' + color + '44, transparent);border-radius:50%;filter:blur(3px);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWindSpin 1.2s linear forwards;';
     document.body.appendChild(waterspout);
-    setTimeout(function(){ if(waterspout.parentNode) waterspout.remove(); }, 1300);
+    setTimeout(function(){ if(waterspout.parentNode) waterspout.remove(); }, 2600);
     for (var i = 0; i < 25; i++) {
       var drop = document.createElement('div');
       var dx = cx + (Math.random() - 0.5) * w * 2;
@@ -8238,56 +8939,161 @@ function playElementEffect(element) {
       setTimeout(function(d){ return function(){ if(d.parentNode) d.remove(); }; }(drop), 1600);
     }
   }
-  // 电属性：雷电网 + 多道闪电 + 电弧扩散
+  // 电属性：万雷齐发 + 雷暴降临 + 连锁闪电 + 电弧风暴 + 天雷灭世
   else if (element === 'electric') {
-    for (var i = 0; i < 6; i++) {
+    // 全屏闪白3次（更强烈）
+    for (var f = 0; f < 3; f++) {
+      (function(idx) {
+        setTimeout(function() {
+          var whiteFlash = document.createElement('div');
+          whiteFlash.style.cssText = 'position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9999;animation:fxLightBurst 0.2s ease-out forwards;';
+          document.body.appendChild(whiteFlash);
+          setTimeout(function(){ if(whiteFlash.parentNode) whiteFlash.remove(); }, 400);
+        }, idx * 120);
+      })(f);
+    }
+    // 巨型雷暴云层
+    var stormCloud = document.createElement('div');
+    stormCloud.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:' + (w*5) + 'px;height:150px;background:radial-gradient(ellipse at center, #1a1a2e 0%, ' + color + '66 30%, ' + color + '33 50%, transparent 70%);border-radius:50%;filter:blur(15px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 0.8s ease-out forwards;';
+    document.body.appendChild(stormCloud);
+    setTimeout(function(){ if(stormCloud.parentNode) stormCloud.remove(); }, 3000);
+    // 巨型主闪电（加粗加亮）
+    var mainBolt = document.createElement('div');
+    mainBolt.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:50px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #E1F5FE, #fff, ' + color + ', #fff, transparent);box-shadow:0 0 120px ' + color + ',0 0 240px ' + color + ',0 0 400px ' + color + ',0 0 600px #fff;pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.8s ease-out forwards;';
+    document.body.appendChild(mainBolt);
+    setTimeout(function(){ if(mainBolt.parentNode) mainBolt.remove(); }, 1800);
+    // 20道分支闪电（更密更粗）
+    for (var i = 0; i < 20; i++) {
       (function(idx) {
         setTimeout(function() {
           var bolt = document.createElement('div');
-          var bx = cx + (idx - 2.5) * 35;
-          bolt.style.cssText = 'position:fixed;left:' + bx + 'px;top:0px;width:' + (5+Math.random()*6) + 'px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, ' + color + ');box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ',0 0 80px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.5s ease-out forwards;';
+          var bx = cx + (idx - 9.5) * 38 + (Math.random()-0.5)*25;
+          var bw = 12 + Math.random() * 14;
+          bolt.style.cssText = 'position:fixed;left:' + bx + 'px;top:0px;width:' + bw + 'px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, ' + color + ', #fff, transparent);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ',0 0 150px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.6s ease-out forwards;';
           document.body.appendChild(bolt);
-          setTimeout(function(){ if(bolt.parentNode) bolt.remove(); }, 600);
-        }, idx * 60);
+          setTimeout(function(){ if(bolt.parentNode) bolt.remove(); }, 1400);
+        }, idx * 30);
       })(i);
     }
-    for (var i = 0; i < 3; i++) {
+    // 8层电弧环扩散（更大）
+    for (var i = 0; i < 8; i++) {
       var arcRing = document.createElement('div');
-      arcRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(1+i*0.8)) + 'px;height:' + (w*(1+i*0.8)) + 'px;border:4px solid ' + color + ';border-radius:50%;box-shadow:0 0 30px ' + color + ',inset 0 0 30px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.7s ease-out ' + (i*0.15) + 's forwards;';
+      arcRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.8+i*0.8)) + 'px;height:' + (w*(0.8+i*0.8)) + 'px;border:8px solid ' + color + ';border-radius:50%;box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ',inset 0 0 60px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 1s ease-out ' + (i*0.08) + 's forwards;';
       document.body.appendChild(arcRing);
-      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arcRing), 1000);
+      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arcRing), 1600);
     }
-    for (var i = 0; i < 20; i++) {
+    // 24条电弧从中心向四周放射
+    for (var i = 0; i < 24; i++) {
+      var arc = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 24;
+      var len = w * (2 + Math.random() * 1.5);
+      arc.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + len + 'px;height:6px;background:linear-gradient(to right, ' + color + ', #fff, ' + color + ', transparent);box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (angle*180/Math.PI) + 'deg);opacity:0;animation:fxLightBurst 0.7s ease-out ' + (0.1+Math.random()*0.2) + 's forwards;';
+      document.body.appendChild(arc);
+      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arc), 1200);
+    }
+    // 60个电火花（更多更亮）
+    for (var i = 0; i < 60; i++) {
       var eSpark = document.createElement('div');
-      var ex = cx + (Math.random() - 0.5) * w * 2;
-      eSpark.style.cssText = 'position:fixed;left:' + ex + 'px;top:' + (cy + (Math.random()-0.5)*h) + 'px;width:' + (3+Math.random()*5) + 'px;height:' + (3+Math.random()*5) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 8px ' + color + ',0 0 16px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.6s ease-out ' + (Math.random()*0.3) + 's forwards;';
+      var ex = cx + (Math.random() - 0.5) * w * 4;
+      var ey = cy + (Math.random()-0.5)*h*3;
+      eSpark.style.cssText = 'position:fixed;left:' + ex + 'px;top:' + ey + 'px;width:' + (6+Math.random()*10) + 'px;height:' + (6+Math.random()*10) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ',0 0 50px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.8s ease-out ' + (Math.random()*0.5) + 's forwards;';
       document.body.appendChild(eSpark);
-      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1000);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1400);
+    }
+    // 巨型雷击焦痕
+    var scorch = document.createElement('div');
+    scorch.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + (w*4) + 'px;height:100px;background:radial-gradient(ellipse, #000, ' + color + '66, ' + color + '22, transparent);border-radius:50%;filter:blur(10px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1.2s ease-out 0.3s forwards;';
+    document.body.appendChild(scorch);
+    setTimeout(function(){ if(scorch.parentNode) scorch.remove(); }, 3000);
+    // 连锁闪电（从主闪电向左右分叉）
+    for (var i = 0; i < 6; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var chain = document.createElement('div');
+          var side = idx % 2 === 0 ? 1 : -1;
+          var chainLen = w * (0.8 + Math.random() * 0.8);
+          var chainY = cy - h/2 + (idx * h / 6);
+          chain.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + chainY + 'px;width:' + chainLen + 'px;height:8px;background:linear-gradient(to right, #fff, ' + color + ', transparent);box-shadow:0 0 25px ' + color + ',0 0 50px ' + color + ';pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (side * (20 + Math.random()*30)) + 'deg) scaleX(0);animation:fxLightBurst 0.5s ease-out forwards;';
+          document.body.appendChild(chain);
+          setTimeout(function(){ if(chain.parentNode) chain.remove(); }, 1000);
+        }, 200 + idx * 60);
+      })(i);
     }
   }
-  // 木属性：巨型藤蔓 + 生命之树 + 花瓣雨
+  // 木属性：世界树降临 + 万藤缠绕 + 生命爆发 + 花界绽放 + 治愈圣光
   else if (element === 'wood') {
-    for (var i = 0; i < 7; i++) {
+    // 巨型生命光环（5层，更大）
+    for (var i = 0; i < 5; i++) {
+      var lifeRing = document.createElement('div');
+      lifeRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(1.2+i*0.9)) + 'px;height:' + (w*(1.2+i*0.9)) + 'px;border:7px solid ' + color + ';border-radius:50%;box-shadow:0 0 40px ' + color + ',0 0 80px ' + color + ',inset 0 0 40px ' + color + '66;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:0;animation:fxLightBurst 1.2s ease-out ' + (i*0.12) + 's forwards;';
+      document.body.appendChild(lifeRing);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(lifeRing), 2200);
+    }
+    // 中央巨型生命之树（更粗更高）
+    var treeTrunk = document.createElement('div');
+    treeTrunk.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:60px;height:' + (h*2.5) + 'px;background:linear-gradient(to right, #3E2723, #5D4037, #8D6E63, #A1887F, #8D6E63, #5D4037, #3E2723);border-radius:10px;box-shadow:0 0 30px rgba(0,0,0,0.6),inset 0 0 20px rgba(255,255,255,0.1);pointer-events:none;z-index:9998;transform-origin:bottom center;transform:translateX(-50%) scaleY(0);animation:fxWoodGrow 1.4s ease-out forwards;';
+    document.body.appendChild(treeTrunk);
+    setTimeout(function(){ if(treeTrunk.parentNode) treeTrunk.remove(); }, 3000);
+    // 树冠（巨型光球，更大）
+    var treeCrown = document.createElement('div');
+    treeCrown.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h*0.8) + 'px;width:' + (w*4) + 'px;height:' + (w*4) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ' 25%, #81C784 45%, #4CAF50 60%, #2E7D32 75%, transparent);box-shadow:0 0 80px ' + color + ',0 0 160px ' + color + ',0 0 300px #81C784;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 1.4s ease-out 0.3s forwards;';
+    document.body.appendChild(treeCrown);
+    setTimeout(function(){ if(treeCrown.parentNode) treeCrown.remove(); }, 3200);
+    // 20根藤蔓从地面升起（更粗更密）
+    for (var i = 0; i < 20; i++) {
       var vine = document.createElement('div');
-      var vx = cx + (i - 3) * 22;
-      vine.style.cssText = 'position:fixed;left:' + vx + 'px;top:' + (cy + h/2) + 'px;width:12px;height:' + (h*1.5) + 'px;background:linear-gradient(to top, #1B5E20, #2E7D32, ' + color + ', #81C784, #A5D6A7);border-radius:6px;box-shadow:0 0 12px ' + color + ';pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxWoodGrow 0.9s ease-out ' + (i*0.07) + 's forwards;';
+      var vx = cx + (i - 9.5) * 24 + (Math.random()-0.5)*12;
+      var vh2 = h * (1.5 + Math.random() * 1);
+      var vw = 14 + Math.random() * 10;
+      vine.style.cssText = 'position:fixed;left:' + vx + 'px;top:' + (cy + h/2) + 'px;width:' + vw + 'px;height:' + vh2 + 'px;background:linear-gradient(to top, #1B5E20, #2E7D32, #388E3C, ' + color + ', #81C784, #A5D6A7);border-radius:8px;box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + '66;pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxWoodGrow 1.2s ease-out ' + (i*0.04) + 's forwards;';
       document.body.appendChild(vine);
-      setTimeout(function(v){ return function(){ if(v.parentNode) v.remove(); }; }(vine), 1300);
+      setTimeout(function(v){ return function(){ if(v.parentNode) v.remove(); }; }(vine), 2200);
     }
-    for (var i = 0; i < 7; i++) {
+    // 20个藤蔓顶端的巨型花朵/光球
+    for (var i = 0; i < 20; i++) {
       var vineTop = document.createElement('div');
-      var vx = cx + (i - 3) * 22;
-      vineTop.style.cssText = 'position:fixed;left:' + vx + 'px;top:' + (cy - h/2) + 'px;width:25px;height:25px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ', transparent);box-shadow:0 0 20px ' + color + ';pointer-events:none;z-index:9998;opacity:0;animation:fxLightBurst 0.8s ease-out ' + (0.3+i*0.07) + 's forwards;';
+      var vx = cx + (i - 9.5) * 24 + (Math.random()-0.5)*12;
+      vineTop.style.cssText = 'position:fixed;left:' + vx + 'px;top:' + (cy - h*0.5) + 'px;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ', #81C784, #A5D6A7, transparent);box-shadow:0 0 35px ' + color + ',0 0 70px ' + color + ';pointer-events:none;z-index:9998;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1s ease-out ' + (0.5+i*0.04) + 's forwards;';
       document.body.appendChild(vineTop);
-      setTimeout(function(v){ return function(){ if(v.parentNode) v.remove(); }; }(vineTop), 1300);
+      setTimeout(function(v){ return function(){ if(v.parentNode) v.remove(); }; }(vineTop), 2200);
     }
-    for (var i = 0; i < 25; i++) {
+    // 12条树根蔓延（更粗更长）
+    for (var i = 0; i < 12; i++) {
+      var root = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 12;
+      var rlen = w * (1.5 + Math.random() * 1);
+      root.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:' + rlen + 'px;height:18px;background:linear-gradient(to right, #5D4037, #8D6E63, #A1887F, ' + color + ', transparent);border-radius:8px;box-shadow:0 0 15px rgba(0,0,0,0.5);pointer-events:none;z-index:9997;transform-origin:left center;transform:rotate(' + (angle*180/Math.PI) + 'deg) scaleX(0);animation:fxLightBurst 1s ease-out ' + (0.2+i*0.04) + 's forwards;';
+      document.body.appendChild(root);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(root), 2000);
+    }
+    // 80片花瓣/树叶飘落（更多更广）
+    for (var i = 0; i < 80; i++) {
       var petal = document.createElement('div');
-      var px = cx + (Math.random() - 0.5) * w * 2.5;
-      var petalColors = [color, '#81C784', '#A5D6A7', '#C8E6C9', '#fff'];
-      petal.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h) + 'px;width:' + (8+Math.random()*8) + 'px;height:' + (5+Math.random()*5) + 'px;background:' + petalColors[Math.floor(Math.random()*petalColors.length)] + ';border-radius:0 50% 0 50%;box-shadow:0 0 6px ' + color + ';pointer-events:none;z-index:9998;animation:fxLeafFall ' + (1.5+Math.random()*0.8) + 's ease-in ' + (Math.random()*0.5) + 's forwards;';
+      var px = cx + (Math.random() - 0.5) * w * 6;
+      var petalColors = [color, '#81C784', '#A5D6A7', '#C8E6C9', '#fff', '#FFEB3B', '#FF8A80', '#F8BBD0'];
+      petal.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h*2) + 'px;width:' + (12+Math.random()*12) + 'px;height:' + (8+Math.random()*8) + 'px;background:' + petalColors[Math.floor(Math.random()*petalColors.length)] + ';border-radius:0 50% 0 50%;box-shadow:0 0 10px ' + color + ';pointer-events:none;z-index:9998;animation:fxLeafFall ' + (2.5+Math.random()*1.5) + 's ease-in ' + (Math.random()*0.8) + 's forwards;';
       document.body.appendChild(petal);
-      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(petal), 2500);
+      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(petal), 4500);
+    }
+    // 50个治愈光点上升（更多更亮）
+    for (var i = 0; i < 50; i++) {
+      var healDot = document.createElement('div');
+      var hx = cx + (Math.random() - 0.5) * w * 3;
+      healDot.style.cssText = 'position:fixed;left:' + hx + 'px;top:' + (cy + h/2) + 'px;width:' + (7+Math.random()*9) + 'px;height:' + (7+Math.random()*9) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ',0 0 45px #81C784;pointer-events:none;z-index:9998;animation:fxFireRise ' + (2+Math.random()*1.2) + 's ease-out ' + (Math.random()*0.6) + 's forwards;';
+      document.body.appendChild(healDot);
+      setTimeout(function(d){ return function(){ if(d.parentNode) d.remove(); }; }(d), 3800);
+    }
+    // 巨型花朵绽放（3朵）
+    for (var i = 0; i < 3; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var bigFlower = document.createElement('div');
+          var fx = cx + (idx - 1) * w * 0.8;
+          bigFlower.style.cssText = 'position:fixed;left:' + fx + 'px;top:' + (cy - h*0.3) + 'px;width:' + (w*1.2) + 'px;height:' + (w*1.2) + 'px;border-radius:50%;background:radial-gradient(circle, #fff 10%, #FFEB3B 20%, #FF8A80 35%, ' + color + ' 50%, #81C784 65%, transparent);box-shadow:0 0 50px #FFEB3B,0 0 100px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0) rotate(0deg);animation:fxLightBurst 1.5s ease-out forwards;';
+          document.body.appendChild(bigFlower);
+          setTimeout(function(){ if(bigFlower.parentNode) bigFlower.remove(); }, 2500);
+        }, 400 + idx * 200);
+      })(i);
     }
   }
   // 冰属性：冰霜爆发 + 冰晶风暴 + 寒气弥漫
@@ -8295,7 +9101,7 @@ function playElementEffect(element) {
     var iceBurst = document.createElement('div');
     iceBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2) + 'px;height:' + (w*2) + 'px;background:conic-gradient(from 0deg, transparent 0deg, #fff 10deg, transparent 20deg, ' + color + ' 40deg, transparent 50deg, #fff 70deg, transparent 80deg, ' + color + ' 100deg, transparent 110deg);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxIceBurst 1s ease-out forwards;';
     document.body.appendChild(iceBurst);
-    setTimeout(function(){ if(iceBurst.parentNode) iceBurst.remove(); }, 1100);
+    setTimeout(function(){ if(iceBurst.parentNode) iceBurst.remove(); }, 2200);
     for (var i = 0; i < 25; i++) {
       var shard = document.createElement('div');
       var angle = (Math.PI * 2 * i) / 25;
@@ -8310,18 +9116,18 @@ function playElementEffect(element) {
     var coldMist = document.createElement('div');
     coldMist.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*3) + 'px;height:' + (h*2) + 'px;background:radial-gradient(ellipse, ' + color + '44, ' + color + '11, transparent);filter:blur(15px);pointer-events:none;z-index:9997;transform:translate(-50%,-50%);animation:fxDarkRise 1.5s ease-out forwards;';
     document.body.appendChild(coldMist);
-    setTimeout(function(){ if(coldMist.parentNode) coldMist.remove(); }, 1600);
+    setTimeout(function(){ if(coldMist.parentNode) coldMist.remove(); }, 3000);
   }
   // 雷属性：天雷降世 + 雷云翻滚 + 雷暴扩散
   else if (element === 'thunder') {
     var thunderCloud = document.createElement('div');
     thunderCloud.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h*1.5) + 'px;width:' + (w*3) + 'px;height:80px;background:radial-gradient(ellipse, ' + color + 'aa, ' + color + '44, transparent);border-radius:50%;filter:blur(10px);pointer-events:none;z-index:9998;opacity:0;animation:fxLightBurst 0.6s ease-out forwards;';
     document.body.appendChild(thunderCloud);
-    setTimeout(function(){ if(thunderCloud.parentNode) thunderCloud.remove(); }, 700);
+    setTimeout(function(){ if(thunderCloud.parentNode) thunderCloud.remove(); }, 1400);
     var tbolt = document.createElement('div');
     tbolt.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:40px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #E1BEE7, #fff, ' + color + ');box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ',0 0 200px ' + color + ',0 0 300px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxThunderStrike 0.8s ease-out forwards;';
     document.body.appendChild(tbolt);
-    setTimeout(function(){ if(tbolt.parentNode) tbolt.remove(); }, 900);
+    setTimeout(function(){ if(tbolt.parentNode) tbolt.remove(); }, 1800);
     for (var i = 0; i < 4; i++) {
       var tRing = document.createElement('div');
       tRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.8+i*0.7)) + 'px;height:' + (w*(0.8+i*0.7)) + 'px;border:5px solid ' + color + ';border-radius:50%;box-shadow:0 0 40px ' + color + ',inset 0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.8s ease-out ' + (0.2+i*0.12) + 's forwards;';
@@ -8341,7 +9147,7 @@ function playElementEffect(element) {
     var tornado = document.createElement('div');
     tornado.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:150px;height:' + (h*2.5) + 'px;background:conic-gradient(from 0deg, transparent, ' + color + '66, #fff, ' + color + 'aa, transparent, ' + color + '44, transparent, ' + color + '88, transparent);border-radius:50%;filter:blur(4px);box-shadow:0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWindSpin 1.3s linear forwards;';
     document.body.appendChild(tornado);
-    setTimeout(function(){ if(tornado.parentNode) tornado.remove(); }, 1400);
+    setTimeout(function(){ if(tornado.parentNode) tornado.remove(); }, 2800);
     for (var i = 0; i < 16; i++) {
       var blade = document.createElement('div');
       var angle = (Math.PI * 2 * i) / 16;
@@ -8361,37 +9167,252 @@ function playElementEffect(element) {
       setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(p), 1400);
     }
   }
-  // 土属性：地裂 + 岩石喷发 + 沙尘暴
+  // 土属性：天崩地裂 + 巨岩灭世 + 地震海啸 + 岩柱冲天 + 黄沙蔽日
   else if (element === 'earth') {
-    var crack = document.createElement('div');
-    crack.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:' + (w*3) + 'px;height:20px;background:linear-gradient(to right, transparent, #000, ' + color + ', #000, transparent);transform:translateX(-50%);box-shadow:0 0 20px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.8s ease-out forwards;';
-    document.body.appendChild(crack);
-    setTimeout(function(){ if(crack.parentNode) crack.remove(); }, 1000);
+    // 屏幕震动5次（更强烈）
+    for (var s = 0; s < 5; s++) {
+      (function(idx) {
+        setTimeout(function() {
+          var shake = document.createElement('div');
+          shake.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;animation:fxLightBurst 0.12s ease-out;';
+          document.body.appendChild(shake);
+          setTimeout(function(){ if(shake.parentNode) shake.remove(); }, 200);
+        }, idx * 100);
+      })(s);
+    }
+    // 放射状地裂（12条，更宽更长）
+    for (var i = 0; i < 12; i++) {
+      var crack = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 12;
+      var crackLen = w * (3 + Math.random() * 1.5);
+      crack.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + crackLen + 'px;height:35px;background:linear-gradient(to right, #000, ' + color + ', #5D4037, #8D6E63, ' + color + ', #000);box-shadow:0 0 35px ' + color + ',0 0 70px rgba(0,0,0,0.9);pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (angle*180/Math.PI) + 'deg) scaleX(0);animation:fxLightBurst 0.8s ease-out ' + (i*0.03) + 's forwards;';
+      document.body.appendChild(crack);
+      setTimeout(function(c){ return function(){ if(c.parentNode) c.remove(); }; }(crack), 2800);
+    }
+    // 中央巨型地裂（更宽更长）
+    var bigCrack = document.createElement('div');
+    bigCrack.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + (w*6) + 'px;height:60px;background:linear-gradient(to right, transparent, #000, ' + color + ', #8D6E63, #A1887F, ' + color + ', #000, transparent);box-shadow:0 0 60px ' + color + ',0 0 120px rgba(0,0,0,0.95);pointer-events:none;z-index:9998;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1s ease-out 0.1s forwards;';
+    document.body.appendChild(bigCrack);
+    setTimeout(function(){ if(bigCrack.parentNode) bigCrack.remove(); }, 3500);
+    // 8层地震冲击波（环形扩散，更大）
     for (var i = 0; i < 8; i++) {
+      var shockwave = document.createElement('div');
+      shockwave.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.6+i*0.85)) + 'px;height:' + (w*(0.6+i*0.85)) + 'px;border:12px solid ' + color + ';border-radius:50%;box-shadow:0 0 50px ' + color + ',0 0 100px rgba(0,0,0,0.6),inset 0 0 50px ' + color + '66;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 1s ease-out ' + (i*0.1) + 's forwards;';
+      document.body.appendChild(shockwave);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(shockwave), 2200);
+    }
+    // 25块巨型岩石喷发（更大更密）
+    for (var i = 0; i < 25; i++) {
       var rock = document.createElement('div');
-      var rx = cx + (i - 3.5) * 28;
-      rock.style.cssText = 'position:fixed;left:' + rx + 'px;top:' + (cy + h/2) + 'px;width:' + (25+Math.random()*20) + 'px;height:' + (30+Math.random()*25) + 'px;background:linear-gradient(135deg, #5D4037, ' + color + ', #8D6E63, #6D4C41);border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;box-shadow:0 0 15px rgba(0,0,0,0.6),inset 0 0 10px rgba(255,255,255,0.1);pointer-events:none;z-index:9998;animation:fxEarthRise 0.9s ease-out ' + (i*0.06) + 's forwards;';
+      var rx = cx + (i - 12) * 28 + (Math.random()-0.5)*15;
+      var rw = 45 + Math.random() * 45;
+      var rh = 50 + Math.random() * 50;
+      rock.style.cssText = 'position:fixed;left:' + rx + 'px;top:' + (cy + h/2) + 'px;width:' + rw + 'px;height:' + rh + 'px;background:linear-gradient(135deg, #3E2723, #5D4037, ' + color + ', #8D6E63, #A1887F, #6D4C41, #4E342E);border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;box-shadow:0 0 30px rgba(0,0,0,0.8),inset 0 0 20px rgba(255,255,255,0.2),0 0 60px ' + color + '66;pointer-events:none;z-index:9998;animation:fxEarthRise 1.3s ease-out ' + (i*0.04) + 's forwards;';
       document.body.appendChild(rock);
-      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(rock), 1200);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(rock), 2000);
     }
-    for (var i = 0; i < 20; i++) {
+    // 60个碎石向四周飞溅（更多）
+    for (var i = 0; i < 60; i++) {
       var eshard = document.createElement('div');
-      var angle = (Math.PI * 2 * i) / 20 + Math.random() * 0.5;
-      var dist = 60 + Math.random() * 100;
+      var angle = (Math.PI * 2 * i) / 60 + Math.random() * 0.5;
+      var dist = 120 + Math.random() * 250;
       var tx = Math.cos(angle) * dist;
-      var ty = Math.sin(angle) * dist - 30;
+      var ty = Math.sin(angle) * dist - 80;
       var rot = Math.random() * 360;
-      eshard.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;--rot:' + rot + 'deg;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (10+Math.random()*14) + 'px;height:' + (10+Math.random()*14) + 'px;background:linear-gradient(135deg, ' + color + ', #5D4037);border-radius:20%;box-shadow:0 0 8px rgba(0,0,0,0.5);pointer-events:none;z-index:9998;animation:fxEarthShard 1s ease-out forwards;';
+      var sw = 15 + Math.random() * 22;
+      eshard.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;--rot:' + rot + 'deg;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + sw + 'px;height:' + sw + 'px;background:linear-gradient(135deg, ' + color + ', #5D4037, #8D6E63, #A1887F);border-radius:20%;box-shadow:0 0 18px rgba(0,0,0,0.7),0 0 30px ' + color + '66;pointer-events:none;z-index:9998;animation:fxEarthShard 1.4s ease-out forwards;';
       document.body.appendChild(eshard);
-      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1100);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1800);
     }
-    var sandstorm = document.createElement('div');
-    sandstorm.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + (w*3.5) + 'px;height:80px;background:linear-gradient(to right, transparent, ' + color + '66, ' + color + 'aa, ' + color + '66, transparent);filter:blur(10px);pointer-events:none;z-index:9997;transform:translateX(-50%);animation:fxDarkRise 1.2s ease-out forwards;';
-    document.body.appendChild(sandstorm);
-    setTimeout(function(){ if(sandstorm.parentNode) sandstorm.remove(); }, 1300);
+    // 巨型沙尘暴（三层，更大更持久）
+    var sandstorm1 = document.createElement('div');
+    sandstorm1.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/4) + 'px;width:' + (w*7) + 'px;height:160px;background:linear-gradient(to right, transparent, ' + color + '88, ' + color + 'cc, #D7CCC8, #BCAAA4, ' + color + 'cc, ' + color + '88, transparent);filter:blur(15px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxDarkRise 1.8s ease-out 0.2s forwards;';
+    document.body.appendChild(sandstorm1);
+    setTimeout(function(){ if(sandstorm1.parentNode) sandstorm1.remove(); }, 4000);
+    var sandstorm2 = document.createElement('div');
+    sandstorm2.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:' + (w*6) + 'px;height:120px;background:linear-gradient(to right, transparent, ' + color + '66, #A1887F, #8D6E63, ' + color + '88, transparent);filter:blur(10px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxDarkRise 2s ease-out 0.4s forwards;';
+    document.body.appendChild(sandstorm2);
+    setTimeout(function(){ if(sandstorm2.parentNode) sandstorm2.remove(); }, 4200);
+    var sandstorm3 = document.createElement('div');
+    sandstorm3.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h/4) + 'px;width:' + (w*5) + 'px;height:90px;background:linear-gradient(to right, transparent, ' + color + '55, #D7CCC8, ' + color + '77, transparent);filter:blur(8px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxDarkRise 2.2s ease-out 0.6s forwards;';
+    document.body.appendChild(sandstorm3);
+    setTimeout(function(){ if(sandstorm3.parentNode) sandstorm3.remove(); }, 4500);
+    // 落石（从上方落下20块，更大）
+    for (var i = 0; i < 20; i++) {
+      var fallRock = document.createElement('div');
+      var fx = cx + (Math.random()-0.5) * w * 4;
+      var fw = 25 + Math.random() * 35;
+      fallRock.style.cssText = 'position:fixed;left:' + fx + 'px;top:-60px;width:' + fw + 'px;height:' + fw + 'px;background:linear-gradient(135deg, #5D4037, ' + color + ', #8D6E63, #A1887F);border-radius:40% 60% 50% 50%;box-shadow:0 0 20px rgba(0,0,0,0.6),0 0 30px ' + color + '44;pointer-events:none;z-index:9998;animation:fxWaterDrop ' + (1+Math.random()*0.5) + 's ease-in ' + (0.3+i*0.06) + 's forwards;';
+      document.body.appendChild(fallRock);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(fallRock), 2200);
+    }
+    // 岩柱冲天（8根巨型岩柱从地面升起）
+    for (var i = 0; i < 8; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var pillar = document.createElement('div');
+          var px = cx + (idx - 3.5) * 45 + (Math.random()-0.5)*20;
+          var ph = h * (1 + Math.random() * 0.8);
+          pillar.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy + h/2) + 'px;width:35px;height:' + ph + 'px;background:linear-gradient(to top, #3E2723, #5D4037, ' + color + ', #8D6E63, #A1887F);border-radius:8px 8px 4px 4px;box-shadow:0 0 25px rgba(0,0,0,0.7),inset 0 0 15px rgba(255,255,255,0.15),0 0 40px ' + color + '44;pointer-events:none;z-index:9998;transform-origin:bottom center;transform:translateX(-50%) scaleY(0);animation:fxWoodGrow 0.9s ease-out forwards;';
+          document.body.appendChild(pillar);
+          setTimeout(function(){ if(pillar.parentNode) pillar.remove(); }, 2000);
+        }, 200 + idx * 80);
+      })(i);
+    }
   }
   } catch(e) { console.warn('元素特效异常:', e); }
 }
+
+// ========== 箭雨特效（万剑齐发） ==========
+function playArrowRain() {
+  try {
+    var monsterEl = document.getElementById('monsterCombatant');
+    if (!monsterEl) return;
+    var rect = monsterEl.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var w = rect.width, h = rect.height;
+    var vw = window.innerWidth, vh = window.innerHeight;
+
+    // 屏幕震动加强
+    var battleScene = document.getElementById('battleScene');
+    if (battleScene) {
+      battleScene.style.animation = 'shake 0.6s';
+      setTimeout(function(){ battleScene.style.animation = ''; }, 600);
+    }
+
+    // 万剑齐发文字
+    var txt = document.createElement('div');
+    txt.textContent = '⚔ 万剑齐发 ⚔';
+    txt.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h/2 - 30) + 'px;transform:translateX(-50%);font-size:32px;font-weight:900;color:#FFD700;text-shadow:0 0 20px #FFD700,0 0 40px #FFA500,0 0 60px #FF6347;pointer-events:none;z-index:9999;transition:all 2s ease-out;font-family:Noto Serif SC,serif;letter-spacing:6px;';
+    document.body.appendChild(txt);
+    requestAnimationFrame(function(t) { return function() { t.style.top = (cy - h/2 - 80) + 'px'; t.style.opacity = '0'; t.style.fontSize = '42px'; }; }(txt));
+    setTimeout(function(t) { return function() { if (t.parentNode) t.remove(); }; }(txt), 2100);
+
+    // 全屏金色闪光
+    var flash = document.createElement('div');
+    flash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9997;background:radial-gradient(circle at 50% 50%, rgba(255,215,0,0.3), rgba(255,165,0,0.15) 40%, transparent 70%);transition:opacity 1s;opacity:1;';
+    document.body.appendChild(flash);
+    setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if (flash.parentNode) flash.remove(); }, 1000); }, 200);
+
+    // 箭雨：从屏幕上方落下大量箭矢
+    var arrowCount = 40;
+    for (var i = 0; i < arrowCount; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var arrow = document.createElement('div');
+          var startX = Math.random() * vw;
+          var targetX = cx + (Math.random() - 0.5) * w * 2;
+          var arrowColors = ['#FFD700', '#FFA500', '#FF6347', '#FFE4B5', '#fff'];
+          var color = arrowColors[Math.floor(Math.random() * arrowColors.length)];
+          var arrowLen = 30 + Math.random() * 25;
+          var angle = Math.atan2(cy + h/2 - 0, targetX - startX) * 180 / Math.PI + 90;
+          arrow.style.cssText = 'position:fixed;left:' + startX + 'px;top:-50px;width:4px;height:' + arrowLen + 'px;background:linear-gradient(to bottom, transparent, ' + color + ', #fff);box-shadow:0 0 12px ' + color + ',0 0 24px ' + color + ';pointer-events:none;z-index:9998;transform:rotate(' + angle + 'deg);transform-origin:top center;opacity:0;';
+          document.body.appendChild(arrow);
+          // 箭矢飞行动画
+          requestAnimationFrame(function(a) { return function() {
+            a.style.transition = 'all ' + (0.5 + Math.random() * 0.3) + 's cubic-bezier(0.4, 0, 0.7, 1)';
+            a.style.left = targetX + 'px';
+            a.style.top = (cy + (Math.random() - 0.5) * h) + 'px';
+            a.style.opacity = '1';
+          }; }(arrow));
+          // 命中爆炸
+          setTimeout(function(a) { return function() {
+            a.style.opacity = '0';
+            a.style.transform = 'rotate(' + angle + 'deg) scale(2)';
+            // 命中火花
+            var spark = document.createElement('div');
+            spark.style.cssText = 'position:fixed;left:' + a.style.left + ';top:' + a.style.top + ';width:30px;height:30px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ', transparent);box-shadow:0 0 20px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.5s ease-out forwards;';
+            document.body.appendChild(spark);
+            setTimeout(function(s){ if(s.parentNode) s.remove(); }, 600);
+            setTimeout(function(ar){ if(ar.parentNode) ar.remove(); }, 200);
+          }; }(arrow), 500 + Math.random() * 200);
+        }, idx * 40);
+      })(i);
+    }
+
+    // 多把剑环绕旋转后射出
+    var swords = battleState.availableSwords || [];
+    var swordCount = Math.min(swords.length, 4);
+    for (var si = 0; si < swordCount; si++) {
+      (function(sIdx) {
+        setTimeout(function() {
+          var sword = document.createElement('div');
+          var startAngle = (sIdx / swordCount) * 360;
+          var startRadius = 120;
+          var sx = cx + Math.cos(startAngle * Math.PI / 180) * startRadius;
+          var sy = cy + Math.sin(startAngle * Math.PI / 180) * startRadius;
+          var swordColor = ['#FFD700', '#C0C0C0', '#B8860B', '#E6E6FA'][sIdx % 4];
+          sword.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + sy + 'px;width:8px;height:60px;background:linear-gradient(to bottom, ' + swordColor + ', #fff, ' + swordColor + ');box-shadow:0 0 20px ' + swordColor + ',0 0 40px ' + swordColor + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%) rotate(' + startAngle + 'deg);border-radius:4px 4px 2px 2px;';
+          // 剑柄
+          sword.innerHTML = '<div style="position:absolute;bottom:-8px;left:-6px;width:20px;height:8px;background:#8B4513;border-radius:2px;"></div>';
+          document.body.appendChild(sword);
+          // 环绕旋转
+          var rot = 0;
+          var rotateInterval = setInterval(function() {
+            rot += 15;
+            var rx = cx + Math.cos((startAngle + rot) * Math.PI / 180) * startRadius;
+            var ry = cy + Math.sin((startAngle + rot) * Math.PI / 180) * startRadius;
+            sword.style.left = rx + 'px';
+            sword.style.top = ry + 'px';
+            sword.style.transform = 'translate(-50%,-50%) rotate(' + (startAngle + rot + 90) + 'deg)';
+          }, 30);
+          // 0.8秒后射向凶兽
+          setTimeout(function() {
+            clearInterval(rotateInterval);
+            sword.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.7, 1)';
+            sword.style.left = cx + 'px';
+            sword.style.top = cy + 'px';
+            sword.style.transform = 'translate(-50%,-50%) rotate(' + (startAngle + 180) + 'deg) scale(1.5)';
+            sword.style.opacity = '0';
+            // 命中爆炸
+            setTimeout(function() {
+              var burst = document.createElement('div');
+              burst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle, #fff, ' + swordColor + ', transparent);box-shadow:0 0 40px ' + swordColor + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.6s ease-out forwards;';
+              document.body.appendChild(burst);
+              setTimeout(function(b){ if(b.parentNode) b.remove(); }, 700);
+              if (sword.parentNode) sword.remove();
+            }, 400);
+          }, 800);
+        }, sIdx * 150);
+      })(si);
+    }
+
+    // 最终大爆炸
+    setTimeout(function() {
+      var bigBurst = document.createElement('div');
+      bigBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*3) + 'px;height:' + (w*3) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, #FFD700 20%, #FFA500 40%, #FF6347 60%, transparent);box-shadow:0 0 100px #FFD700,0 0 200px #FFA500,0 0 300px #FF6347;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxFireBurst 1.2s ease-out forwards;';
+      document.body.appendChild(bigBurst);
+      setTimeout(function(b){ if(b.parentNode) b.remove(); }, 1300);
+      // 冲击波
+      for (var ri = 0; ri < 3; ri++) {
+        (function(idx) {
+          setTimeout(function() {
+            var ring = document.createElement('div');
+            ring.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(1+idx*0.6)) + 'px;height:' + (w*(1+idx*0.6)) + 'px;border:6px solid #FFD700;border-radius:50%;box-shadow:0 0 30px #FFD700,inset 0 0 30px #FFD700;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.8s ease-out forwards;';
+            document.body.appendChild(ring);
+            setTimeout(function(r){ if(r.parentNode) r.remove(); }, 900);
+          }, idx * 150);
+        })(ri);
+      }
+    }, 1000);
+
+    // 持续的金色粒子雨
+    for (var pi = 0; pi < 50; pi++) {
+      (function(idx) {
+        setTimeout(function() {
+          var p = document.createElement('div');
+          var px = cx + (Math.random() - 0.5) * w * 3;
+          var pColors = ['#FFD700', '#FFA500', '#FFE4B5', '#fff'];
+          p.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h) + 'px;width:' + (4+Math.random()*6) + 'px;height:' + (4+Math.random()*6) + 'px;border-radius:50%;background:' + pColors[Math.floor(Math.random()*pColors.length)] + ';box-shadow:0 0 10px #FFD700,0 0 20px #FFA500;pointer-events:none;z-index:9998;animation:fxFireRise ' + (1.5+Math.random()*1) + 's ease-out ' + (Math.random()*0.5) + 's forwards;';
+          document.body.appendChild(p);
+          setTimeout(function(pt){ if(pt.parentNode) pt.remove(); }, 3000);
+        }, idx * 30);
+      })(pi);
+    }
+  } catch(e) { console.warn('箭雨特效异常:', e); }
+}
+
 function useBeastUlt(idx) {  if (battleState.finished) return;
   var bu = battleState.beastUlts[idx];
   if (!bu || bu.used) return;
