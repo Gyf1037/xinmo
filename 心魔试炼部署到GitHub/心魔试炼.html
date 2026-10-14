@@ -542,6 +542,10 @@ input, textarea, select { font-family: inherit; outline: none; }
 @keyframes fxWindBlade { 0%{transform:translate(-50%,-50%) rotate(var(--rot)) scale(0);opacity:1} 100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) rotate(var(--rot)) scale(2);opacity:0} }
 @keyframes fxEarthRise { 0%{transform:translateX(-50%) translateY(30px) scale(0);opacity:0} 30%{transform:translateX(-50%) translateY(0) scale(1);opacity:1} 70%{opacity:1} 100%{transform:translateX(-50%) translateY(-20px) scale(1.3);opacity:0} }
 @keyframes fxEarthShard { 0%{transform:translate(-50%,-50%) scale(0);opacity:1} 100%{transform:translate(var(--tx),var(--ty)) scale(1.3) rotate(var(--rot));opacity:0} }
+@keyframes timeRotate { 0%{transform:translateX(-50%) rotate(0deg)} 100%{transform:translateX(-50%) rotate(360deg)} }
+@keyframes spaceDisk { 0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(0deg) scale(0.5);opacity:0.8} 50%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(180deg) scale(1.2);opacity:1} 100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(360deg) scale(0.5);opacity:0} }
+@keyframes chaosVortex { 0%{transform:translate(-50%,-50%) scale(0) rotate(0deg);opacity:0} 30%{transform:translate(-50%,-50%) scale(1) rotate(180deg);opacity:1} 70%{transform:translate(-50%,-50%) scale(1.2) rotate(360deg);opacity:0.9} 100%{transform:translate(-50%,-50%) scale(2) rotate(720deg);opacity:0} }
+@keyframes starTwinkle { 0%,100%{opacity:0.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.5)} }
 .combatant.player.hurt .combatant-char { animation: hurtShakeP 0.4s ease; }
 .combatant.monster.hurt .combatant-char { animation: hurtShakeM 0.4s ease; }
 @keyframes hurtShakeP { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-12px)} 40%{transform:translateX(12px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
@@ -1342,7 +1346,7 @@ input, textarea, select { font-family: inherit; outline: none; }
               <div id="battleHelp" class="help-content" style="display:none;font-size:11px;color:var(--text-secondary);line-height:1.8;margin-top:6px;padding:10px;background:rgba(212,175,55,0.05);border-radius:6px;border:1px solid rgba(212,175,55,0.15);">
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">灵力系统：</b>普攻获得+15灵力，技能耗灵35~45，调息回灵+35并获得护盾。</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">技能效果：</b>归元（回血5%+减伤15%/2回合，冷却4回合）、破军（高伤+破甲25%/2回合）、残影（连击2次+闪避30%/2回合）、乾坤（伤害+灼烧）。</div>
-                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">属性效果：</b>光（受伤+15%）、暗（攻击-15%）、火（灼烧5%/回合）、水（攻击-20%）、电（20%麻痹）、木（中毒3%/回合）、冰（15%冻结）、雷（受伤+25%）、风（流血4%/回合）、土（受伤+25%）。</div>
+                <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">属性效果：</b>光（受伤+15%）、暗（攻击-15%）、火（灼烧5%/回合）、水（攻击-20%）、电（20%麻痹）、木（中毒3%/回合）、冰（15%冻结）、雷（受伤+25%）、风（流血4%/回合）、土（受伤+25%）、金（破甲受伤+30%）、时（减速攻击-25%）、空（空间扭曲受伤+20%）、混沌（30%混乱）、星（星焰灼烧6%/回合）。</div>
                 <div style="margin-bottom:4px;"><b style="color:var(--gold-light);">属性克制：</b>每只凶兽有弱点属性，使用对应属性攻击伤害+30%。</div>
                 <div style="color:var(--jade-light);">策略：合理使用技能附加状态，利用属性克制，普攻攒灵后释放大招。</div>
               </div>
@@ -1363,16 +1367,21 @@ input, textarea, select { font-family: inherit; outline: none; }
                 <div class="form-group">
                   <label class="form-label">强度等级</label>
                   <select class="form-input" id="newMonsterTier">
-                    <option value="1">练气级（2回合）</option>
-                    <option value="2">筑基级（3回合）</option>
-                    <option value="3">金丹级（4回合）</option>
-                    <option value="4">元婴级（5回合）</option>
-                    <option value="5">化神级（6回合）</option>
-                    <option value="6">炼虚级（7回合）</option>
-                    <option value="7">合体级（9回合）</option>
-                    <option value="8">大乘级（11回合）</option>
-                    <option value="9">渡劫级（13回合）</option>
-                    <option value="10">真仙级（16回合）</option>
+                    <option value="1">泥胚境</option>
+                    <option value="2">木胎境</option>
+                    <option value="3">水银境</option>
+                    <option value="4">金身境</option>
+                    <option value="5">远游境</option>
+                    <option value="6">山巅境</option>
+                    <option value="7">止境</option>
+                    <option value="8">归真境</option>
+                    <option value="9">龙门境</option>
+                    <option value="10">金丹境</option>
+                    <option value="11">元婴境</option>
+                    <option value="12">玉璞境</option>
+                    <option value="13">仙人境</option>
+                    <option value="14">飞升境</option>
+                    <option value="15">十四境</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -1389,6 +1398,11 @@ input, textarea, select { font-family: inherit; outline: none; }
                     <option value="thunder">雷</option>
                     <option value="wind">风</option>
                     <option value="earth">土</option>
+                    <option value="metal">金</option>
+                    <option value="time">时</option>
+                    <option value="space">空</option>
+                    <option value="chaos">混沌</option>
+                    <option value="star">星</option>
                   </select>
                 </div>
               </div>
@@ -1399,6 +1413,24 @@ input, textarea, select { font-family: inherit; outline: none; }
               <div class="form-group">
                 <label class="form-label">描述（可选）</label>
                 <input type="text" class="form-input" id="newMonsterDesc" placeholder="例如：青丘九尾，魅惑众生">
+              </div>
+              <div class="form-group">
+                <label class="form-label">凶兽技能（战斗中随机使用，额外随机2-4个技能）</label>
+                <select class="form-input" id="newMonsterSkill">
+                  <option value="">无技能（随机技能池）</option>
+                  <option value="heavy">⚔️ 重击（高伤害）</option>
+                  <option value="weaken">😵 震慑（降低玩家攻击）</option>
+                  <option value="confuse">🌀 乱神（玩家行动可能失效）</option>
+                  <option value="poison">☠️ 剧毒（持续中毒伤害）</option>
+                  <option value="burn">🔥 烈焰（灼烧持续伤害）</option>
+                  <option value="lifesteal">🩸 吞噬（吸血恢复）</option>
+                  <option value="enrage">😡 狂暴（低血量攻击暴涨）</option>
+                  <option value="freeze">❄️ 冰封（概率冻结玩家）</option>
+                  <option value="thunder">⚡ 雷击（概率麻痹玩家）</option>
+                  <option value="wind">🌪️ 风刃（流血持续伤害）</option>
+                  <option value="earth">🌋 地裂（破甲，玩家受伤加重）</option>
+                  <option value="light">✨ 圣光（易伤，玩家受伤加重）</option>
+                </select>
               </div>
               <div class="form-row">
                 <div class="form-group">
@@ -1606,6 +1638,11 @@ input, textarea, select { font-family: inherit; outline: none; }
             <option value="thunder">🟡 雷系</option>
             <option value="wind">🟣 风系</option>
             <option value="earth">🟤 土系</option>
+            <option value="metal">⬜ 金系</option>
+            <option value="time">⏳ 时系</option>
+            <option value="space">🌌 空系</option>
+            <option value="chaos">🌀 混沌</option>
+            <option value="star">⭐ 星系</option>
           </select>
         </div>
       </div>
@@ -1916,6 +1953,10 @@ input, textarea, select { font-family: inherit; outline: none; }
         <input type="text" class="form-input" id="sectEditorDesc" placeholder="例如：正道魁首，剑法通神">
       </div>
       <div class="form-group">
+        <label class="form-label">宗门图片URL（可选）</label>
+        <input type="text" class="form-input" id="sectEditorImage" placeholder="https://... 图片链接">
+      </div>
+      <div class="form-group">
         <label class="form-label">敌人列表（按挑战顺序）</label>
         <div id="sectEnemyList"></div>
         <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="addSectEnemy()">+ 添加敌人</button>
@@ -1949,6 +1990,10 @@ input, textarea, select { font-family: inherit; outline: none; }
         <div class="form-group">
           <label class="form-label">特效描述</label>
           <input type="text" class="form-input" id="sectRewardEffect" placeholder="例如：青云宗镇宗剑诀">
+        </div>
+        <div class="form-group">
+          <label class="form-label">法宝图片URL（可选）</label>
+          <input type="text" class="form-input" id="sectRewardImage" placeholder="https://... 图片链接">
         </div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;">
@@ -2009,19 +2054,24 @@ function getTypeName(t) { return TYPE_NAMES[t] || '法宝'; }
 // ---------- 六档难度配置（上古凶兽）----------
 // ========== 凶兽强度等级配置（动态血量系统） ==========
 const MONSTER_TIERS = [
-  { tier:1,  name:'练气级', targetRounds:2,  dmgRatio:0.18 },
-  { tier:2,  name:'筑基级', targetRounds:3,  dmgRatio:0.24 },
-  { tier:3,  name:'金丹级', targetRounds:3,  dmgRatio:0.30 },
-  { tier:4,  name:'元婴级', targetRounds:4,  dmgRatio:0.36 },
-  { tier:5,  name:'化神级', targetRounds:5,  dmgRatio:0.42 },
-  { tier:6,  name:'炼虚级', targetRounds:5,  dmgRatio:0.48 },
-  { tier:7,  name:'合体级', targetRounds:6,  dmgRatio:0.54 },
-  { tier:8,  name:'大乘级', targetRounds:7,  dmgRatio:0.60 },
-  { tier:9,  name:'渡劫级', targetRounds:8,  dmgRatio:0.66 },
-  { tier:10, name:'真仙级', targetRounds:10, dmgRatio:0.75 },
+  { tier:1,  name:'泥胚境', targetRounds:2,  dmgRatio:0.15 },
+  { tier:2,  name:'木胎境', targetRounds:2,  dmgRatio:0.18 },
+  { tier:3,  name:'水银境', targetRounds:3,  dmgRatio:0.21 },
+  { tier:4,  name:'金身境', targetRounds:3,  dmgRatio:0.24 },
+  { tier:5,  name:'远游境', targetRounds:3,  dmgRatio:0.27 },
+  { tier:6,  name:'山巅境', targetRounds:4,  dmgRatio:0.30 },
+  { tier:7,  name:'止境',   targetRounds:4,  dmgRatio:0.33 },
+  { tier:8,  name:'归真境', targetRounds:4,  dmgRatio:0.36 },
+  { tier:9,  name:'龙门境', targetRounds:5,  dmgRatio:0.39 },
+  { tier:10, name:'金丹境', targetRounds:5,  dmgRatio:0.42 },
+  { tier:11, name:'元婴境', targetRounds:6,  dmgRatio:0.45 },
+  { tier:12, name:'玉璞境', targetRounds:6,  dmgRatio:0.48 },
+  { tier:13, name:'仙人境', targetRounds:7,  dmgRatio:0.54 },
+  { tier:14, name:'飞升境', targetRounds:8,  dmgRatio:0.63 },
+  { tier:15, name:'十四境', targetRounds:10, dmgRatio:0.75 },
 ];
 function getTierConfig(tier) {
-  return MONSTER_TIERS[Math.max(0, Math.min(9, (tier||1)-1))];
+  return MONSTER_TIERS[Math.max(0, Math.min(14, (tier||1)-1))];
 }
 // 每日裸战力缓存（每天首次打开时计算）
 var dailyCombatPower = { date:'', nakedAtk:0, nakedCrit:0, nakedHp:0, nakedDps:0 };
@@ -2034,7 +2084,7 @@ function calcDailyCombatPower() {
   var equipCrit = 0;
   var equipHp = 0;
   (gameState.equipment.gongfa||[]).forEach(function(e){ if(prepareState.selectedGongfa.indexOf(e.id)>=0){ var lb=getGongfaLevelBonus(e); equipAtk+=Math.floor((e.power||0)*lb.atkMult); equipCrit+=(e.crit||0)+lb.critAdd; } });
-  (gameState.equipment.permanent||[]).forEach(function(e){ if(prepareState.selectedPermanent.indexOf(e.id)>=0){ equipAtk+=e.power||0; equipCrit+=e.crit||0; if(e.affixes){ equipHp+=(e.affixes.hp||0); } } });
+  (gameState.equipment.permanent||[]).forEach(function(e){ if(prepareState.selectedPermanent.indexOf(e.id)>=0){ var plb=getPermanentLevelBonus(e); equipAtk+=Math.floor((e.power||0)*plb.atkMult); equipCrit+=(e.crit||0)+plb.critAdd; equipHp+=plb.hpAdd||0; if(e.affixes){ equipHp+=(e.affixes.hp||0); } } });
   // 神兽加成
   getActiveBeasts().forEach(function(b){ equipAtk += Math.floor(baseAtk * (b.atkMult||0)); equipCrit += (b.critAdd||0); });
   // 法宝/功法暴击上限20%
@@ -2398,6 +2448,32 @@ function loadSave() {
     gameState.seededGongfa = true;
     saveGame();
   }
+  // 【保护】恢复缺失的默认凶兽（只添加缺失的，不覆盖已有数据）
+  if (!Array.isArray(gameState.monsters)) gameState.monsters = [];
+  var needRestore = false;
+  DEFAULT_MONSTERS.forEach(function(dm) {
+    if (!gameState.monsters.find(function(m) { return m.id === dm.id; })) {
+      gameState.monsters.push(JSON.parse(JSON.stringify(dm)));
+      needRestore = true;
+    }
+  });
+  if (typeof DEFAULT_CHENGLONG_BOSSES !== 'undefined') {
+    DEFAULT_CHENGLONG_BOSSES.forEach(function(b) {
+      if (!gameState.monsters.find(function(m) { return m.id === b.id; })) {
+        gameState.monsters.push(JSON.parse(JSON.stringify(b)));
+        needRestore = true;
+      }
+    });
+  }
+  // 确保成龙历险记分组的monsterIds正确
+  var clGroup = (gameState.monsterGroups || []).find(function(g){ return g.id === 'chenglong'; });
+  if (clGroup && typeof DEFAULT_CHENGLONG_BOSSES !== 'undefined') {
+    if (!clGroup.monsterIds || clGroup.monsterIds.length === 0) {
+      clGroup.monsterIds = DEFAULT_CHENGLONG_BOSSES.map(function(b){ return b.id; });
+      needRestore = true;
+    }
+  }
+  if (needRestore) saveGame();
 }
 function saveGame() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState)); }
@@ -2574,7 +2650,7 @@ function navigate(view) {
   if (view === 'inventory') renderInventory();
   if (view === 'history') renderHistory();
   if (view === 'sect') { renderSects(); document.getElementById('sectorDetailPanel').style.display = 'none'; document.getElementById('sectEditorPanel').style.display = 'none'; }
-  if (view === 'sect-detail') { if (currentSectId) showSectDetail(currentSectId); }
+  // sect-detail 视图由 showSectDetail 自行渲染，不在此调用避免递归
   if (view === 'arena') renderArena();
   if (view === 'zhoumu') renderZhoumu();
   if (view === 'adventure') renderAdventureMap();
@@ -2629,7 +2705,7 @@ function renderMonsterSelector() {
       ${m.image ? '<img src="' + m.image + '" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;">' : '<div style="width:42px;height:42px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🐾</div>'}
       <div style="flex:1;min-width:0;">
         <div class="diff-name">${m.name} <span style="font-size:10px;color:var(--text-dim);">今日 ${todayKills}/2</span></div>
-        <div class="diff-stats">${tc.name} · ${tc.targetRounds}回合</div>
+        <div class="diff-stats">${tc.name}</div>
         <div class="diff-req">${m.reqMinutes ? '需专注' + m.reqMinutes + '分钟' : '无门槛'}</div>
       </div>
       <span class="monster-edit-btn" data-action="edit-monster" data-monster-id="${m.id}" onclick="event.stopPropagation();editMonster('${m.id}')">✎</span>
@@ -2651,6 +2727,7 @@ function toggleMonsterForm() {
     document.getElementById('newMonsterFragReward').value = '';
     document.getElementById('newMonsterCultReward').value = '';
     document.getElementById('newMonsterElement').value = '';
+    document.getElementById('newMonsterSkill').value = '';
   }
 }
 function editMonster(id) {
@@ -2669,6 +2746,13 @@ function editMonster(id) {
   document.getElementById('newMonsterFragReward').value = m.fragReward || '';
   document.getElementById('newMonsterCultReward').value = m.cultReward || '';
   document.getElementById('newMonsterElement').value = m.element || '';
+  // 加载技能：m.skill可能是字符串或对象
+  var skillVal = '';
+  if (m.skill) {
+    if (typeof m.skill === 'string') skillVal = m.skill;
+    else if (m.skill.type) skillVal = m.skill.type;
+  }
+  document.getElementById('newMonsterSkill').value = skillVal;
   form.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 function uploadMonsterImage() {
@@ -2845,6 +2929,15 @@ function saveMonster() {
   const fragReward = parseInt(document.getElementById('newMonsterFragReward').value) || 0;
   const cultReward = parseInt(document.getElementById('newMonsterCultReward').value) || 0;
   const element = document.getElementById('newMonsterElement').value;
+  const skillType = document.getElementById('newMonsterSkill').value;
+  // 根据技能类型构建技能对象
+  var skillObj = null;
+  if (skillType && ENEMY_SKILL_PRESETS[skillType]) {
+    skillObj = {};
+    Object.keys(ENEMY_SKILL_PRESETS[skillType]).forEach(function(k) {
+      if (k !== 'label') skillObj[k] = ENEMY_SKILL_PRESETS[skillType][k];
+    });
+  }
   if (!name) { showToast('凶兽需有名号', 'error'); return; }
   if (editingMonsterId) {
     const m = getMonsterById(editingMonsterId);
@@ -2852,11 +2945,12 @@ function saveMonster() {
       m.name = name; m.tier = tier;
       m.reqMinutes = reqMinutes; m.desc = desc; m.image = image;
       m.fragReward = fragReward; m.cultReward = cultReward; m.element = element;
+      m.skill = skillObj;
       showToast(`凶兽「${name}」已更新`, 'success');
     }
     editingMonsterId = null;
   } else {
-    const newM = { id: genId(), name, tier, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, element: element, createdAt: Date.now() };
+    const newM = { id: genId(), name, tier, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, element: element, skill: skillObj, createdAt: Date.now() };
     gameState.monsters.push(newM);
     prepareState.selectedMonsterId = newM.id;
     // 自动加入当前分组
@@ -2959,6 +3053,11 @@ function updatePreview() {
         var lb = getGongfaLevelBonus(eq);
         equipBonus += Math.floor(eq.power * lb.atkMult);
         critBonus += (eq.crit || 0) + lb.critAdd;
+      } else if (eq.type === 'permanent') {
+        var plb = getPermanentLevelBonus(eq);
+        equipBonus += Math.floor((eq.power || 0) * plb.atkMult);
+        critBonus += (eq.crit || 0) + plb.critAdd;
+        baseHp += plb.hpAdd || 0;
       } else {
         equipBonus += eq.power;
         critBonus += eq.crit || 0;
@@ -2984,7 +3083,7 @@ function updatePreview() {
   var monster = getMonsterById(prepareState.selectedMonsterId);
   if (monster) {
     var tierCfg = getTierConfig(monster.tier || 3);
-    document.getElementById('previewWinRate').textContent = tierCfg.name + ' · ' + tierCfg.targetRounds + '回合';
+    document.getElementById('previewWinRate').textContent = tierCfg.name;
   } else {
     document.getElementById('previewWinRate').textContent = '--';
   }
@@ -3273,8 +3372,19 @@ function parsePassives(usedEquips) {
   const p = { burnChance: 0, poisonChance: 0, lifestealPct: 0, dmgBonus: 0 };
   usedEquips.forEach(eq => {
     const eff = (eq.effect || '') + (eq.name || '');
-    if (/灼烧|异火|火|焚/.test(eff)) p.burnChance = Math.min(p.burnChance + 0.15, 0.6);
-    if (/毒/.test(eff)) p.poisonChance = Math.min(p.poisonChance + 0.15, 0.6);
+    // 根据装备element属性触发对应被动（属性优先于名称关键词）
+    if (eq.element && ELEMENT_EFFECTS[eq.element]) {
+      var elemEff = ELEMENT_EFFECTS[eq.element];
+      if (elemEff.status === 'burn') p.burnChance = Math.min(p.burnChance + 0.15, 0.6);
+      if (elemEff.status === 'poison') p.poisonChance = Math.min(p.poisonChance + 0.15, 0.6);
+      if (elemEff.status === 'freeze' || elemEff.status === 'stun') p.dmgBonus += 0.05; // 控制属性加伤害
+      if (elemEff.status === 'vuln' || elemEff.status === 'armorBreak') p.dmgBonus += 0.06; // 破甲属性加伤害
+    }
+    // 名称关键词作为补充（仅当没有element属性时）
+    if (!eq.element) {
+      if (/灼烧|异火|火|焚/.test(eff)) p.burnChance = Math.min(p.burnChance + 0.15, 0.6);
+      if (/毒/.test(eff)) p.poisonChance = Math.min(p.poisonChance + 0.15, 0.6);
+    }
     if (/吸血|噬/.test(eff)) p.lifestealPct += 0.2;
     if (/剑|锋|破|攻/.test(eff)) p.dmgBonus += 0.08;
   });
@@ -3301,6 +3411,11 @@ var ELEMENT_EFFECTS = {
   thunder:  { name:'雷', status:'vuln',       duration:2, value:0.25, desc:'受伤+25%' },
   wind:     { name:'风', status:'bleed',      duration:2, valuePct:0.04, desc:'流血4%/回合' },
   earth:    { name:'土', status:'armorBreak', duration:2, value:0.25, desc:'受伤+25%' },
+  metal:    { name:'金', status:'armorBreak', duration:3, value:0.30, desc:'破甲受伤+30%' },
+  time:     { name:'时', status:'slow',       duration:3, value:0.25, desc:'减速攻击-25%' },
+  space:    { name:'空', status:'vuln',       duration:2, value:0.20, desc:'空间扭曲受伤+20%' },
+  chaos:    { name:'混沌', status:'confuse',   duration:1, chance:0.30, desc:'30%混乱' },
+  star:     { name:'星', status:'burn',       duration:3, valuePct:0.06, desc:'星焰灼烧6%/回合' },
 };
 // 凶兽属性弱点（凶兽id: 弱点属性）
 var MONSTER_WEAKNESS = {
@@ -3349,9 +3464,46 @@ function buildGongfaSkills() {
     var cfg = GONGFA_SKILL_CONFIG[type];
     skills.push({ type:type, name: eq.name + '·' + cfg.name, cost:cfg.cost, dmgMult:cfg.dmgMult,
       healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits, burnChance:cfg.burnChance,
-      element: eq.element || '', desc: skillDesc(type) });
+      element: eq.element || '', desc: skillDesc(type), cooldown: cfg.cooldown || 0 });
   });
-  return skills.slice(0, 3);
+  // 消耗法宝作为一次性技能（使用后扣除）
+  battleState.usedEquips.filter(function(e){ return e.type === 'consumable'; }).forEach(function(eq) {
+    // 根据法宝属性决定使用效果
+    var hasHeal = eq.affixes && eq.affixes.some(function(a){ return a.type === 'hp' || a.type === 'lifesteal'; });
+    var hasShield = eq.affixes && eq.affixes.some(function(a){ return a.type === 'shield'; });
+    var skillType = hasHeal ? 'consumable_heal' : (hasShield ? 'consumable_shield' : 'consumable_attack');
+    var skillName = eq.name + '（一次性）';
+    var skillDesc = hasHeal ? '使用后恢复大量生命并消失' : (hasShield ? '使用后获得护盾并消失' : '使用后造成强力一击并消失');
+    skills.push({ type: skillType, name: skillName, cost: 0, dmgMult: 1.5 + (eq.power || 0) / 50,
+      healPct: hasHeal ? 0.3 + (eq.power || 0) / 200 : 0,
+      shieldValue: hasShield ? (eq.affixes.find(function(a){ return a.type === 'shield'; }) || {}).value || 100 : 0,
+      critBonus: 20, hits: 1, burnChance: 0, element: eq.element || '',
+      desc: skillDesc, cooldown: 0, isConsumable: true, equipId: eq.id });
+  });
+  return skills.slice(0, 6);
+}
+// 全装备辅助函数（功法+永久法宝+消耗法宝）
+function equipAllForBattle() {
+  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
+  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
+  prepareState.selectedConsumable = (gameState.equipment.consumable || []).map(function(e){ return e.id; });
+}
+// 使用后从背包中扣除消耗法宝
+function removeConsumableAfterUse(equipId) {
+  if (!equipId) return;
+  // 从背包中移除
+  gameState.equipment.consumable = gameState.equipment.consumable.filter(function(e) { return e.id !== equipId; });
+  // 从选中列表中移除
+  prepareState.selectedConsumable = prepareState.selectedConsumable.filter(function(id) { return id !== equipId; });
+  // 从战斗使用列表中移除
+  if (battleState && battleState.usedEquips) {
+    battleState.usedEquips = battleState.usedEquips.filter(function(e) { return e.id !== equipId; });
+  }
+  // 重新构建技能列表（移除已消耗的法宝技能）
+  if (battleState) {
+    battleState.skills = buildGongfaSkills();
+  }
+  saveGame();
 }
 function renderGongfaSkillConfig() {
   var container = document.getElementById('gongfaSkillConfig');
@@ -3409,6 +3561,12 @@ function getTotalFocus() {
   if (gameState.equipment && gameState.equipment.gongfa) {
     gameState.equipment.gongfa.forEach(function(g) {
       total += (g.cultivation || 0);
+    });
+  }
+  // 永久法宝修炼时长并入总修为
+  if (gameState.equipment && gameState.equipment.permanent) {
+    gameState.equipment.permanent.forEach(function(p) {
+      total += (p.cultivation || 0);
     });
   }
   // 神兽修炼时长并入总修为
@@ -3777,8 +3935,7 @@ function challengeHeartDemon() {
   };
   // 自动带上所有永久法宝和功法
   prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
-  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
-  prepareState.selectedConsumable = [];
+  equipAllForBattle();
   startBattle(heartDemon, { baseAtk: 55, baseHp: 220, context: 'heartDemon', onWin: onHeartDemonWin, onLose: onHeartDemonLose });
 }
 function onHeartDemonWin(bs) {
@@ -3944,7 +4101,33 @@ function finishTimer() {
   updateTimerDisplay();
   showToast('专注完成！今日累计 ' + getTodayFocus() + ' 分钟', 'success');
   if (timerState.mode === 'countdown') {
-    try { var audio = new AudioContext(); var osc = audio.createOscillator(); var gain = audio.createGain(); osc.connect(gain); gain.connect(audio.destination); osc.frequency.value = 880; gain.gain.value = 0.3; osc.start(); setTimeout(function(){ osc.stop(); audio.close(); }, 500); } catch(e) {}
+    // 手机震动（200ms震动，100ms暂停，重复3次）
+    try { if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); } catch(e) {}
+    // 系统通知（需要用户授权）
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('心魔试炼', { body: '专注完成！今日累计 ' + getTodayFocus() + ' 分钟', icon: '', tag: 'focus-complete' });
+      }
+    } catch(e) {}
+    // 提示音播放3次，更醒目
+    try {
+      var audio = new AudioContext();
+      for (var t = 0; t < 3; t++) {
+        (function(idx) {
+          setTimeout(function() {
+            var osc = audio.createOscillator();
+            var gain = audio.createGain();
+            osc.connect(gain);
+            gain.connect(audio.destination);
+            osc.frequency.value = 880;
+            gain.gain.value = 0.3;
+            osc.start();
+            setTimeout(function(){ osc.stop(); }, 400);
+            if (idx === 2) setTimeout(function(){ audio.close(); }, 500);
+          }, idx * 600);
+        })(t);
+      }
+    } catch(e) {}
   }
 }
 
@@ -4091,8 +4274,18 @@ renderMonsterSelector = function() {
     var todayD = getTodayStr();
     var todayCnt = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.date === todayD && gameState.dailyMonsterKills.kills[m.id]) ? gameState.dailyMonsterKills.kills[m.id] : 0;
     var cntHtml = '<span style="font-size:10px;color:' + (todayCnt >= 2 ? '#ff6b6b' : '#d4af37') + ';margin-left:4px;">今日' + todayCnt + '/2</span>';
-    var imgHtml = m.image
-      ? '<img src="' + m.image + '" style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;display:block;margin:0 auto;" onerror="this.style.display=\'none\'">'
+    // 图片：优先用凶兽自己的图片，没有则用默认配置的图片
+    var monsterImg = m.image;
+    if (!monsterImg) {
+      var defForImg = DEFAULT_MONSTERS.find(function(d){ return d.id === m.id; });
+      if (defForImg) monsterImg = defForImg.image;
+    }
+    if (!monsterImg && typeof DEFAULT_CHENGLONG_BOSSES !== 'undefined') {
+      var dlForImg = DEFAULT_CHENGLONG_BOSSES.find(function(b){ return b.id === m.id; });
+      if (dlForImg) monsterImg = dlForImg.image;
+    }
+    var imgHtml = monsterImg
+      ? '<img src="' + monsterImg + '" style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;display:block;margin:0 auto;" onerror="this.outerHTML=\'<div style=\\\'width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;margin:0 auto;\\\'>🐾</div>\'">'
       : '<div style="width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;margin:0 auto;">🐾</div>';
     if (todayCnt >= 2) lockHtml = '<div class="monster-lock-overlay">今日已挑战2次</div>';
     // 越级通关标记
@@ -4110,18 +4303,6 @@ renderMonsterSelector = function() {
       '<span class="monster-edit-btn" data-action="edit-monster" data-monster-id="' + m.id + '" style="z-index:10;position:relative;" onclick="event.stopPropagation();editMonster(\'' + m.id + '\')">✎</span>' +
     '</button>';
   }).join('');
-  // 选中凶兽后显示快速踏入试炼按钮
-  var selM = list.find(function(m){ return m.id === prepareState.selectedMonsterId; });
-  if (selM) {
-    var selUnlocked = isMonsterUnlocked(selM);
-    var selTodayCnt = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.date === todayD && gameState.dailyMonsterKills.kills[selM.id]) || 0;
-    var canFight = selUnlocked && selTodayCnt < 2;
-    html += '<div style="grid-column:1/-1;margin-top:8px;">' +
-      '<button class="btn btn-primary btn-lg" style="width:100%;' + (canFight ? '' : 'opacity:0.5;cursor:not-allowed;') + '" onclick="' + (canFight ? 'startBattle()' : 'showToast(\'' + (selUnlocked ? '今日已挑战2次' : '专注时长不足，无法挑战') + '\',\'error\')') + '">' +
-        '⚔️ 踏入试炼 · ' + selM.name +
-      '</button>' +
-    '</div>';
-  }
   container.innerHTML = html;
 };
 
@@ -4344,35 +4525,56 @@ const DUNGEON_REWARDS = {
 
 var bookTimerState = { running:false, seconds:0, interval:null, currentBossId:'ming1', startTime:0, accumulated:0, targetSeconds:0 };
 
-// ===== 功法修炼升级系统 =====
-var cultivationState = { activeId: null, startTime: 0, interval: null, autoStopTimer: null };
+// ===== 功法/法宝修炼升级系统 =====
+// 等级命名：天地玄黄，天阶最高，再往上是神级（功法）/神器级（法宝）
+var CULTIVATION_LEVEL_NAMES = {
+  gongfa: ['黄级', '玄级', '地级', '天级', '神级功法'],
+  permanent: ['黄级', '玄级', '地级', '天级', '神器级']
+};
+var cultivationState = { activeId: null, activeType: 'gongfa', startTime: 0, interval: null, autoStopTimer: null };
 var CULTIVATION_SESSION_LIMIT = 50; // 每次修炼上限50分钟
-function getGongfaUpgradeReq(level) {
+function getUpgradeReq(level) {
   if ((level || 1) >= 5) return Infinity; // 5级满级
   return (level || 1) * 100; // 1级升2级需100分钟，2升3需200...
 }
+function getGongfaUpgradeReq(level) { return getUpgradeReq(level); }
+function getLevelName(type, level) {
+  var names = CULTIVATION_LEVEL_NAMES[type] || CULTIVATION_LEVEL_NAMES.gongfa;
+  return names[Math.min(Math.max((level || 1) - 1, 0), 4)];
+}
 function getGongfaLevelBonus(eq) {
   var lv = eq.level || 1;
-  return { atkMult: 1 + (lv - 1) * 0.15, critAdd: (lv - 1) * 2 };
+  return { atkMult: 1 + (lv - 1) * 0.15, critAdd: (lv - 1) * 2, levelName: getLevelName('gongfa', lv) };
 }
-function getGongfaCultivation(eq) {
-  return eq.cultivation || 0;
+function getPermanentLevelBonus(eq) {
+  var lv = eq.level || 1;
+  return { atkMult: 1 + (lv - 1) * 0.12, critAdd: (lv - 1) * 2, hpAdd: (lv - 1) * 20, levelName: getLevelName('permanent', lv) };
 }
-function toggleGongfaCultivation(id) {
-  var eq = gameState.equipment.gongfa.find(function(g){ return g.id === id; });
+function getCultivation(eq) { return eq.cultivation || 0; }
+function getGongfaCultivation(eq) { return getCultivation(eq); }
+// 获取装备对象（支持功法和永久法宝）
+function getEquipById(type, id) {
+  if (type === 'gongfa') return gameState.equipment.gongfa.find(function(g){ return g.id === id; });
+  if (type === 'permanent') return gameState.equipment.permanent.find(function(p){ return p.id === id; });
+  return null;
+}
+function toggleCultivation(type, id) {
+  var eq = getEquipById(type, id);
   if (!eq) return;
-  // 如果正在修炼其他功法，先停止
-  if (cultivationState.activeId && cultivationState.activeId !== id) {
-    stopGongfaCultivation();
+  // 如果正在修炼其他装备，先停止
+  if (cultivationState.activeId && (cultivationState.activeId !== id || cultivationState.activeType !== type)) {
+    stopCultivation();
   }
-  if (cultivationState.activeId === id) {
-    stopGongfaCultivation();
+  if (cultivationState.activeId === id && cultivationState.activeType === type) {
+    stopCultivation();
   } else {
-    startGongfaCultivation(id);
+    startCultivation(type, id);
   }
 }
-function startGongfaCultivation(id) {
+function toggleGongfaCultivation(id) { toggleCultivation('gongfa', id); }
+function startCultivation(type, id) {
   cultivationState.activeId = id;
+  cultivationState.activeType = type;
   cultivationState.startTime = Date.now();
   if (cultivationState.interval) { clearInterval(cultivationState.interval); }
   if (cultivationState.autoStopTimer) { clearTimeout(cultivationState.autoStopTimer); }
@@ -4381,19 +4583,19 @@ function startGongfaCultivation(id) {
     var elapsed = (Date.now() - cultivationState.startTime) / 60000;
     // 检查是否达到50分钟上限
     if (elapsed >= CULTIVATION_SESSION_LIMIT) {
-      stopGongfaCultivation();
+      stopCultivation();
       showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
       return;
     }
     // 检查是否达到突破条件
-    var eq = gameState.equipment.gongfa.find(function(g){ return g.id === cultivationState.activeId; });
+    var eq = getEquipById(cultivationState.activeType, cultivationState.activeId);
     if (eq) {
       var lv = eq.level || 1;
       if (lv < 5) {
-        var req = getGongfaUpgradeReq(lv);
+        var req = getUpgradeReq(lv);
         var totalCult = (eq.cultivation || 0) + Math.floor(elapsed);
         if (totalCult >= req) {
-          stopGongfaCultivation();
+          stopCultivation();
           showToast('「' + eq.name + '」修炼已满，可突破！已自动停止', 'success');
           return;
         }
@@ -4401,21 +4603,24 @@ function startGongfaCultivation(id) {
     }
     renderInventoryGrid();
   }, 1000);
-  // 兜底：50分钟后强制停止（防止interval被清理）
+  // 兜底：50分钟后强制停止
   cultivationState.autoStopTimer = setTimeout(function() {
     if (cultivationState.activeId) {
-      stopGongfaCultivation();
+      stopCultivation();
       showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
     }
   }, CULTIVATION_SESSION_LIMIT * 60000);
   saveCultivationState();
   renderInventoryGrid();
-  showToast('开始修炼「' + (gameState.equipment.gongfa.find(function(g){return g.id===id;})||{}).name + '」（单次上限50分钟）', 'success');
+  var eq = getEquipById(type, id);
+  showToast('开始修炼「' + (eq ? eq.name : '') + '」（单次上限50分钟）', 'success');
 }
-function stopGongfaCultivation() {
+function startGongfaCultivation(id) { startCultivation('gongfa', id); }
+function stopCultivation() {
   if (!cultivationState.activeId) return;
   var id = cultivationState.activeId;
-  var eq = gameState.equipment.gongfa.find(function(g){ return g.id === id; });
+  var type = cultivationState.activeType;
+  var eq = getEquipById(type, id);
   if (eq) {
     var minutes = Math.min(Math.floor((Date.now() - cultivationState.startTime) / 60000), CULTIVATION_SESSION_LIMIT);
     if (minutes > 0) {
@@ -4430,6 +4635,7 @@ function stopGongfaCultivation() {
     }
   }
   cultivationState.activeId = null;
+  cultivationState.activeType = 'gongfa';
   cultivationState.startTime = 0;
   if (cultivationState.interval) { clearInterval(cultivationState.interval); cultivationState.interval = null; }
   if (cultivationState.autoStopTimer) { clearTimeout(cultivationState.autoStopTimer); cultivationState.autoStopTimer = null; }
@@ -4437,25 +4643,30 @@ function stopGongfaCultivation() {
   saveGame();
   renderInventoryGrid();
 }
-function upgradeGongfa(id) {
-  var eq = gameState.equipment.gongfa.find(function(g){ return g.id === id; });
+function stopGongfaCultivation() { stopCultivation(); }
+function upgradeEquip(type, id) {
+  var eq = getEquipById(type, id);
   if (!eq) return;
   var lv = eq.level || 1;
-  if (lv >= 5) { showToast('已达5重满级', 'error'); return; }
-  var req = getGongfaUpgradeReq(lv);
-  var cult = getGongfaCultivation(eq);
+  if (lv >= 5) { showToast('已达满级（' + getLevelName(type, 5) + '）', 'error'); return; }
+  var req = getUpgradeReq(lv);
+  var cult = getCultivation(eq);
   if (cult < req) { showToast('还需修炼' + (req - cult) + '分钟方可突破', 'error'); return; }
   eq.level = lv + 1;
   eq.cultivation = cult - req; // 剩余时长保留
   saveGame();
   renderInventoryGrid();
   updatePreview();
-  showToast('「' + eq.name + '」突破至' + (lv+1) + '重！攻击+15%，暴击+2%', 'success');
+  var bonus = type === 'gongfa' ? '攻击+15%，暴击+2%' : '攻击+12%，暴击+2%，生命+20';
+  showToast('「' + eq.name + '」突破至' + getLevelName(type, lv+1) + '！' + bonus, 'success');
 }
+function upgradeGongfa(id) { upgradeEquip('gongfa', id); }
+function upgradePermanent(id) { upgradeEquip('permanent', id); }
 function saveCultivationState() {
   try {
     localStorage.setItem('xm_cultivation', JSON.stringify({
       activeId: cultivationState.activeId,
+      activeType: cultivationState.activeType || 'gongfa',
       startTime: cultivationState.startTime
     }));
   } catch(e) {}
@@ -4464,7 +4675,8 @@ function restoreCultivationState() {
   try {
     var s = JSON.parse(localStorage.getItem('xm_cultivation') || 'null');
     if (!s || !s.activeId || !s.startTime) return;
-    var eq = gameState.equipment.gongfa.find(function(g){ return g.id === s.activeId; });
+    var type = s.activeType || 'gongfa';
+    var eq = getEquipById(type, s.activeId);
     if (!eq) return;
     // 后台修炼时长结算（最多算50分钟）
     var minutes = Math.floor((Date.now() - s.startTime) / 60000);
@@ -4482,18 +4694,20 @@ function restoreCultivationState() {
     if (minutes >= CULTIVATION_SESSION_LIMIT) {
       // 已超50分钟，自动停止，不恢复计时
       cultivationState.activeId = null;
+      cultivationState.activeType = 'gongfa';
       cultivationState.startTime = 0;
       localStorage.removeItem('xm_cultivation');
       showToast('上次修炼已满50分钟，已自动结算停止', 'success');
       return;
     }
     cultivationState.activeId = s.activeId;
+    cultivationState.activeType = type;
     cultivationState.startTime = Date.now(); // 重新计时
     cultivationState.interval = setInterval(function() {
       if (!cultivationState.activeId) return;
       var elapsed = (Date.now() - cultivationState.startTime) / 60000;
       if (elapsed >= CULTIVATION_SESSION_LIMIT) {
-        stopGongfaCultivation();
+        stopCultivation();
         showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
         return;
       }
@@ -4501,7 +4715,7 @@ function restoreCultivationState() {
     }, 1000);
     cultivationState.autoStopTimer = setTimeout(function() {
       if (cultivationState.activeId) {
-        stopGongfaCultivation();
+        stopCultivation();
         showToast('修炼已满50分钟，已自动停止，请再次启动继续', 'success');
       }
     }, CULTIVATION_SESSION_LIMIT * 60000);
@@ -5327,8 +5541,10 @@ function launchNianLayer() {
         equipBonus += Math.floor(eq.power * lb.atkMult);
         critBonus += (eq.crit || 0) + lb.critAdd;
       } else {
-        equipBonus += eq.power || 0;
-        critBonus += eq.crit || 0;
+        var plb = getPermanentLevelBonus(eq);
+        equipBonus += Math.floor((eq.power || 0) * plb.atkMult);
+        critBonus += (eq.crit || 0) + plb.critAdd;
+        equipHp += plb.hpAdd || 0;
       }
       // 装备词条生命值
       if (eq.affixes) {
@@ -5387,9 +5603,7 @@ function launchNianLayer() {
     image: '',
     isNian: true,
   };
-  prepareState.selectedGongfa = allGongfa;
-  prepareState.selectedPermanent = allPerm;
-  prepareState.selectedConsumable = [];
+  equipAllForBattle();
   // 关闭旧的战斗结果面板
   document.getElementById('battleOverlay').style.display = 'none';
   startBattle(nianMonster, { baseAtk: baseAtk, baseHp: baseHp, focusMinutes: minutes, note: '念·第' + layer + '层', isNian: true, context: 'nian' });
@@ -5477,6 +5691,11 @@ function startBattle(monsterInput, opts) {
         var lb = getGongfaLevelBonus(eq);
         equipBonus += Math.floor(eq.power * lb.atkMult);
         critBonus += (eq.crit || 0) + lb.critAdd;
+      } else if (eq.type === 'permanent') {
+        var plb = getPermanentLevelBonus(eq);
+        equipBonus += Math.floor((eq.power || 0) * plb.atkMult);
+        critBonus += (eq.crit || 0) + plb.critAdd;
+        baseHp += plb.hpAdd || 0;
       } else {
         equipBonus += eq.power;
         critBonus += eq.crit || 0;
@@ -5517,6 +5736,27 @@ function startBattle(monsterInput, opts) {
     monster.attack = Math.floor(monster.attack * totalMult);
   }
   var monsterSkill = monster.skill || (MONSTER_SKILLS[monster.id] ? JSON.parse(JSON.stringify(MONSTER_SKILLS[monster.id])) : (monster.custom ? JSON.parse(JSON.stringify(DEFAULT_MONSTER_SKILL)) : null));
+  // 凶兽技能池：从12种技能中随机选择3-5种
+  var ALL_SKILL_KEYS = ['heavy','weaken','confuse','poison','burn','lifesteal','enrage','freeze','thunder','wind','earth','light'];
+  var monsterSkillPool = [];
+  if (monsterSkill) {
+    monsterSkillPool.push(JSON.parse(JSON.stringify(monsterSkill)));
+  }
+  // 随机添加2-4个额外技能
+  var extraCount = 2 + Math.floor(Math.random() * 3);
+  var shuffled = ALL_SKILL_KEYS.slice().sort(function(){ return Math.random() - 0.5; });
+  for (var i = 0; i < extraCount && i < shuffled.length; i++) {
+    var key = shuffled[i];
+    var preset = ENEMY_SKILL_PRESETS[key];
+    if (preset && preset.type !== 'none') {
+      var sk = {};
+      Object.keys(preset).forEach(function(k) { if (k !== 'label') sk[k] = preset[k]; });
+      // 确保不重复
+      if (!monsterSkillPool.find(function(s){ return s.name === sk.name; })) {
+        monsterSkillPool.push(sk);
+      }
+    }
+  }
   // 法宝/功法暴击率上限20%，专注/神兽/宝石带来的暴击无上限
   var stoneCrit = stoneBonus.critAdd || 0;
   var beastCrit = beastBonus.critAdd || 0;
@@ -5534,6 +5774,9 @@ function startBattle(monsterInput, opts) {
       reqMinutes: monster.reqMinutes || 0,
       statuses: [], skillUsed: false, cooldownCounter: 0,
       skill: monsterSkill,
+      skillPool: monsterSkillPool,
+      skillCooldowns: {},  // 各技能冷却 {skillName: remainingTurns}
+      skillUsedCount: {},
     },
     round: 0, log: [], usedEquips: usedEquips, focusMinutes: minutes, note: note,
     finished: false, result: null, awaitingAction: false,
@@ -5633,7 +5876,8 @@ function showDamage(target, damage, isCrit) {
 var ELEMENT_COLORS = {
   light: '#FFD700', dark: '#9D4EDD', fire: '#FF5722', water: '#4FC3F7',
   electric: '#FFEB3B', wood: '#66BB6A', ice: '#B3E5FC', thunder: '#7C4DFF',
-  wind: '#80CBC4', earth: '#8D6E63'
+  wind: '#80CBC4', earth: '#8D6E63',
+  metal: '#E0E0E0', time: '#7C4DFF', space: '#3F51B5', chaos: '#E91E63', star: '#FFFFFF'
 };
 
 // ========== 赛季周目系统配置 ==========
@@ -5779,11 +6023,14 @@ function getZhoumuAchievement(score) {
   }
   return ach;
 }
-// 越级通关：击败一只凶兽后，同副本内其他凶兽默认通关1次
+// 越级通关：击败一只凶兽后，同副本内**tier更低**的凶兽默认通关1次
 function applyAutoClear(beatenId, diffMult) {
   var todayK = getTodayStr();
   var grp = (gameState.monsterGroups || []).find(function(g){ return g.id === gameState.currentGroup; });
   if (!grp || !grp.monsterIds) return;
+  var beatenMonster = getMonsterById(beatenId);
+  if (!beatenMonster) return;
+  var beatenTier = beatenMonster.tier || 1;
   if (!gameState.dailyMonsterWins || gameState.dailyMonsterWins.date !== todayK) {
     gameState.dailyMonsterWins = { date: todayK, wins: {} };
   }
@@ -5797,27 +6044,26 @@ function applyAutoClear(beatenId, diffMult) {
   var totalFrag = 0, totalCult = 0;
   grp.monsterIds.forEach(function(mid) {
     if (mid === beatenId) return; // 自己不算
+    var mObj = getMonsterById(mid);
+    if (!mObj) return;
+    if ((mObj.tier || 1) >= beatenTier) return; // 只越级通关tier更低的
     if (gameState.dailyMonsterWins.wins[mid]) return; // 已经赢过的不重复
     if (gameState.autoCleared.ids[mid]) return; // 已经越级通关过的不重复
     // 标记为今日已通关
     gameState.dailyMonsterWins.wins[mid] = true;
     gameState.autoCleared.ids[mid] = true;
     // 算每日次数（1次）
-    gameState.dailyMonsterKills.kills[mid] = Math.max(1, gameState.dailyMonsterKills.kills[mid] || 0) + 0;
     if (!gameState.dailyMonsterKills.kills[mid]) gameState.dailyMonsterKills.kills[mid] = 1;
     // 基础奖励（不乘难度系数）
-    var mObj = getMonsterById(mid);
-    if (mObj) {
-      var mReq = mObj.reqMinutes || 0;
-      var baseFrag = mObj.fragReward > 0 ? mObj.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
-      var baseCult = mObj.cultReward > 0 ? mObj.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
-      totalFrag += baseFrag;
-      totalCult += baseCult;
-      autoCount++;
-      // 按同难度计入赛季积分
-      var diffScore = diffMult >= 2.0 ? 5 : diffMult >= 1.8 ? 4 : diffMult >= 1.4 ? 2 : 1;
-      addSeasonScore('beast', diffScore);
-    }
+    var mReq = mObj.reqMinutes || 0;
+    var baseFrag = mObj.fragReward > 0 ? mObj.fragReward : (mReq >= 180 ? 10 : mReq >= 120 ? 9 : mReq >= 90 ? 7 : mReq >= 60 ? 5 : mReq >= 30 ? 3 : 2);
+    var baseCult = mObj.cultReward > 0 ? mObj.cultReward : (mReq >= 180 ? 20 : mReq >= 120 ? 20 : mReq >= 90 ? 15 : mReq >= 60 ? 10 : mReq >= 30 ? 6 : 3);
+    totalFrag += baseFrag;
+    totalCult += baseCult;
+    autoCount++;
+    // 按同难度计入赛季积分
+    var diffScore = diffMult >= 2.0 ? 5 : diffMult >= 1.8 ? 4 : diffMult >= 1.4 ? 2 : 1;
+    addSeasonScore('beast', diffScore);
   });
   if (autoCount > 0) {
     if (!dailyState.fragments) dailyState.fragments = 0;
@@ -5826,7 +6072,7 @@ function applyAutoClear(beatenId, diffMult) {
     gameState.bonusFocus += totalCult;
     saveDaily();
     saveGame();
-    showToast('⚡ 越级通关：' + autoCount + '只凶兽默认通过，获得' + totalFrag + '碎片+' + totalCult + '修为（基础奖励）', 'info');
+    showToast('⚡ 越级通关：' + autoCount + '只低阶凶兽默认通过，获得' + totalFrag + '碎片+' + totalCult + '修为（基础奖励）', 'info');
   }
 }
 function checkDungeonClear() {
@@ -6552,9 +6798,7 @@ function startMapMonsterBattle(x, y, isElite) {
   // 记录图鉴
   gameState.adventure.monsterDex[m.name] = true;
   // 全装备战斗
-  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
-  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
-  prepareState.selectedConsumable = [];
+  equipAllForBattle();
 
   var monsterObj = {
     id: m.id, name: m.name, tier: m.tier,
@@ -6589,9 +6833,7 @@ function startMapMonsterBattle(x, y, isElite) {
 function startMapBossBattle(x, y) {
   var m = getMapMonster(7, false, true);
   gameState.adventure.monsterDex[m.name] = true;
-  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
-  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
-  prepareState.selectedConsumable = [];
+  equipAllForBattle();
 
   var monsterObj = {
     id: m.id, name: m.name, tier: 8,
@@ -6646,9 +6888,7 @@ function startNestChain(x, y, count) {
   closeMapEvent();
   var m = getMapMonster(3, false, false);
   gameState.adventure.monsterDex[m.name] = true;
-  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
-  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
-  prepareState.selectedConsumable = [];
+  equipAllForBattle();
 
   var monsterObj = {
     id: m.id, name: m.name + '(1/' + count + ')', tier: 3,
@@ -6912,9 +7152,7 @@ function fogMonsterBattle(x, y) {
   closeMapEvent();
   var m = getMapMonster(4, false, false);
   gameState.adventure.monsterDex[m.name] = true;
-  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
-  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
-  prepareState.selectedConsumable = [];
+  equipAllForBattle();
   var monsterObj = { id: m.id, name: m.name, tier: 4, image: m.image };
   startBattle(monsterObj, {
     onWin: function(bs) {
@@ -7168,7 +7406,28 @@ function playerAct(type, idx) {
       if (sk.cooldown && sk.cooldown > 0) {
         battleState.skillCooldowns[idx] = sk.cooldown;
       }
-      if (sk.type === 'heal') {
+      if (sk.type === 'consumable_heal') {
+        // 消耗法宝：回血型
+        healAmount = Math.floor(p.maxHp * Math.min(sk.healPct || 0.3, 0.5));
+        p.hp = Math.min(p.maxHp, p.hp + healAmount);
+        pDmg = Math.floor(atk * 0.5 * (0.9 + Math.random() * 0.2));
+        addLog('crit', '使用「' + sk.name + '」，恢复生命' + healAmount + '点！法宝已消耗。');
+        // 从背包中扣除消耗法宝
+        removeConsumableAfterUse(sk.equipId);
+      } else if (sk.type === 'consumable_shield') {
+        // 消耗法宝：护盾型
+        var shieldVal = sk.shieldValue || Math.floor(p.maxHp * 0.3);
+        applyStatus('player', { type: 'shield', value: shieldVal, duration: 3 });
+        pDmg = Math.floor(atk * 0.5 * (0.9 + Math.random() * 0.2));
+        addLog('crit', '使用「' + sk.name + '」，获得' + shieldVal + '点护盾！法宝已消耗。');
+        removeConsumableAfterUse(sk.equipId);
+      } else if (sk.type === 'consumable_attack') {
+        // 消耗法宝：攻击型
+        pCrit = Math.random() * 100 < Math.min(p.crit + (sk.critBonus || 20), 100);
+        pDmg = Math.floor(atk * Math.min(sk.dmgMult || 2, 4) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        addLog('crit', '使用「' + sk.name + '」，爆发强力一击！法宝已消耗。');
+        removeConsumableAfterUse(sk.equipId);
+      } else if (sk.type === 'heal') {
         healAmount = Math.floor(p.maxHp * Math.min(sk.healPct || 0.05, 0.05));
         p.hp = Math.min(p.maxHp, p.hp + healAmount);
         pDmg = Math.floor(atk * (sk.dmgMult || 0.8) * (0.9 + Math.random() * 0.2));
@@ -7274,11 +7533,13 @@ function playerAct(type, idx) {
     }
 
     if (extraHit) addLog('crit', '身法迅捷，修士追加一击！');
-    // 法宝词条特效
+    // 法宝词条特效：根据当前属性触发对应效果
     const burnChance = (p.affixes.burn || 0) / 100;
     if (burnChance > 0 && Math.random() < burnChance) {
-      applyStatus('monster', { type: 'burn', value: Math.max(4, Math.floor(m.maxHp * 0.03)), duration: 2 });
-      addLog('crit', '法宝异火喷涌，凶兽被点燃灼烧！');
+      // 优先使用当前攻击属性，没有则用火系灼烧
+      var elemForAffix = playerElement || 'fire';
+      applyElementEffect(elemForAffix, 'monster');
+      addLog('crit', '法宝威能催动，' + (ELEMENT_EFFECTS[elemForAffix] ? ELEMENT_EFFECTS[elemForAffix].name : '火') + '属性之力爆发！');
     }
     const poisonChance = (p.affixes.poison || 0) / 100;
     if (poisonChance > 0 && Math.random() < poisonChance) {
@@ -7311,6 +7572,33 @@ function playerAct(type, idx) {
 // 凶兽 AI：决定本回合行动
 function decideMonsterAction() {
   const m = battleState.monster;
+  // 优先使用技能池中的技能
+  if (m.skillPool && m.skillPool.length > 0) {
+    // 收集所有可用技能
+    var available = [];
+    m.skillPool.forEach(function(sk, idx) {
+      var cdKey = sk.name + '_' + idx;
+      var cd = m.skillCooldowns[cdKey] || 0;
+      if (cd > 0) return; // 冷却中
+      // 检查触发血量
+      if (sk.triggerHp !== undefined) {
+        var usedKey = cdKey + '_used';
+        if (m.skillUsedCount[usedKey]) return; // 已使用过
+        if (m.hp / m.maxHp > sk.triggerHp) return; // 未到触发血量
+        m.skillUsedCount[usedKey] = true;
+      }
+      available.push({sk: sk, idx: idx, cdKey: cdKey});
+    });
+    if (available.length > 0) {
+      // 随机选择一个可用技能
+      var chosen = available[Math.floor(Math.random() * available.length)];
+      // 设置冷却（默认2回合，如果技能有cooldown则用技能的）
+      m.skillCooldowns[chosen.cdKey] = chosen.sk.cooldown || 2;
+      return chosen.sk;
+    }
+    return null;
+  }
+  // 兼容旧的单技能系统
   const sk = m.skill;
   if (!sk) return null;
   if (sk.triggerHp !== undefined) {
@@ -7373,6 +7661,46 @@ function resolveMonsterSkill(sk) {
     updateHpBars();
     addLog('crit', `${m.name} 的「${sk.name}」扣除 ${afterShield} 点生命！`);
     if (p.hp <= 0) finishBattle('lose');
+  } else if (sk.type === 'burn') {
+    // 烈焰：灼烧
+    const bd = Math.max(4, Math.floor(p.maxHp * (sk.dmgPct || 0.05)));
+    applyStatus('player', { type: 'burn', value: bd, duration: sk.duration || 3 });
+    if (sk.element) playElementEffect(sk.element);
+    addLog('monster', `${m.name} 的烈焰焚身，修士每回合受到 ${bd} 点灼烧伤害！`);
+  } else if (sk.type === 'freeze') {
+    // 冰封：冻结
+    if (Math.random() < (sk.chance || 0.4)) {
+      applyStatus('player', { type: 'freeze', value: 1, duration: sk.duration || 1 });
+      addLog('crit', `${m.name} 的玄冰封天，修士被冻结，下回合无法行动！`);
+    } else {
+      addLog('monster', `${m.name} 的玄冰之力被修士闪开了！`);
+    }
+    if (sk.element) playElementEffect(sk.element);
+  } else if (sk.type === 'stun') {
+    // 雷击：麻痹
+    if (Math.random() < (sk.chance || 0.35)) {
+      applyStatus('player', { type: 'stun', value: 1, duration: sk.duration || 1 });
+      addLog('crit', `${m.name} 的九天雷劫，修士被麻痹，下回合无法行动！`);
+    } else {
+      addLog('monster', `${m.name} 的雷霆之力被修士闪开了！`);
+    }
+    if (sk.element) playElementEffect(sk.element);
+  } else if (sk.type === 'bleed') {
+    // 风刃：流血
+    const wd = Math.max(3, Math.floor(p.maxHp * (sk.dmgPct || 0.04)));
+    applyStatus('player', { type: 'bleed', value: wd, duration: sk.duration || 3 });
+    if (sk.element) playElementEffect(sk.element);
+    addLog('monster', `${m.name} 的万刃风杀，修士血流不止，每回合受到 ${wd} 点伤害！`);
+  } else if (sk.type === 'armorBreak') {
+    // 地裂：破甲
+    applyStatus('player', { type: 'armorBreak', value: sk.value || 0.25, duration: sk.duration || 3 });
+    if (sk.element) playElementEffect(sk.element);
+    addLog('monster', `${m.name} 的天崩地裂，修士防御溃散，受伤加重 ${Math.round((sk.value || 0.25) * 100)}%！`);
+  } else if (sk.type === 'vuln') {
+    // 圣光：易伤
+    applyStatus('player', { type: 'vuln', value: sk.value || 0.2, duration: sk.duration || 3 });
+    if (sk.element) playElementEffect(sk.element);
+    addLog('monster', `${m.name} 的神圣审判，修士受伤加重 ${Math.round((sk.value || 0.2) * 100)}%！`);
   }
 }
 function runMonsterTurn() {
@@ -7450,13 +7778,22 @@ function afterMonsterTurn() {
   const p = battleState.player;
   p.spirit = Math.min(p.maxSpirit, p.spirit + 30 + (p.affixes.regen || 0));
   updateSpiritBar();
-  // 减少技能冷却
+  // 减少玩家技能冷却
   Object.keys(battleState.skillCooldowns || {}).forEach(function(idx) {
     if (battleState.skillCooldowns[idx] > 0) {
       battleState.skillCooldowns[idx]--;
       if (battleState.skillCooldowns[idx] <= 0) delete battleState.skillCooldowns[idx];
     }
   });
+  // 减少凶兽技能冷却
+  if (battleState.monster && battleState.monster.skillCooldowns) {
+    Object.keys(battleState.monster.skillCooldowns).forEach(function(key) {
+      if (battleState.monster.skillCooldowns[key] > 0) {
+        battleState.monster.skillCooldowns[key]--;
+        if (battleState.monster.skillCooldowns[key] <= 0) delete battleState.monster.skillCooldowns[key];
+      }
+    });
+  }
   battleState.round++;
   document.getElementById('roundIndicator').textContent = `第 ${battleState.round} 回合`;
   battleState.awaitingAction = false;
@@ -7723,6 +8060,7 @@ function openSectEditor(sectId) {
     document.getElementById('sectEditorName').value = s.name;
     document.getElementById('sectEditorIcon').value = s.icon || '';
     document.getElementById('sectEditorDesc').value = s.desc || '';
+    document.getElementById('sectEditorImage').value = s.image || '';
     document.getElementById('sectDeleteBtn').style.display = 'inline-block';
   } else {
     sectEditorState = { editingId: null, enemies: [{ name: '宗门弟子', tier: 2, skillKey: 'none' }], reward: { name: '宗门秘宝', type: 'gongfa', power: 20, crit: 5, affixes: [], effect: '' } };
@@ -7730,6 +8068,7 @@ function openSectEditor(sectId) {
     document.getElementById('sectEditorName').value = '';
     document.getElementById('sectEditorIcon').value = '🏯';
     document.getElementById('sectEditorDesc').value = '';
+    document.getElementById('sectEditorImage').value = '';
     document.getElementById('sectDeleteBtn').style.display = 'none';
   }
   var r = sectEditorState.reward;
@@ -7742,18 +8081,20 @@ function openSectEditor(sectId) {
 }
 function closeSectEditor() {
   document.getElementById('sectEditorPanel').style.display = 'none';
-  renderSects();
+  document.getElementById('sectorDetailPanel').style.display = 'none';
+  navigate('sect');
 }
 function renderSectEnemyList() {
   var container = document.getElementById('sectEnemyList');
   if (!container) return;
   container.innerHTML = sectEditorState.enemies.map(function(e, i) {
     return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap;">' +
-      '<input type="text" class="form-input" style="flex:1;min-width:120px;" value="' + e.name + '" onchange="sectEditorState.enemies[' + i + '].name=this.value" placeholder="名称">' +
-      '<select class="form-select" style="width:110px;" onchange="sectEditorState.enemies[' + i + '].tier=parseInt(this.value)">' +
+      '<input type="text" class="form-input" style="flex:1;min-width:90px;" value="' + e.name + '" onchange="sectEditorState.enemies[' + i + '].name=this.value" placeholder="名称">' +
+      '<input type="text" class="form-input" style="flex:1;min-width:120px;" value="' + (e.image || '') + '" onchange="sectEditorState.enemies[' + i + '].image=this.value" placeholder="图片URL(可选)">' +
+      '<select class="form-select" style="width:95px;" onchange="sectEditorState.enemies[' + i + '].tier=parseInt(this.value)">' +
       MONSTER_TIERS.map(function(t) { return '<option value="' + t.tier + '"' + ((e.tier||3) === t.tier ? ' selected' : '') + '>' + t.name + '</option>'; }).join('') +
       '</select>' +
-      '<select class="form-select" style="width:100px;" onchange="sectEditorState.enemies[' + i + '].skillKey=this.value">' +
+      '<select class="form-select" style="width:85px;" onchange="sectEditorState.enemies[' + i + '].skillKey=this.value">' +
       Object.entries(ENEMY_SKILL_PRESETS).map(function(ent) { return '<option value="' + ent[0] + '"' + (e.skillKey === ent[0] ? ' selected' : '') + '>' + ent[1].label + '</option>'; }).join('') +
       '</select>' +
       '<button class="btn btn-ghost btn-sm" onclick="removeSectEnemy(' + i + ')">删</button>' +
@@ -7783,7 +8124,8 @@ function saveSect() {
   var data = {
     name: name, icon: document.getElementById('sectEditorIcon').value.trim() || '🏯',
     desc: document.getElementById('sectEditorDesc').value.trim(),
-    enemies: sectEditorState.enemies.filter(function(e) { return e.name && e.maxHp > 0; }),
+    image: document.getElementById('sectEditorImage').value.trim() || '',
+    enemies: sectEditorState.enemies.filter(function(e) { return e.name && e.name.trim(); }),
     reward: reward,
   };
   if (sectEditorState.editingId) {
@@ -7834,16 +8176,21 @@ function showSectDetail(sectId) {
   document.getElementById('sectorDetailTitle').textContent = s.icon + ' ' + s.name;
   var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
   var isCleared = cleared[s.id];
-  var html = '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;line-height:1.7;">' + (s.desc || '') + '</div>';
+  var html = '';
+  if (s.image) {
+    html += '<div style="text-align:center;margin-bottom:14px;"><img src="' + s.image + '" style="max-width:100%;max-height:180px;border-radius:8px;object-fit:cover;"></div>';
+  }
+  html += '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;line-height:1.7;">' + (s.desc || '') + '</div>';
   html += '<div style="font-size:13px;font-weight:600;color:var(--gold-light);margin-bottom:8px;">挑战路线（' + s.enemies.length + '连战）</div>';
   html += '<div style="margin-bottom:14px;">';
   s.enemies.forEach(function(e, i) {
     var skLabel = (e.skillKey && e.skillKey !== 'none' && ENEMY_SKILL_PRESETS[e.skillKey]) ? ENEMY_SKILL_PRESETS[e.skillKey].label : '';
     var tierCfg = getTierConfig(e.tier || 3);
     var isBoss = i === s.enemies.length - 1;
+    var enemyImg = e.image ? '<img src="' + e.image + '" style="width:28px;height:28px;border-radius:4px;object-fit:cover;margin-right:6px;vertical-align:middle;">' : '';
     html += '<div style="display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;align-items:center;">' +
-      '<span>' + (i + 1) + '. ' + (isBoss ? '<b style="color:var(--cinnabar-light);">【BOSS】</b> ' : '') + e.name + (skLabel ? ' <span style="color:var(--cinnabar-light);">[' + skLabel + ']</span>' : '') + '</span>' +
-      '<span style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';font-weight:600;">' + tierCfg.name + ' · ' + tierCfg.targetRounds + '回合</span></div>';
+      '<span>' + enemyImg + (i + 1) + '. ' + (isBoss ? '<b style="color:var(--cinnabar-light);">【BOSS】</b> ' : '') + e.name + (skLabel ? ' <span style="color:var(--cinnabar-light);">[' + skLabel + ']</span>' : '') + '</span>' +
+      '<span style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';font-weight:600;">' + tierCfg.name + '</span></div>';
   });
   html += '</div>';
   html += '<div style="font-size:11px;color:var(--text-dim);margin-bottom:14px;padding:8px 10px;background:rgba(0,0,0,0.15);border-radius:6px;line-height:1.6;">💡 敌人血量和攻击根据你每日裸战力动态计算，专注越久越容易通关。连战中血量不恢复，灵力每战回满。</div>';
@@ -7871,7 +8218,11 @@ var sectRun = null;
 function startSectChallenge(sectId) {
   var s = getSectorById(sectId);
   if (!s || s.enemies.length === 0) { showToast('宗门数据异常', 'error'); return; }
-  sectRun = { sectId: sectId, enemyIndex: 0, playerHp: null, rewardGiven: false };
+  // 宗门战斗默认全装备
+  prepareState.selectedGongfa = gameState.equipment.gongfa.map(function(e){ return e.id; });
+  prepareState.selectedPermanent = gameState.equipment.permanent.map(function(e){ return e.id; });
+  prepareState.selectedConsumable = gameState.equipment.consumable.map(function(e){ return e.id; });
+  sectRun = { sectId: sectId, enemyIndex: 0, playerHp: null, playerMaxHp: null, rewardGiven: false };
   runNextSectBattle();
 }
 function runNextSectBattle() {
@@ -7882,13 +8233,22 @@ function runNextSectBattle() {
   var monsterObj = {
     id: 'sect_' + s.id + '_' + sectRun.enemyIndex,
     name: enemy.name, maxHp: stats.maxHp, attack: stats.attack,
-    image: 'https://aka.doubaocdn.com/s/tUOlUrUx0F',
+    image: enemy.image || 'https://aka.doubaocdn.com/s/tUOlUrUx0F',
     skill: skillFromPreset(enemy.skillKey),
     tier: enemy.tier || 3,
   };
+  // 玩家战力按新公式计算（与普通战斗一致）
+  var minutes = getTodayFocus();
+  var dynamicBaseAtk = Math.floor(minutes * 1.2);
+  var dynamicBaseHp = Math.floor(100 + minutes * 0.5);
+  // 连战从第二场起恢复到最大血量的80%，第一场满血
+  var initHp = null;
+  if (sectRun.enemyIndex > 0 && sectRun.playerMaxHp) {
+    initHp = Math.floor(sectRun.playerMaxHp * 0.8);
+  }
   startBattle(monsterObj, {
-    context: 'sect', baseAtk: 55, baseHp: 220,
-    initialPlayerHp: sectRun.playerHp,
+    context: 'sect', baseAtk: dynamicBaseAtk, baseHp: dynamicBaseHp,
+    initialPlayerHp: initHp,
     onWin: onSectBattleWin,
     onLose: onSectBattleLose,
   });
@@ -7896,6 +8256,7 @@ function runNextSectBattle() {
 function onSectBattleWin(bs) {
   var s = getSectorById(sectRun.sectId);
   sectRun.playerHp = bs.player.hp;
+  sectRun.playerMaxHp = bs.player.maxHp;
   sectRun.enemyIndex++;
   if (sectRun.enemyIndex >= s.enemies.length) {
     var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
@@ -7924,11 +8285,13 @@ function showSectIntermission(s, bs) {
   var isBoss = sectRun.enemyIndex === s.enemies.length - 1;
   var nextStats = calcMonsterStats({ tier: next.tier || 3, name: next.name });
   var tierCfg = getTierConfig(next.tier || 3);
-  showBattleOverlay('连战连胜', '已击败 ' + sectRun.enemyIndex + '/' + s.enemies.length + ' 名敌人，灵力已回满。',
+  var recoverHp = Math.floor(bs.player.maxHp * 0.8);
+  showBattleOverlay('连战连胜', '已击败 ' + sectRun.enemyIndex + '/' + s.enemies.length + ' 名敌人，灵力已回满，血量恢复至80%。',
     '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
-      '剩余生命：<b style="color:var(--jade-light);">' + bs.player.hp + '/' + bs.player.maxHp + '</b><br>' +
+      '本场剩余生命：<b style="color:var(--jade-light);">' + bs.player.hp + '/' + bs.player.maxHp + '</b><br>' +
+      '下一场起始生命：<b style="color:var(--gold-light);">' + recoverHp + '/' + bs.player.maxHp + '（80%）</b><br>' +
       '下一个对手：<b style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';">' + (isBoss ? '【BOSS】' : '') + next.name + '</b><br>' +
-      '强度：' + tierCfg.name + ' · 预计' + tierCfg.targetRounds + '回合<br>' +
+      '强度：' + tierCfg.name + '<br>' +
       '血量：约' + nextStats.maxHp + ' · 攻击：约' + nextStats.attack +
     '</div>',
     [{ label: '继续挑战', action: 'runNextSectBattle()', primary: true }, { label: '放弃撤退', action: "navigate('sect')" }]);
@@ -7995,6 +8358,7 @@ function startArena() {
   arenaRun.nextEnemy = generateArenaEnemy(1);
   arenaStats.total++;
   saveArenaStats();
+  equipAllForBattle();
   startArenaBattle();
 }
 function startArenaBattle() {
@@ -8274,41 +8638,46 @@ function renderInventoryGrid() {
   }
   grid.innerHTML = list.map(eq => {
     var isGongfa = eq.type === 'gongfa';
+    var isPermanent = eq.type === 'permanent';
+    var canCultivate = isGongfa || isPermanent;
     var lv = eq.level || 1;
-    var lvBonus = isGongfa ? getGongfaLevelBonus(eq) : {atkMult:1, critAdd:0};
-    var dispAtk = isGongfa ? Math.floor(eq.power * lvBonus.atkMult) : eq.power;
-    var dispCrit = isGongfa ? (eq.crit || 0) + lvBonus.critAdd : (eq.crit || 0);
-    // 功法修炼UI
+    var lvBonus = isGongfa ? getGongfaLevelBonus(eq) : (isPermanent ? getPermanentLevelBonus(eq) : {atkMult:1, critAdd:0, hpAdd:0});
+    var dispAtk = canCultivate ? Math.floor(eq.power * lvBonus.atkMult) : eq.power;
+    var dispCrit = canCultivate ? (eq.crit || 0) + lvBonus.critAdd : (eq.crit || 0);
+    var levelName = canCultivate ? getLevelName(eq.type, lv) : '';
+    // 功法/法宝修炼UI
     var cultHtml = '';
-    if (isGongfa) {
-      var cult = getGongfaCultivation(eq);
-      var req = getGongfaUpgradeReq(lv);
-      var isActive = cultivationState.activeId === eq.id;
+    if (canCultivate) {
+      var cult = getCultivation(eq);
+      var req = getUpgradeReq(lv);
+      var isActive = cultivationState.activeId === eq.id && cultivationState.activeType === eq.type;
       var liveMin = isActive ? cult + Math.floor((Date.now() - cultivationState.startTime) / 60000) : cult;
       var pct = Math.min(100, Math.floor(liveMin / req * 100));
       var canUp = liveMin >= req && lv < 5;
+      var liveSessionMin = isActive ? Math.min(Math.floor((Date.now()-cultivationState.startTime)/60000), CULTIVATION_SESSION_LIMIT) : 0;
       cultHtml = '<div style="margin-top:8px;padding:8px;background:rgba(212,175,55,0.06);border-radius:6px;border:1px solid rgba(212,175,55,0.15);">' +
         '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;">' +
-        '<span style="color:var(--gold-light);">第' + lv + '重' + (lv >= 5 ? '（满级）' : '') + '</span>' +
-        '<span style="color:var(--text-dim);">' + liveMin + '/' + req + '分钟' + (isActive ? '（本次' + Math.min(Math.floor((Date.now()-cultivationState.startTime)/60000), CULTIVATION_SESSION_LIMIT) + '/50）' : '') + '</span></div>' +
+        '<span style="color:var(--gold-light);">' + levelName + (lv >= 5 ? '（满级）' : '') + '</span>' +
+        '<span style="color:var(--text-dim);">' + liveMin + '/' + req + '分钟' + (isActive ? '（本次' + liveSessionMin + '/50）' : '') + '</span></div>' +
         '<div style="height:4px;background:rgba(0,0,0,0.3);border-radius:2px;overflow:hidden;margin-bottom:6px;">' +
         '<div style="height:100%;width:' + pct + '%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light));transition:width 0.3s;"></div></div>' +
         '<div style="display:flex;gap:4px;">' +
-        '<button class="btn ' + (isActive ? 'btn-danger' : 'btn-primary') + ' btn-sm" style="flex:1;font-size:11px;padding:4px;" onclick="toggleGongfaCultivation(\'' + eq.id + '\')">' + (isActive ? '停止修炼' : '开始修炼') + '</button>' +
-        (canUp ? '<button class="btn btn-primary btn-sm" style="flex:1;font-size:11px;padding:4px;background:var(--cinnabar);" onclick="upgradeGongfa(\'' + eq.id + '\')">突破</button>' : '') +
+        '<button class="btn ' + (isActive ? 'btn-danger' : 'btn-primary') + ' btn-sm" style="flex:1;font-size:11px;padding:4px;" onclick="toggleCultivation(\'' + eq.type + '\',\'' + eq.id + '\')">' + (isActive ? '停止修炼' : '开始修炼') + '</button>' +
+        (canUp ? '<button class="btn btn-primary btn-sm" style="flex:1;font-size:11px;padding:4px;background:var(--cinnabar);" onclick="upgradeEquip(\'' + eq.type + '\',\'' + eq.id + '\')">突破</button>' : '') +
         '</div></div>';
     }
     return '<div class="inventory-card">' +
       '<div class="inventory-card-head">' +
         '<div class="inventory-card-thumb">' + equipThumbHtml(eq) + '</div>' +
         '<div class="inventory-card-title">' +
-          '<div class="inventory-card-name">' + eq.name + (isGongfa ? ' <span style="font-size:11px;color:var(--gold-light);">Lv.' + lv + '</span>' : '') + '</div>' +
+          '<div class="inventory-card-name">' + eq.name + (canCultivate ? ' <span style="font-size:11px;color:var(--gold-light);">' + levelName + '</span>' : '') + '</div>' +
           '<span class="inventory-card-cat">' + getCatName(eq.type, eq.categoryId) + '</span>' +
         '</div>' +
       '</div>' +
       '<div class="inventory-card-stats">' +
-        '<span class="inventory-card-stat power">攻击 +' + dispAtk + (isGongfa && lv > 1 ? ' <span style="font-size:9px;color:var(--jade-light);">(基础' + eq.power + ')</span>' : '') + '</span>' +
+        '<span class="inventory-card-stat power">攻击 +' + dispAtk + (canCultivate && lv > 1 ? ' <span style="font-size:9px;color:var(--jade-light);">(基础' + eq.power + ')</span>' : '') + '</span>' +
         '<span class="inventory-card-stat crit">暴击 +' + dispCrit + '%</span>' +
+        (isPermanent && lvBonus.hpAdd ? '<span class="inventory-card-stat" style="color:#4ade80;">生命 +' + lvBonus.hpAdd + '</span>' : '') +
       '</div>' +
       '<div class="inventory-card-effect">' + (eq.effect || '—') + '</div>' +
       ((eq.affixes && eq.affixes.length > 0) ? '<div class="affix-list">' + eq.affixes.map(function(a){ return '<span class="affix-tag good">' + affixText(a) + '</span>'; }).join('') + '</div>' : '') +
@@ -8513,6 +8882,12 @@ function init() {
     if (el) el.style.display = 'none';
   });
   currentEditingBookId = null;
+  // 请求通知权限（用于倒计时结束提醒）
+  try {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  } catch(e) {}
   navigate('home');
   // 恢复后台计时（退出网页后时间继续走）
   setTimeout(function() {
@@ -8544,9 +8919,9 @@ window.addEventListener('beforeunload', function() {
       if (timerState.interval) { clearInterval(timerState.interval); timerState.interval = null; }
       saveTimerState();
     }
-    // 2. 功法修炼
+    // 2. 功法/法宝修炼
     if (cultivationState.activeId && cultivationState.startTime) {
-      var eq = gameState.equipment.gongfa.find(function(g){ return g.id === cultivationState.activeId; });
+      var eq = getEquipById(cultivationState.activeType || 'gongfa', cultivationState.activeId);
       if (eq) {
         var cmins = Math.min(Math.floor((Date.now() - cultivationState.startTime) / 60000), CULTIVATION_SESSION_LIMIT);
         if (cmins > 0) {
@@ -8855,170 +9230,325 @@ function playElementEffect(element) {
   document.body.appendChild(flash);
   setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if (flash.parentNode) flash.remove(); }, 800); }, 100);
 
-  // 光属性：巨型光柱 + 八道光芒 + 圣光粒子雨
+  // 光属性：神圣天堂降临 + 万丈光芒 + 圣光审判 + 天使之翼 + 圣光粒子雨 + 神圣光环
   if (element === 'light') {
-    var beam = document.createElement('div');
-    beam.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:100px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, ' + color + '66, ' + color + ', #fff, ' + color + '88);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ',0 0 200px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxLightBeam 1.2s ease-out forwards;';
-    document.body.appendChild(beam);
-    setTimeout(function(){ if(beam.parentNode) beam.remove(); }, 2600);
-    for (var i = 0; i < 8; i++) {
-      var ray = document.createElement('div');
-      var rot = i * 45;
-      ray.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (vw*0.4) + 'px;height:6px;background:linear-gradient(to right, ' + color + ', ' + color + '66, transparent);transform-origin:left center;transform:rotate(' + rot + 'deg);pointer-events:none;z-index:9998;opacity:0;box-shadow:0 0 10px ' + color + ';animation:fxLightBurst 1s ease-out 0.15s forwards;';
-      document.body.appendChild(ray);
-      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(ray), 1200);
-    }
-    for (var i = 0; i < 30; i++) {
-      var particle = document.createElement('div');
-      var px = cx + (Math.random() - 0.5) * w * 2;
-      particle.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h) + 'px;width:' + (4+Math.random()*8) + 'px;height:' + (4+Math.random()*8) + 'px;border-radius:50%;background:' + color + ';box-shadow:0 0 10px ' + color + ',0 0 20px ' + color + ';pointer-events:none;z-index:9998;animation:fxFireRise ' + (1+Math.random()*0.8) + 's ease-out ' + (Math.random()*0.4) + 's forwards;';
-      document.body.appendChild(particle);
-      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(particle), 2000);
-    }
-  }
-  // 暗属性：黑暗吞噬 + 暗影触手 + 黑雾弥漫
-  else if (element === 'dark') {
-    var darkBurst = document.createElement('div');
-    darkBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*3) + 'px;height:' + (w*3) + 'px;border-radius:50%;background:radial-gradient(circle, #000 20%, ' + color + 'aa 40%, ' + color + '44 60%, transparent);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 1.2s ease-out forwards;';
-    document.body.appendChild(darkBurst);
-    setTimeout(function(){ if(darkBurst.parentNode) darkBurst.remove(); }, 2600);
-    for (var i = 0; i < 6; i++) {
-      var tentacle = document.createElement('div');
-      var angle = (Math.PI * 2 * i) / 6;
-      var tx = Math.cos(angle) * w;
-      var ty = Math.sin(angle) * h;
-      tentacle.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:15px;height:' + (h*0.8) + 'px;background:linear-gradient(to top, ' + color + ', #000, transparent);border-radius:50%;filter:blur(2px);pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxEarthShard 1s ease-out forwards;';
-      document.body.appendChild(tentacle);
-      setTimeout(function(t){ return function(){ if(t.parentNode) t.remove(); }; }(tentacle), 1100);
-    }
-    for (var i = 0; i < 15; i++) {
-      var mist = document.createElement('div');
-      var mx = cx + (Math.random() - 0.5) * vw * 0.6;
-      mist.style.cssText = 'position:fixed;left:' + mx + 'px;top:' + (cy + h/3) + 'px;width:' + (50+Math.random()*80) + 'px;height:' + (50+Math.random()*80) + 'px;border-radius:50%;background:radial-gradient(circle, ' + color + 'cc, ' + color + '44, transparent);filter:blur(8px);pointer-events:none;z-index:9998;animation:fxDarkRise ' + (1.2+Math.random()*0.8) + 's ease-out ' + (Math.random()*0.4) + 's forwards;';
-      document.body.appendChild(mist);
-      setTimeout(function(m){ return function(){ if(m.parentNode) m.remove(); }; }(mist), 2200);
-    }
-  }
-  // 火属性：巨型火球爆炸 + 火焰柱 + 火星雨
-  else if (element === 'fire') {
-    var fireBurst = document.createElement('div');
-    fireBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2.5) + 'px;height:' + (w*2.5) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, #FFD700 20%, #FF5722 40%, #B71C1C 60%, transparent);box-shadow:0 0 80px #FF5722,0 0 160px #FF5722,0 0 240px #FF9800;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxFireBurst 0.9s ease-out forwards;';
-    document.body.appendChild(fireBurst);
-    setTimeout(function(){ if(fireBurst.parentNode) fireBurst.remove(); }, 2000);
-    for (var i = 0; i < 5; i++) {
-      var fireCol = document.createElement('div');
-      var fx = cx + (i - 2) * 25;
-      fireCol.style.cssText = 'position:fixed;left:' + fx + 'px;top:' + (cy + h/3) + 'px;width:' + (20+Math.random()*15) + 'px;height:' + (h*1.5) + 'px;background:linear-gradient(to top, #B71C1C, #FF5722, #FF9800, #FFD700, transparent);border-radius:50% 50% 30% 30%;filter:blur(3px);box-shadow:0 0 30px #FF5722;pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxWoodGrow 0.8s ease-out ' + (i*0.06) + 's forwards;';
-      document.body.appendChild(fireCol);
-      setTimeout(function(f){ return function(){ if(f.parentNode) f.remove(); }; }(fireCol), 1200);
-    }
-    for (var i = 0; i < 35; i++) {
-      var spark = document.createElement('div');
-      var sx = cx + (Math.random() - 0.5) * w * 2.5;
-      var fireColors = ['#FF5722', '#FF9800', '#FFD700', '#FFC107', '#fff'];
-      spark.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + (cy + h/2) + 'px;width:' + (5+Math.random()*8) + 'px;height:' + (5+Math.random()*8) + 'px;border-radius:50%;background:' + fireColors[Math.floor(Math.random()*fireColors.length)] + ';box-shadow:0 0 10px #FF5722,0 0 20px #FF9800;pointer-events:none;z-index:9998;animation:fxFireRise ' + (0.9+Math.random()*0.8) + 's ease-out ' + (Math.random()*0.3) + 's forwards;';
-      document.body.appendChild(spark);
-      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(spark), 2000);
-    }
-  }
-  // 水属性：巨型水爆 + 水龙卷 + 瀑布
-  else if (element === 'water') {
-    var waterBurst = document.createElement('div');
-    waterBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2.5) + 'px;height:' + (w*2.5) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ' 30%, ' + color + '66 50%, transparent);box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWaterSplash 1s ease-out forwards;';
-    document.body.appendChild(waterBurst);
-    setTimeout(function(){ if(waterBurst.parentNode) waterBurst.remove(); }, 2200);
-    var waterspout = document.createElement('div');
-    waterspout.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:100px;height:' + (h*2) + 'px;background:conic-gradient(from 0deg, transparent, ' + color + '66, #fff, ' + color + '88, transparent, ' + color + '44, transparent);border-radius:50%;filter:blur(3px);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWindSpin 1.2s linear forwards;';
-    document.body.appendChild(waterspout);
-    setTimeout(function(){ if(waterspout.parentNode) waterspout.remove(); }, 2600);
-    for (var i = 0; i < 25; i++) {
-      var drop = document.createElement('div');
-      var dx = cx + (Math.random() - 0.5) * w * 2;
-      drop.style.cssText = 'position:fixed;left:' + dx + 'px;top:' + (cy - h) + 'px;width:' + (6+Math.random()*8) + 'px;height:' + (10+Math.random()*12) + 'px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(to bottom, #fff, ' + color + ');box-shadow:0 0 10px ' + color + ';pointer-events:none;z-index:9998;animation:fxWaterDrop ' + (0.7+Math.random()*0.5) + 's ease-in ' + (Math.random()*0.4) + 's forwards;';
-      document.body.appendChild(drop);
-      setTimeout(function(d){ return function(){ if(d.parentNode) d.remove(); }; }(drop), 1600);
-    }
-  }
-  // 电属性：万雷齐发 + 雷暴降临 + 连锁闪电 + 电弧风暴 + 天雷灭世
-  else if (element === 'electric') {
-    // 全屏闪白3次（更强烈）
+    // 全屏圣光闪耀3次
     for (var f = 0; f < 3; f++) {
       (function(idx) {
         setTimeout(function() {
-          var whiteFlash = document.createElement('div');
-          whiteFlash.style.cssText = 'position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9999;animation:fxLightBurst 0.2s ease-out forwards;';
-          document.body.appendChild(whiteFlash);
-          setTimeout(function(){ if(whiteFlash.parentNode) whiteFlash.remove(); }, 400);
+          var holyFlash = document.createElement('div');
+          holyFlash.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle, #fff, ' + color + '88, ' + color + '44, transparent);pointer-events:none;z-index:9999;opacity:0;animation:fxLightBurst 0.2s ease-out forwards;';
+          document.body.appendChild(holyFlash);
+          setTimeout(function(){ if(holyFlash.parentNode) holyFlash.remove(); }, 400);
+        }, idx * 150);
+      })(f);
+    }
+    // 巨型神圣光柱（从天而降，更粗更亮）
+    var beam = document.createElement('div');
+    beam.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:180px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, ' + color + '88, #fff);box-shadow:0 0 80px ' + color + ',0 0 160px ' + color + ',0 0 300px ' + color + ',0 0 500px ' + color + '66;pointer-events:none;z-index:9998;transform-origin:top center;transform:translateX(-50%);animation:fxLightBeam 1.5s ease-out forwards;';
+    document.body.appendChild(beam);
+    setTimeout(function(){ if(beam.parentNode) beam.remove(); }, 3000);
+    // 16道放射光芒（更多更宽）
+    for (var i = 0; i < 16; i++) {
+      var ray = document.createElement('div');
+      var rot = i * 22.5;
+      ray.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (vw*0.5) + 'px;height:10px;background:linear-gradient(to right, #fff, ' + color + ', ' + color + '66, transparent);transform-origin:left center;transform:rotate(' + rot + 'deg);pointer-events:none;z-index:9998;opacity:0;box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ';animation:fxLightBurst 1.2s ease-out 0.2s forwards;';
+      document.body.appendChild(ray);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(ray), 1600);
+    }
+    // 8层神圣光环（更大更亮）
+    for (var i = 0; i < 8; i++) {
+      var holyRing = document.createElement('div');
+      holyRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.8+i*0.8)) + 'px;height:' + (w*(0.8+i*0.8)) + 'px;border:8px solid #fff;border-radius:50%;box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ',inset 0 0 50px ' + color + '88;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:0;animation:fxLightBurst 1.2s ease-out ' + (i*0.1) + 's forwards;';
+      document.body.appendChild(holyRing);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(holyRing), 2200);
+    }
+    // 天使之翼（左右展开）
+    for (var side = 0; side < 2; side++) {
+      var wing = document.createElement('div');
+      var wingDir = side === 0 ? -1 : 1;
+      wing.style.cssText = 'position:fixed;left:' + (cx + wingDir * w * 0.5) + 'px;top:' + cy + 'px;width:' + (w*2.5) + 'px;height:' + (h*2) + 'px;background:radial-gradient(ellipse at ' + (side === 0 ? 'right' : 'left') + ' center, #fff, ' + color + 'aa, ' + color + '44, transparent);border-radius:50% 0 0 50%;filter:blur(8px);pointer-events:none;z-index:9997;transform:translateY(-50%) scaleX(0);animation:fxLightBurst 1.4s ease-out 0.3s forwards;';
+      if (side === 1) wing.style.borderRadius = '0 50% 50% 0';
+      document.body.appendChild(wing);
+      setTimeout(function(w){ return function(){ if(w.parentNode) w.remove(); }; }(wing), 2800);
+    }
+    // 60个圣光粒子雨（更多更亮）
+    for (var i = 0; i < 60; i++) {
+      var particle = document.createElement('div');
+      var px = cx + (Math.random() - 0.5) * w * 4;
+      particle.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h*1.5) + 'px;width:' + (6+Math.random()*10) + 'px;height:' + (6+Math.random()*10) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ',0 0 45px #fff;pointer-events:none;z-index:9998;animation:fxFireRise ' + (1.5+Math.random()*1.2) + 's ease-out ' + (Math.random()*0.5) + 's forwards;';
+      document.body.appendChild(particle);
+      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(particle), 3000);
+    }
+    // 神圣十字架
+    var cross = document.createElement('div');
+    cross.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:20px;height:' + (h*2) + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, transparent);box-shadow:0 0 40px ' + color + ',0 0 80px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scaleY(0);animation:fxLightBurst 1.2s ease-out 0.4s forwards;';
+    document.body.appendChild(cross);
+    setTimeout(function(){ if(cross.parentNode) cross.remove(); }, 2500);
+    var crossH = document.createElement('div');
+    crossH.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h*0.3) + 'px;width:' + (w*1.5) + 'px;height:20px;background:linear-gradient(to right, transparent, #fff, ' + color + ', #fff, transparent);box-shadow:0 0 40px ' + color + ',0 0 80px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scaleX(0);animation:fxLightBurst 1.2s ease-out 0.5s forwards;';
+    document.body.appendChild(crossH);
+    setTimeout(function(){ if(crossH.parentNode) crossH.remove(); }, 2500);
+  }
+  // 暗属性：深渊降临 + 暗影吞噬 + 万魂哭嚎 + 黑暗触手 + 黑雾弥漫 + 血色月亮
+  else if (element === 'dark') {
+    // 全屏黑暗吞噬
+    var darkScreen = document.createElement('div');
+    darkScreen.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle at ' + cx + 'px ' + cy + 'px, transparent 0%, #000 30%, #000 100%);pointer-events:none;z-index:9996;opacity:0;animation:fxLightBurst 1.5s ease-out forwards;';
+    document.body.appendChild(darkScreen);
+    setTimeout(function(){ if(darkScreen.parentNode) darkScreen.remove(); }, 3000);
+    // 巨型黑暗漩涡（中心吞噬）
+    var darkBurst = document.createElement('div');
+    darkBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*5) + 'px;height:' + (w*5) + 'px;border-radius:50%;background:radial-gradient(circle, #000 10%, ' + color + 'cc 25%, ' + color + '66 45%, ' + color + '22 65%, transparent);box-shadow:0 0 100px ' + color + ',0 0 200px #000,inset 0 0 100px #000;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxWindSpin 2s linear forwards;';
+    document.body.appendChild(darkBurst);
+    setTimeout(function(){ if(darkBurst.parentNode) darkBurst.remove(); }, 3200);
+    // 血色月亮（天空中）
+    var bloodMoon = document.createElement('div');
+    bloodMoon.style.cssText = 'position:fixed;left:' + (cx + w*1.5) + 'px;top:' + (cy - h*2) + 'px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, #ff1744, #b71c1c, #7f0000);box-shadow:0 0 60px #ff1744,0 0 120px #ff1744,0 0 200px #b71c1c;pointer-events:none;z-index:9997;opacity:0;animation:fxLightBurst 1.2s ease-out 0.3s forwards;';
+    document.body.appendChild(bloodMoon);
+    setTimeout(function(){ if(bloodMoon.parentNode) bloodMoon.remove(); }, 3000);
+    // 12条黑暗触手（从地面伸出，更粗更长）
+    for (var i = 0; i < 12; i++) {
+      var tentacle = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 12;
+      var tx = Math.cos(angle) * w * 1.2;
+      var ty = Math.sin(angle) * h * 0.8;
+      tentacle.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:25px;height:' + (h*1.8) + 'px;background:linear-gradient(to top, #000, ' + color + ', #1a1a2e, ' + color + ', transparent);border-radius:50%;filter:blur(3px);box-shadow:0 0 25px ' + color + ',0 0 50px #000;pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxEarthShard 1.3s ease-out ' + (i*0.05) + 's forwards;';
+      document.body.appendChild(tentacle);
+      setTimeout(function(t){ return function(){ if(t.parentNode) t.remove(); }; }(tentacle), 1800);
+    }
+    // 8层暗影扩散环
+    for (var i = 0; i < 8; i++) {
+      var darkRing = document.createElement('div');
+      darkRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.6+i*0.9)) + 'px;height:' + (w*(0.6+i*0.9)) + 'px;border:10px solid ' + color + ';border-radius:50%;box-shadow:0 0 50px ' + color + ',0 0 100px #000,inset 0 0 50px ' + color + '88;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 1.2s ease-out ' + (i*0.1) + 's forwards;';
+      document.body.appendChild(darkRing);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(darkRing), 2200);
+    }
+    // 40个怨灵火球（上升的紫色火焰）
+    for (var i = 0; i < 40; i++) {
+      var soul = document.createElement('div');
+      var sx = cx + (Math.random() - 0.5) * w * 3.5;
+      soul.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + (cy + h/2) + 'px;width:' + (8+Math.random()*12) + 'px;height:' + (8+Math.random()*12) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ', #7b1fa2, #4a148c);box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ',0 0 60px #7b1fa2;pointer-events:none;z-index:9998;animation:fxFireRise ' + (1.8+Math.random()*1.2) + 's ease-out ' + (Math.random()*0.6) + 's forwards;';
+      document.body.appendChild(soul);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(soul), 3200);
+    }
+    // 30团黑雾弥漫（更大更浓）
+    for (var i = 0; i < 30; i++) {
+      var mist = document.createElement('div');
+      var mx = cx + (Math.random() - 0.5) * vw * 0.8;
+      mist.style.cssText = 'position:fixed;left:' + mx + 'px;top:' + (cy + (Math.random()-0.5)*h*2) + 'px;width:' + (80+Math.random()*120) + 'px;height:' + (80+Math.random()*120) + 'px;border-radius:50%;background:radial-gradient(circle, ' + color + 'dd, ' + color + '66, #000, transparent);filter:blur(12px);pointer-events:none;z-index:9997;animation:fxDarkRise ' + (1.8+Math.random()*1) + 's ease-out ' + (Math.random()*0.5) + 's forwards;';
+      document.body.appendChild(mist);
+      setTimeout(function(m){ return function(){ if(m.parentNode) m.remove(); }; }(mist), 3200);
+    }
+    // 骷髅头飘过
+    for (var i = 0; i < 5; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var skull = document.createElement('div');
+          skull.style.cssText = 'position:fixed;left:' + (cx + (idx-2)*w) + 'px;top:' + (cy - h*0.5) + 'px;font-size:50px;opacity:0;animation:fxLightBurst 1.5s ease-out forwards;text-shadow:0 0 30px ' + color + ',0 0 60px #000;pointer-events:none;z-index:9998;';
+          skull.textContent = '💀';
+          document.body.appendChild(skull);
+          setTimeout(function(){ if(skull.parentNode) skull.remove(); }, 2000);
+        }, idx * 200);
+      })(i);
+    }
+  }
+  // 火属性：焚天灭世 + 巨型火球 + 火焰风暴 + 火雨 + 岩浆喷发 + 火凤凰
+  else if (element === 'fire') {
+    // 全屏火焰闪烁3次
+    for (var f = 0; f < 3; f++) {
+      (function(idx) {
+        setTimeout(function() {
+          var fireFlash = document.createElement('div');
+          fireFlash.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle, #FF572266, #B71C1C44, transparent);pointer-events:none;z-index:9999;opacity:0;animation:fxLightBurst 0.18s ease-out forwards;';
+          document.body.appendChild(fireFlash);
+          setTimeout(function(){ if(fireFlash.parentNode) fireFlash.remove(); }, 350);
+        }, idx * 130);
+      })(f);
+    }
+    // 巨型火球爆炸（更大更亮）
+    var fireBurst = document.createElement('div');
+    fireBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*4) + 'px;height:' + (w*4) + 'px;border-radius:50%;background:radial-gradient(circle, #fff 5%, #FFD700 15%, #FF9800 30%, #FF5722 50%, #B71C1C 70%, transparent);box-shadow:0 0 120px #FF5722,0 0 240px #FF9800,0 0 400px #FF5722,0 0 600px #B71C1C66;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxFireBurst 1.2s ease-out forwards;';
+    document.body.appendChild(fireBurst);
+    setTimeout(function(){ if(fireBurst.parentNode) fireBurst.remove(); }, 2800);
+    // 12根巨型火柱（更粗更高）
+    for (var i = 0; i < 12; i++) {
+      var fireCol = document.createElement('div');
+      var fx = cx + (i - 5.5) * 32 + (Math.random()-0.5)*15;
+      fireCol.style.cssText = 'position:fixed;left:' + fx + 'px;top:' + (cy + h/3) + 'px;width:' + (35+Math.random()*25) + 'px;height:' + (h*2.2) + 'px;background:linear-gradient(to top, #B71C1C, #FF5722, #FF9800, #FFD700, #fff, transparent);border-radius:50% 50% 30% 30%;filter:blur(4px);box-shadow:0 0 50px #FF5722,0 0 100px #FF9800;pointer-events:none;z-index:9998;transform-origin:bottom center;animation:fxWoodGrow 1s ease-out ' + (i*0.05) + 's forwards;';
+      document.body.appendChild(fireCol);
+      setTimeout(function(f){ return function(){ if(f.parentNode) f.remove(); }; }(fireCol), 1800);
+    }
+    // 8层火焰冲击波
+    for (var i = 0; i < 8; i++) {
+      var fireRing = document.createElement('div');
+      fireRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.7+i*0.85)) + 'px;height:' + (w*(0.7+i*0.85)) + 'px;border:10px solid #FF5722;border-radius:50%;box-shadow:0 0 50px #FF5722,0 0 100px #FF9800,inset 0 0 50px #FFD70066;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 1s ease-out ' + (i*0.09) + 's forwards;';
+      document.body.appendChild(fireRing);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(fireRing), 2000);
+    }
+    // 80个火星雨（更多更广）
+    for (var i = 0; i < 80; i++) {
+      var spark = document.createElement('div');
+      var sx = cx + (Math.random() - 0.5) * w * 5;
+      var fireColors = ['#FF5722', '#FF9800', '#FFD700', '#FFC107', '#fff', '#FF1744'];
+      spark.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + (cy + h/2) + 'px;width:' + (7+Math.random()*10) + 'px;height:' + (7+Math.random()*10) + 'px;border-radius:50%;background:' + fireColors[Math.floor(Math.random()*fireColors.length)] + ';box-shadow:0 0 15px #FF5722,0 0 30px #FF9800,0 0 45px #FFD700;pointer-events:none;z-index:9998;animation:fxFireRise ' + (1.2+Math.random()*1) + 's ease-out ' + (Math.random()*0.4) + 's forwards;';
+      document.body.appendChild(spark);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(spark), 2800);
+    }
+    // 40块熔岩飞溅
+    for (var i = 0; i < 40; i++) {
+      var lava = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 40 + Math.random() * 0.5;
+      var dist = 100 + Math.random() * 200;
+      var tx = Math.cos(angle) * dist;
+      var ty = Math.sin(angle) * dist - 60;
+      lava.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (12+Math.random()*18) + 'px;height:' + (12+Math.random()*18) + 'px;background:radial-gradient(circle, #fff, #FFD700, #FF5722, #B71C1C);border-radius:40%;box-shadow:0 0 20px #FF5722,0 0 40px #FF9800;pointer-events:none;z-index:9998;animation:fxEarthShard 1.3s ease-out forwards;';
+      document.body.appendChild(lava);
+      setTimeout(function(l){ return function(){ if(l.parentNode) l.remove(); }; }(lava), 1800);
+    }
+    // 火凤凰（从左侧飞入）
+    var phoenix = document.createElement('div');
+    phoenix.style.cssText = 'position:fixed;left:-100px;top:' + (cy - h*0.3) + 'px;font-size:80px;pointer-events:none;z-index:9999;text-shadow:0 0 40px #FF5722,0 0 80px #FF9800,0 0 120px #FFD700;animation:fxPhoenix 1.8s ease-in-out forwards;';
+    phoenix.textContent = '🔥';
+    document.body.appendChild(phoenix);
+    setTimeout(function(){ if(phoenix.parentNode) phoenix.remove(); }, 2000);
+    // 地面岩浆池
+    var lavaPool = document.createElement('div');
+    lavaPool.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:' + (w*5) + 'px;height:100px;background:radial-gradient(ellipse, #FF5722, #B71C1C, #000, transparent);border-radius:50%;filter:blur(10px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1.5s ease-out 0.3s forwards;';
+    document.body.appendChild(lavaPool);
+    setTimeout(function(){ if(lavaPool.parentNode) lavaPool.remove(); }, 3500);
+  }
+  // 水属性：沧海横流 + 巨型水爆 + 水龙卷 + 瀑布 + 巨浪 + 冰晶
+  else if (element === 'water') {
+    // 全屏水波闪烁
+    var waterFlash = document.createElement('div');
+    waterFlash.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle at ' + cx + 'px ' + cy + 'px, ' + color + '44, ' + color + '11, transparent);pointer-events:none;z-index:9997;opacity:0;animation:fxLightBurst 0.5s ease-out forwards;';
+    document.body.appendChild(waterFlash);
+    setTimeout(function(){ if(waterFlash.parentNode) waterFlash.remove(); }, 1000);
+    // 巨型水爆（更大更亮）
+    var waterBurst = document.createElement('div');
+    waterBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*4) + 'px;height:' + (w*4) + 'px;border-radius:50%;background:radial-gradient(circle, #fff 10%, ' + color + ' 30%, ' + color + '88 50%, ' + color + '44 70%, transparent);box-shadow:0 0 80px ' + color + ',0 0 160px ' + color + ',0 0 300px ' + color + '66;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxWaterSplash 1.3s ease-out forwards;';
+    document.body.appendChild(waterBurst);
+    setTimeout(function(){ if(waterBurst.parentNode) waterBurst.remove(); }, 2800);
+    // 巨型水龙卷（更粗更高，旋转）
+    var waterspout = document.createElement('div');
+    waterspout.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:200px;height:' + (h*3) + 'px;background:conic-gradient(from 0deg, transparent, ' + color + '88, #fff, ' + color + 'aa, transparent, ' + color + '66, transparent, ' + color + 'cc, transparent);border-radius:50%;filter:blur(5px);box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxWindSpin 1.8s linear forwards;';
+    document.body.appendChild(waterspout);
+    setTimeout(function(){ if(waterspout.parentNode) waterspout.remove(); }, 3200);
+    // 8层水波纹扩散
+    for (var i = 0; i < 8; i++) {
+      var waterRing = document.createElement('div');
+      waterRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.6+i*0.9)) + 'px;height:' + (w*(0.6+i*0.9)) + 'px;border:8px solid ' + color + ';border-radius:50%;box-shadow:0 0 40px ' + color + ',0 0 80px ' + color + '66,inset 0 0 40px ' + color + '88;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 1.1s ease-out ' + (i*0.1) + 's forwards;';
+      document.body.appendChild(waterRing);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(waterRing), 2200);
+    }
+    // 两侧巨浪
+    for (var side = 0; side < 2; side++) {
+      var wave = document.createElement('div');
+      var waveDir = side === 0 ? -1 : 1;
+      wave.style.cssText = 'position:fixed;left:' + (cx + waveDir * w * 2) + 'px;top:' + (cy - h*0.5) + 'px;width:' + (w*3) + 'px;height:' + (h*2.5) + 'px;background:linear-gradient(to ' + (side === 0 ? 'right' : 'left') + ', ' + color + ', ' + color + '88, #fff, transparent);border-radius:50% 0 0 50%;filter:blur(6px);box-shadow:0 0 50px ' + color + ';pointer-events:none;z-index:9997;transform:scaleX(0);animation:fxLightBurst 1.4s ease-out 0.3s forwards;';
+      if (side === 1) wave.style.borderRadius = '0 50% 50% 0';
+      document.body.appendChild(wave);
+      setTimeout(function(w){ return function(){ if(w.parentNode) w.remove(); }; }(wave), 2800);
+    }
+    // 50个水滴从天而降（更多更大）
+    for (var i = 0; i < 50; i++) {
+      var drop = document.createElement('div');
+      var dx = cx + (Math.random() - 0.5) * w * 4;
+      drop.style.cssText = 'position:fixed;left:' + dx + 'px;top:' + (cy - h*2) + 'px;width:' + (10+Math.random()*14) + 'px;height:' + (16+Math.random()*18) + 'px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(to bottom, #fff, ' + color + ', ' + color + '88);box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ';pointer-events:none;z-index:9998;animation:fxWaterDrop ' + (0.9+Math.random()*0.7) + 's ease-in ' + (Math.random()*0.5) + 's forwards;';
+      document.body.appendChild(drop);
+      setTimeout(function(d){ return function(){ if(d.parentNode) d.remove(); }; }(drop), 2000);
+    }
+    // 30个水泡上升
+    for (var i = 0; i < 30; i++) {
+      var bubble = document.createElement('div');
+      var bx = cx + (Math.random() - 0.5) * w * 3;
+      bubble.style.cssText = 'position:fixed;left:' + bx + 'px;top:' + (cy + h/2) + 'px;width:' + (10+Math.random()*20) + 'px;height:' + (10+Math.random()*20) + 'px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #fff, ' + color + '88, ' + color + '44);box-shadow:0 0 15px ' + color + ',inset 0 0 10px #fff;pointer-events:none;z-index:9998;animation:fxFireRise ' + (1.5+Math.random()*1) + 's ease-out ' + (Math.random()*0.5) + 's forwards;';
+      document.body.appendChild(bubble);
+      setTimeout(function(b){ return function(){ if(b.parentNode) b.remove(); }; }(bubble), 3000);
+    }
+    // 瀑布（从上方倾泻）
+    var waterfall = document.createElement('div');
+    waterfall.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:' + (w*1.5) + 'px;height:' + (cy + h/2) + 'px;background:linear-gradient(to bottom, transparent, ' + color + '66, ' + color + ', #fff, ' + color + ');filter:blur(4px);box-shadow:0 0 40px ' + color + ';pointer-events:none;z-index:9997;transform:translateX(-50%) scaleY(0);transform-origin:top;animation:fxWoodGrow 1s ease-out 0.2s forwards;';
+    document.body.appendChild(waterfall);
+    setTimeout(function(){ if(waterfall.parentNode) waterfall.remove(); }, 2500);
+  }
+  // 电属性：天雷灭世 + 雷暴降临 + 万雷齐发 + 连锁闪电 + 电弧风暴
+  else if (element === 'electric') {
+    // 全屏闪白3次
+    for (var f = 0; f < 3; f++) {
+      (function(idx) {
+        setTimeout(function() {
+          var flash = document.createElement('div');
+          flash.style.cssText = 'position:fixed;inset:0;background:#fff;pointer-events:none;z-index:9999;opacity:0;animation:fxLightBurst 0.15s ease-out forwards;';
+          document.body.appendChild(flash);
+          setTimeout(function(){ if(flash.parentNode) flash.remove(); }, 300);
         }, idx * 120);
       })(f);
     }
     // 巨型雷暴云层
     var stormCloud = document.createElement('div');
-    stormCloud.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:' + (w*5) + 'px;height:150px;background:radial-gradient(ellipse at center, #1a1a2e 0%, ' + color + '66 30%, ' + color + '33 50%, transparent 70%);border-radius:50%;filter:blur(15px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 0.8s ease-out forwards;';
+    stormCloud.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h*2) + 'px;width:' + (w*5) + 'px;height:120px;background:radial-gradient(ellipse, ' + color + 'aa, ' + color + '55, #1a1a2e, transparent);border-radius:50%;filter:blur(12px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 0.8s ease-out forwards;';
     document.body.appendChild(stormCloud);
-    setTimeout(function(){ if(stormCloud.parentNode) stormCloud.remove(); }, 3000);
-    // 巨型主闪电（加粗加亮）
+    setTimeout(function(){ if(stormCloud.parentNode) stormCloud.remove(); }, 2500);
+    // 主闪电（加粗加亮）
     var mainBolt = document.createElement('div');
-    mainBolt.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:50px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #E1F5FE, #fff, ' + color + ', #fff, transparent);box-shadow:0 0 120px ' + color + ',0 0 240px ' + color + ',0 0 400px ' + color + ',0 0 600px #fff;pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.8s ease-out forwards;';
+    mainBolt.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:50px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #E1BEE7, #fff, ' + color + ', #fff);box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ',0 0 200px ' + color + ',0 0 300px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;transform:translateX(-50%);animation:fxElectric 0.7s ease-out forwards;';
     document.body.appendChild(mainBolt);
     setTimeout(function(){ if(mainBolt.parentNode) mainBolt.remove(); }, 1800);
-    // 20道分支闪电（更密更粗）
+    // 20道分支闪电
     for (var i = 0; i < 20; i++) {
       (function(idx) {
         setTimeout(function() {
           var bolt = document.createElement('div');
-          var bx = cx + (idx - 9.5) * 38 + (Math.random()-0.5)*25;
-          var bw = 12 + Math.random() * 14;
-          bolt.style.cssText = 'position:fixed;left:' + bx + 'px;top:0px;width:' + bw + 'px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, ' + color + ', #fff, transparent);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ',0 0 150px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.6s ease-out forwards;';
+          var bx = cx + (idx - 9.5) * 28 + (Math.random()-0.5)*15;
+          bolt.style.cssText = 'position:fixed;left:' + bx + 'px;top:0px;width:' + (8+Math.random()*8) + 'px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, ' + color + ');box-shadow:0 0 25px ' + color + ',0 0 50px ' + color + ',0 0 100px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.5s ease-out forwards;';
           document.body.appendChild(bolt);
           setTimeout(function(){ if(bolt.parentNode) bolt.remove(); }, 1400);
-        }, idx * 30);
+        }, idx * 40);
       })(i);
     }
-    // 8层电弧环扩散（更大）
+    // 8层电弧环（更大更亮）
     for (var i = 0; i < 8; i++) {
       var arcRing = document.createElement('div');
-      arcRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.8+i*0.8)) + 'px;height:' + (w*(0.8+i*0.8)) + 'px;border:8px solid ' + color + ';border-radius:50%;box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ',inset 0 0 60px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 1s ease-out ' + (i*0.08) + 's forwards;';
+      arcRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.8+i*0.75)) + 'px;height:' + (w*(0.8+i*0.75)) + 'px;border:6px solid ' + color + ';border-radius:50%;box-shadow:0 0 40px ' + color + ',0 0 80px ' + color + ',inset 0 0 40px ' + color + '66;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.9s ease-out ' + (i*0.1) + 's forwards;';
       document.body.appendChild(arcRing);
-      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arcRing), 1600);
+      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arcRing), 1800);
     }
-    // 24条电弧从中心向四周放射
+    // 24条电弧放射
     for (var i = 0; i < 24; i++) {
-      var arc = document.createElement('div');
       var angle = (Math.PI * 2 * i) / 24;
-      var len = w * (2 + Math.random() * 1.5);
-      arc.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + len + 'px;height:6px;background:linear-gradient(to right, ' + color + ', #fff, ' + color + ', transparent);box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (angle*180/Math.PI) + 'deg);opacity:0;animation:fxLightBurst 0.7s ease-out ' + (0.1+Math.random()*0.2) + 's forwards;';
+      var arc = document.createElement('div');
+      var alen = w * (1.2 + Math.random() * 0.8);
+      arc.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + alen + 'px;height:4px;background:linear-gradient(to right, ' + color + ', #fff, ' + color + ', transparent);box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ';pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (angle*180/Math.PI) + 'deg) scaleX(0);animation:fxLightBurst 0.7s ease-out ' + (Math.random()*0.3) + 's forwards;';
       document.body.appendChild(arc);
-      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arc), 1200);
+      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arc), 1500);
     }
-    // 60个电火花（更多更亮）
+    // 60个电火花（更亮更多）
     for (var i = 0; i < 60; i++) {
       var eSpark = document.createElement('div');
-      var ex = cx + (Math.random() - 0.5) * w * 4;
-      var ey = cy + (Math.random()-0.5)*h*3;
-      eSpark.style.cssText = 'position:fixed;left:' + ex + 'px;top:' + ey + 'px;width:' + (6+Math.random()*10) + 'px;height:' + (6+Math.random()*10) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ',0 0 50px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.8s ease-out ' + (Math.random()*0.5) + 's forwards;';
+      var ex = cx + (Math.random() - 0.5) * w * 3.5;
+      eSpark.style.cssText = 'position:fixed;left:' + ex + 'px;top:' + (cy + (Math.random()-0.5)*h*1.8) + 'px;width:' + (5+Math.random()*7) + 'px;height:' + (5+Math.random()*7) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 12px ' + color + ',0 0 24px ' + color + ',0 0 36px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.7s ease-out ' + (Math.random()*0.4) + 's forwards;';
       document.body.appendChild(eSpark);
       setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1400);
     }
-    // 巨型雷击焦痕
-    var scorch = document.createElement('div');
-    scorch.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + (w*4) + 'px;height:100px;background:radial-gradient(ellipse, #000, ' + color + '66, ' + color + '22, transparent);border-radius:50%;filter:blur(10px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1.2s ease-out 0.3s forwards;';
-    document.body.appendChild(scorch);
-    setTimeout(function(){ if(scorch.parentNode) scorch.remove(); }, 3000);
-    // 连锁闪电（从主闪电向左右分叉）
+    // 6条连锁闪电
     for (var i = 0; i < 6; i++) {
       (function(idx) {
         setTimeout(function() {
           var chain = document.createElement('div');
-          var side = idx % 2 === 0 ? 1 : -1;
-          var chainLen = w * (0.8 + Math.random() * 0.8);
-          var chainY = cy - h/2 + (idx * h / 6);
-          chain.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + chainY + 'px;width:' + chainLen + 'px;height:8px;background:linear-gradient(to right, #fff, ' + color + ', transparent);box-shadow:0 0 25px ' + color + ',0 0 50px ' + color + ';pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (side * (20 + Math.random()*30)) + 'deg) scaleX(0);animation:fxLightBurst 0.5s ease-out forwards;';
+          var sx = cx + (idx - 2.5) * 60;
+          chain.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + (cy - h*0.5) + 'px;width:' + (w*0.8) + 'px;height:6px;background:linear-gradient(to right, ' + color + ', #fff, ' + color + ', #fff, ' + color + ');box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (20 + idx*15) + 'deg) scaleX(0);animation:fxLightBurst 0.5s ease-out forwards;';
           document.body.appendChild(chain);
-          setTimeout(function(){ if(chain.parentNode) chain.remove(); }, 1000);
-        }, 200 + idx * 60);
+          setTimeout(function(){ if(chain.parentNode) chain.remove(); }, 1200);
+        }, 300 + idx * 80);
       })(i);
     }
+    // 雷击焦痕
+    var scorch = document.createElement('div');
+    scorch.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + (w*2) + 'px;height:60px;background:radial-gradient(ellipse, #000, ' + color + '44, transparent);border-radius:50%;filter:blur(8px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1s ease-out 0.3s forwards;';
+    document.body.appendChild(scorch);
+    setTimeout(function(){ if(scorch.parentNode) scorch.remove(); }, 3000);
   }
   // 木属性：世界树降临 + 万藤缠绕 + 生命爆发 + 花界绽放 + 治愈圣光
   else if (element === 'wood') {
@@ -9096,51 +9626,141 @@ function playElementEffect(element) {
       })(i);
     }
   }
-  // 冰属性：冰霜爆发 + 冰晶风暴 + 寒气弥漫
+  // 冰属性：绝对零度 + 冰霜爆发 + 冰晶风暴 + 冰柱 + 暴风雪 + 冰封
   else if (element === 'ice') {
+    // 全屏冰蓝闪烁3次
+    for (var f = 0; f < 3; f++) {
+      (function(idx) {
+        setTimeout(function() {
+          var iceFlash = document.createElement('div');
+          iceFlash.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle, ' + color + '66, #fff44, transparent);pointer-events:none;z-index:9999;opacity:0;animation:fxLightBurst 0.18s ease-out forwards;';
+          document.body.appendChild(iceFlash);
+          setTimeout(function(){ if(iceFlash.parentNode) iceFlash.remove(); }, 350);
+        }, idx * 140);
+      })(f);
+    }
+    // 巨型冰霜爆发（六角星芒）
     var iceBurst = document.createElement('div');
-    iceBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*2) + 'px;height:' + (w*2) + 'px;background:conic-gradient(from 0deg, transparent 0deg, #fff 10deg, transparent 20deg, ' + color + ' 40deg, transparent 50deg, #fff 70deg, transparent 80deg, ' + color + ' 100deg, transparent 110deg);box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxIceBurst 1s ease-out forwards;';
+    iceBurst.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*4) + 'px;height:' + (w*4) + 'px;background:conic-gradient(from 0deg, transparent 0deg, #fff 8deg, transparent 16deg, ' + color + ' 30deg, transparent 38deg, #fff 48deg, transparent 56deg, ' + color + ' 70deg, transparent 78deg, #fff 88deg, transparent 96deg, ' + color + ' 110deg, transparent 118deg, #fff 128deg, transparent 136deg, ' + color + ' 150deg, transparent 158deg, #fff 168deg, transparent 176deg, ' + color + ' 190deg, transparent 198deg, #fff 208deg, transparent 216deg, ' + color + ' 230deg, transparent 238deg, #fff 248deg, transparent 256deg, ' + color + ' 270deg, transparent 278deg, #fff 288deg, transparent 296deg, ' + color + ' 310deg, transparent 318deg, #fff 328deg, transparent 336deg, ' + color + ' 350deg, transparent 358deg);box-shadow:0 0 80px ' + color + ',0 0 160px ' + color + ',0 0 300px #fff66;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxIceBurst 1.3s ease-out forwards;';
     document.body.appendChild(iceBurst);
-    setTimeout(function(){ if(iceBurst.parentNode) iceBurst.remove(); }, 2200);
-    for (var i = 0; i < 25; i++) {
+    setTimeout(function(){ if(iceBurst.parentNode) iceBurst.remove(); }, 2800);
+    // 8层冰霜光环
+    for (var i = 0; i < 8; i++) {
+      var iceRing = document.createElement('div');
+      iceRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.7+i*0.85)) + 'px;height:' + (w*(0.7+i*0.85)) + 'px;border:9px solid #fff;border-radius:50%;box-shadow:0 0 50px ' + color + ',0 0 100px ' + color + ',inset 0 0 50px ' + color + '88;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 1.1s ease-out ' + (i*0.09) + 's forwards;';
+      document.body.appendChild(iceRing);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(iceRing), 2200);
+    }
+    // 50片冰晶碎片（更大更锋利）
+    for (var i = 0; i < 50; i++) {
       var shard = document.createElement('div');
-      var angle = (Math.PI * 2 * i) / 25;
-      var dist = 80 + Math.random() * 120;
+      var angle = (Math.PI * 2 * i) / 50;
+      var dist = 100 + Math.random() * 180;
       var tx = Math.cos(angle) * dist;
       var ty = Math.sin(angle) * dist;
       var rot = Math.random() * 360;
-      shard.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;--rot:' + rot + 'deg;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (8+Math.random()*12) + 'px;height:' + (14+Math.random()*16) + 'px;background:linear-gradient(135deg, #fff, ' + color + ', #B3E5FC);clip-path:polygon(50% 0%, 100% 100%, 0% 100%);box-shadow:0 0 12px ' + color + ',0 0 24px ' + color + ';pointer-events:none;z-index:9998;animation:fxIceShard 1.1s ease-out forwards;';
+      shard.style.cssText = '--tx:' + tx + 'px;--ty:' + ty + 'px;--rot:' + rot + 'deg;position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (12+Math.random()*18) + 'px;height:' + (20+Math.random()*24) + 'px;background:linear-gradient(135deg, #fff, ' + color + ', #B3E5FC, #E1F5FE);clip-path:polygon(50% 0%, 100% 100%, 0% 100%);box-shadow:0 0 20px ' + color + ',0 0 40px ' + color + ',0 0 60px #fff;pointer-events:none;z-index:9998;animation:fxIceShard 1.4s ease-out forwards;';
       document.body.appendChild(shard);
-      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(shard), 1300);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(shard), 1800);
     }
-    var coldMist = document.createElement('div');
-    coldMist.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*3) + 'px;height:' + (h*2) + 'px;background:radial-gradient(ellipse, ' + color + '44, ' + color + '11, transparent);filter:blur(15px);pointer-events:none;z-index:9997;transform:translate(-50%,-50%);animation:fxDarkRise 1.5s ease-out forwards;';
-    document.body.appendChild(coldMist);
-    setTimeout(function(){ if(coldMist.parentNode) coldMist.remove(); }, 3000);
+    // 12根巨型冰柱从地面升起
+    for (var i = 0; i < 12; i++) {
+      var icePillar = document.createElement('div');
+      var px = cx + (i - 5.5) * 35 + (Math.random()-0.5)*15;
+      var ph = h * (1.2 + Math.random() * 1);
+      icePillar.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy + h/2) + 'px;width:30px;height:' + ph + 'px;background:linear-gradient(to top, ' + color + ', #B3E5FC, #fff, ' + color + ');border-radius:8px 8px 4px 4px;box-shadow:0 0 30px ' + color + ',0 0 60px ' + color + ',inset 0 0 15px #fff;pointer-events:none;z-index:9998;transform-origin:bottom center;transform:translateX(-50%) scaleY(0);animation:fxWoodGrow 1s ease-out ' + (i*0.05) + 's forwards;';
+      document.body.appendChild(icePillar);
+      setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(icePillar), 2200);
+    }
+    // 80片雪花飘落（更多更大）
+    for (var i = 0; i < 80; i++) {
+      var snow = document.createElement('div');
+      var sx = cx + (Math.random() - 0.5) * w * 5;
+      snow.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + (cy - h*2) + 'px;width:' + (8+Math.random()*14) + 'px;height:' + (8+Math.random()*14) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + '88, transparent);box-shadow:0 0 12px ' + color + ',0 0 24px #fff;pointer-events:none;z-index:9998;animation:fxLeafFall ' + (2.5+Math.random()*1.5) + 's ease-in ' + (Math.random()*0.8) + 's forwards;';
+      document.body.appendChild(snow);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(snow), 4500);
+    }
+    // 三层寒气弥漫
+    var coldMist1 = document.createElement('div');
+    coldMist1.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*5) + 'px;height:' + (h*2.5) + 'px;background:radial-gradient(ellipse, ' + color + '66, ' + color + '33, #fff22, transparent);filter:blur(20px);pointer-events:none;z-index:9997;transform:translate(-50%,-50%);opacity:0;animation:fxDarkRise 2s ease-out 0.2s forwards;';
+    document.body.appendChild(coldMist1);
+    setTimeout(function(){ if(coldMist1.parentNode) coldMist1.remove(); }, 4000);
+    // 冰封地面
+    var iceGround = document.createElement('div');
+    iceGround.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/2) + 'px;width:' + (w*6) + 'px;height:80px;background:linear-gradient(to right, transparent, ' + color + '88, #fff, ' + color + '88, transparent);filter:blur(8px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1.2s ease-out 0.4s forwards;';
+    document.body.appendChild(iceGround);
+    setTimeout(function(){ if(iceGround.parentNode) iceGround.remove(); }, 3500);
   }
-  // 雷属性：天雷降世 + 雷云翻滚 + 雷暴扩散
+  // 雷属性：九天雷劫 + 雷云翻滚 + 万雷齐发 + 雷柱 + 雷暴扩散 + 雷神之锤
   else if (element === 'thunder') {
+    // 全屏雷暴闪白4次
+    for (var f = 0; f < 4; f++) {
+      (function(idx) {
+        setTimeout(function() {
+          var thunderFlash = document.createElement('div');
+          thunderFlash.style.cssText = 'position:fixed;inset:0;background:#fff;pointer-events:none;z-index:9999;opacity:0;animation:fxLightBurst 0.12s ease-out forwards;';
+          document.body.appendChild(thunderFlash);
+          setTimeout(function(){ if(thunderFlash.parentNode) thunderFlash.remove(); }, 250);
+        }, idx * 100);
+      })(f);
+    }
+    // 巨型雷云（天空中翻滚）
     var thunderCloud = document.createElement('div');
-    thunderCloud.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h*1.5) + 'px;width:' + (w*3) + 'px;height:80px;background:radial-gradient(ellipse, ' + color + 'aa, ' + color + '44, transparent);border-radius:50%;filter:blur(10px);pointer-events:none;z-index:9998;opacity:0;animation:fxLightBurst 0.6s ease-out forwards;';
+    thunderCloud.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h*2.5) + 'px;width:' + (w*6) + 'px;height:150px;background:radial-gradient(ellipse, ' + color + 'cc, ' + color + '66, #1a1a2e, #000, transparent);border-radius:50%;filter:blur(15px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1s ease-out forwards;';
     document.body.appendChild(thunderCloud);
-    setTimeout(function(){ if(thunderCloud.parentNode) thunderCloud.remove(); }, 1400);
+    setTimeout(function(){ if(thunderCloud.parentNode) thunderCloud.remove(); }, 3000);
+    // 主雷柱（从天而降，更粗更亮）
     var tbolt = document.createElement('div');
-    tbolt.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:40px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #E1BEE7, #fff, ' + color + ');box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ',0 0 200px ' + color + ',0 0 300px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxThunderStrike 0.8s ease-out forwards;';
+    tbolt.style.cssText = 'position:fixed;left:' + cx + 'px;top:0px;width:70px;height:' + vh + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #E1BEE7, #fff, ' + color + ', #fff, ' + color + ');box-shadow:0 0 80px ' + color + ',0 0 160px ' + color + ',0 0 300px ' + color + ',0 0 500px ' + color + '66;pointer-events:none;z-index:9998;transform-origin:top center;transform:translateX(-50%);animation:fxThunderStrike 1s ease-out forwards;';
     document.body.appendChild(tbolt);
-    setTimeout(function(){ if(tbolt.parentNode) tbolt.remove(); }, 1800);
-    for (var i = 0; i < 4; i++) {
+    setTimeout(function(){ if(tbolt.parentNode) tbolt.remove(); }, 2200);
+    // 15道分支闪电（从主雷柱分叉）
+    for (var i = 0; i < 15; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var branch = document.createElement('div');
+          var bx = cx + (idx - 7) * 35 + (Math.random()-0.5)*20;
+          branch.style.cssText = 'position:fixed;left:' + bx + 'px;top:0px;width:' + (10+Math.random()*10) + 'px;height:' + (vh * (0.5 + Math.random()*0.5)) + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #fff, ' + color + ');box-shadow:0 0 30px ' + color + ',0 0 60px ' + color + ',0 0 100px ' + color + ';pointer-events:none;z-index:9998;transform-origin:top center;animation:fxElectric 0.6s ease-out forwards;';
+          document.body.appendChild(branch);
+          setTimeout(function(){ if(branch.parentNode) branch.remove(); }, 1500);
+        }, idx * 50);
+      })(i);
+    }
+    // 10层雷暴冲击波（环形扩散）
+    for (var i = 0; i < 10; i++) {
       var tRing = document.createElement('div');
-      tRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.8+i*0.7)) + 'px;height:' + (w*(0.8+i*0.7)) + 'px;border:5px solid ' + color + ';border-radius:50%;box-shadow:0 0 40px ' + color + ',inset 0 0 40px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.8s ease-out ' + (0.2+i*0.12) + 's forwards;';
+      tRing.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.6+i*0.8)) + 'px;height:' + (w*(0.6+i*0.8)) + 'px;border:10px solid ' + color + ';border-radius:50%;box-shadow:0 0 60px ' + color + ',0 0 120px ' + color + ',inset 0 0 60px ' + color + '88;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 1s ease-out ' + (i*0.08) + 's forwards;';
       document.body.appendChild(tRing);
-      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(r), 1200);
+      setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(r), 2000);
     }
-    for (var i = 0; i < 30; i++) {
+    // 50个雷电火花（更亮更多）
+    for (var i = 0; i < 50; i++) {
       var tSpark = document.createElement('div');
-      var tx = cx + (Math.random() - 0.5) * w * 2.5;
-      tSpark.style.cssText = 'position:fixed;left:' + tx + 'px;top:' + (cy + (Math.random()-0.5)*h*1.5) + 'px;width:' + (4+Math.random()*6) + 'px;height:' + (4+Math.random()*6) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 10px ' + color + ',0 0 20px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.7s ease-out ' + (Math.random()*0.4) + 's forwards;';
+      var tx = cx + (Math.random() - 0.5) * w * 4;
+      tSpark.style.cssText = 'position:fixed;left:' + tx + 'px;top:' + (cy + (Math.random()-0.5)*h*2) + 'px;width:' + (7+Math.random()*10) + 'px;height:' + (7+Math.random()*10) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 18px ' + color + ',0 0 36px ' + color + ',0 0 54px #E1BEE7;pointer-events:none;z-index:9998;animation:fxLightBurst 0.8s ease-out ' + (Math.random()*0.5) + 's forwards;';
       document.body.appendChild(tSpark);
-      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1200);
+      setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(s), 1600);
     }
+    // 8条地面电弧（放射状）
+    for (var i = 0; i < 8; i++) {
+      var groundArc = document.createElement('div');
+      var angle = (Math.PI * 2 * i) / 8;
+      var alen = w * (2 + Math.random());
+      groundArc.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + alen + 'px;height:8px;background:linear-gradient(to right, ' + color + ', #fff, ' + color + ', #fff, ' + color + ', transparent);box-shadow:0 0 25px ' + color + ',0 0 50px ' + color + ';pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + (angle*180/Math.PI) + 'deg) scaleX(0);animation:fxLightBurst 0.8s ease-out ' + (0.2+i*0.05) + 's forwards;';
+      document.body.appendChild(groundArc);
+      setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(groundArc), 1800);
+    }
+    // 雷神之锤（从天而降）
+    var mjolnir = document.createElement('div');
+    mjolnir.style.cssText = 'position:fixed;left:' + cx + 'px;top:-100px;font-size:70px;pointer-events:none;z-index:9999;text-shadow:0 0 40px ' + color + ',0 0 80px #fff;animation:fxWaterDrop 0.8s ease-in 0.3s forwards;';
+    mjolnir.textContent = '⚡';
+    document.body.appendChild(mjolnir);
+    setTimeout(function(){ if(mjolnir.parentNode) mjolnir.remove(); }, 1500);
+    // 雷击焦痕
+    var thunderScorch = document.createElement('div');
+    thunderScorch.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy + h/3) + 'px;width:' + (w*3) + 'px;height:80px;background:radial-gradient(ellipse, #000, ' + color + '66, transparent);border-radius:50%;filter:blur(10px);pointer-events:none;z-index:9997;transform:translateX(-50%);opacity:0;animation:fxLightBurst 1.2s ease-out 0.4s forwards;';
+    document.body.appendChild(thunderScorch);
+    setTimeout(function(){ if(thunderScorch.parentNode) thunderScorch.remove(); }, 3500);
   }
   // 风属性：巨型龙卷风 + 风刃风暴 + 气流漩涡
   else if (element === 'wind') {
@@ -9260,6 +9880,319 @@ function playElementEffect(element) {
       })(i);
     }
   }
+
+  // ========== 金系：万剑归宗 ==========
+  if (element === 'metal') {
+    var color = ELEMENT_COLORS.metal || '#E0E0E0';
+    // 全屏金属闪光3次
+    for (var i = 0; i < 3; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var flash = document.createElement('div');
+          flash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9997;background:radial-gradient(circle at 50% 50%, rgba(224,224,224,0.4), rgba(192,192,192,0.2) 40%, transparent 70%);transition:opacity 0.3s;opacity:1;';
+          document.body.appendChild(flash);
+          setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if(flash.parentNode) flash.remove(); }, 300); }, 150);
+        }, idx * 200);
+      })(i);
+    }
+    // 屏幕震动
+    var battleScene = document.getElementById('battleScene');
+    if (battleScene) { battleScene.style.animation = 'shake 0.5s'; setTimeout(function(){ battleScene.style.animation = ''; }, 500); }
+    // 30把金属飞剑从四面八方射向目标
+    for (var i = 0; i < 30; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var sword = document.createElement('div');
+          var angle = (Math.PI * 2 * idx) / 30;
+          var startDist = Math.max(vw, vh) * 0.8;
+          var startX = cx + Math.cos(angle) * startDist;
+          var startY = cy + Math.sin(angle) * startDist;
+          var swordLen = 40 + Math.random() * 30;
+          var rotDeg = angle * 180 / Math.PI + 90;
+          sword.style.cssText = 'position:fixed;left:' + startX + 'px;top:' + startY + 'px;width:6px;height:' + swordLen + 'px;background:linear-gradient(to bottom, #fff, ' + color + ', #B0B0B0, #808080);box-shadow:0 0 15px ' + color + ',0 0 30px rgba(255,255,255,0.8);pointer-events:none;z-index:9998;transform:translate(-50%,-50%) rotate(' + rotDeg + 'deg);opacity:0;';
+          document.body.appendChild(sword);
+          requestAnimationFrame(function(s) { return function() {
+            s.style.transition = 'all 0.4s cubic-bezier(0.3, 0, 0.7, 1)';
+            s.style.left = cx + (Math.random()-0.5)*w*0.8 + 'px';
+            s.style.top = cy + (Math.random()-0.5)*h*0.8 + 'px';
+            s.style.opacity = '1';
+          }; }(sword));
+          // 命中爆炸
+          setTimeout(function(s) { return function() {
+            s.style.opacity = '0';
+            s.style.transform = 'translate(-50%,-50%) rotate(' + rotDeg + 'deg) scale(2.5)';
+            var spark = document.createElement('div');
+            spark.style.cssText = 'position:fixed;left:' + s.style.left + ';top:' + s.style.top + ';width:40px;height:40px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + ', transparent);box-shadow:0 0 25px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:fxLightBurst 0.4s ease-out forwards;';
+            document.body.appendChild(spark);
+            setTimeout(function(sp){ if(sp.parentNode) sp.remove(); }, 500);
+            setTimeout(function(sw){ if(sw.parentNode) sw.remove(); }, 200);
+          }; }(sword), 400);
+        }, idx * 30);
+      })(i);
+    }
+    // 中央巨型金属剑
+    setTimeout(function() {
+      var bigSword = document.createElement('div');
+      bigSword.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + (cy - h) + 'px;width:20px;height:' + (h*2.5) + 'px;background:linear-gradient(to bottom, transparent, #fff, ' + color + ', #B0B0B0, #808080, transparent);box-shadow:0 0 40px ' + color + ',0 0 80px rgba(255,255,255,0.9);pointer-events:none;z-index:9999;transform:translateX(-50%) scaleY(0);transform-origin:top center;animation:fxWoodGrow 0.6s ease-out forwards;';
+      document.body.appendChild(bigSword);
+      setTimeout(function(){ if(bigSword.parentNode) bigSword.remove(); }, 1800);
+    }, 400);
+    // 8层金属冲击波
+    for (var i = 0; i < 8; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var ring = document.createElement('div');
+          ring.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.5+idx*0.7)) + 'px;height:' + (w*(0.5+idx*0.7)) + 'px;border:8px solid ' + color + ';border-radius:50%;box-shadow:0 0 30px ' + color + ',inset 0 0 30px ' + color + '66;pointer-events:none;z-index:9997;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 0.8s ease-out forwards;';
+          document.body.appendChild(ring);
+          setTimeout(function(r){ if(r.parentNode) r.remove(); }, 1500);
+        }, idx * 80);
+      })(i);
+    }
+  }
+
+  // ========== 时系：时间静止 ==========
+  if (element === 'time') {
+    var color = ELEMENT_COLORS.time || '#7C4DFF';
+    // 全屏紫蓝闪光
+    var flash = document.createElement('div');
+    flash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9997;background:radial-gradient(circle at 50% 50%, rgba(124,77,255,0.35), rgba(63,81,181,0.2) 40%, transparent 70%);transition:opacity 0.5s;opacity:1;';
+    document.body.appendChild(flash);
+    setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if(flash.parentNode) flash.remove(); }, 500); }, 300);
+    // 巨型时钟表盘
+    var clock = document.createElement('div');
+    var clockSize = Math.min(vw, vh) * 0.7;
+    clock.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + clockSize + 'px;height:' + clockSize + 'px;border:6px solid ' + color + ';border-radius:50%;box-shadow:0 0 50px ' + color + ',0 0 100px rgba(124,77,255,0.5),inset 0 0 50px ' + color + '44;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 0.6s ease-out forwards;';
+    document.body.appendChild(clock);
+    // 时钟刻度
+    for (var i = 0; i < 12; i++) {
+      var tick = document.createElement('div');
+      var tickAngle = (Math.PI * 2 * i) / 12;
+      var tickX = cx + Math.cos(tickAngle) * (clockSize/2 - 20);
+      var tickY = cy + Math.sin(tickAngle) * (clockSize/2 - 20);
+      tick.style.cssText = 'position:fixed;left:' + tickX + 'px;top:' + tickY + 'px;width:8px;height:20px;background:' + color + ';box-shadow:0 0 10px ' + color + ';pointer-events:none;z-index:9999;transform:translate(-50%,-50%) rotate(' + (tickAngle*180/Math.PI) + 'deg);opacity:0;animation:fxLightBurst 0.3s ease-out ' + (0.3 + i*0.03) + 's forwards;';
+      document.body.appendChild(tick);
+      setTimeout(function(t){ if(t.parentNode) t.remove(); }, 2500);
+    }
+    // 时针和分针旋转
+    var hourHand = document.createElement('div');
+    hourHand.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:8px;height:' + (clockSize*0.25) + 'px;background:linear-gradient(to top, ' + color + ', #fff);box-shadow:0 0 15px ' + color + ';pointer-events:none;z-index:9999;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);animation:timeRotate 2s linear infinite;';
+    document.body.appendChild(hourHand);
+    var minHand = document.createElement('div');
+    minHand.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:5px;height:' + (clockSize*0.35) + 'px;background:linear-gradient(to top, #fff, ' + color + ');box-shadow:0 0 12px ' + color + ';pointer-events:none;z-index:9999;transform-origin:bottom center;transform:translateX(-50%) rotate(0deg);animation:timeRotate 0.8s linear infinite;';
+    document.body.appendChild(minHand);
+    // 时间粒子（沙漏形状）
+    for (var i = 0; i < 40; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var particle = document.createElement('div');
+          var px = cx + (Math.random()-0.5) * clockSize * 0.8;
+          var py = cy + (Math.random()-0.5) * clockSize * 0.8;
+          particle.style.cssText = 'position:fixed;left:' + px + 'px;top:' + py + 'px;width:6px;height:6px;border-radius:50%;background:' + color + ';box-shadow:0 0 10px ' + color + ',0 0 20px rgba(124,77,255,0.8);pointer-events:none;z-index:9998;opacity:0;transition:all 1.5s ease-out;';
+          document.body.appendChild(particle);
+          requestAnimationFrame(function(p) { return function() {
+            p.style.opacity = '1';
+            p.style.left = cx + (Math.random()-0.5)*50 + 'px';
+            p.style.top = cy + (Math.random()-0.5)*50 + 'px';
+            p.style.width = '2px';
+            p.style.height = '2px';
+          }; }(particle));
+          setTimeout(function(p){ if(p.parentNode) p.remove(); }, 1800);
+        }, idx * 30);
+      })(i);
+    }
+    setTimeout(function(){ if(clock.parentNode) clock.remove(); if(hourHand.parentNode) hourHand.remove(); if(minHand.parentNode) minHand.remove(); }, 2500);
+  }
+
+  // ========== 空系：空间撕裂 ==========
+  if (element === 'space') {
+    var color = ELEMENT_COLORS.space || '#3F51B5';
+    // 全屏深蓝闪光
+    var flash = document.createElement('div');
+    flash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9997;background:radial-gradient(circle at 50% 50%, rgba(63,81,181,0.4), rgba(26,35,126,0.25) 40%, transparent 70%);transition:opacity 0.5s;opacity:1;';
+    document.body.appendChild(flash);
+    setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if(flash.parentNode) flash.remove(); }, 500); }, 300);
+    // 空间裂缝（多条不规则裂缝）
+    for (var i = 0; i < 8; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var crack = document.createElement('div');
+          var startX = cx + (Math.random()-0.5) * w * 2;
+          var startY = cy + (Math.random()-0.5) * h * 2;
+          var crackLen = w * (2 + Math.random() * 2);
+          var crackAngle = Math.random() * 360;
+          crack.style.cssText = 'position:fixed;left:' + startX + 'px;top:' + startY + 'px;width:' + crackLen + 'px;height:12px;background:linear-gradient(to right, transparent, #000, ' + color + ', #7986CB, ' + color + ', #000, transparent);box-shadow:0 0 30px ' + color + ',0 0 60px rgba(63,81,181,0.8);pointer-events:none;z-index:9998;transform-origin:left center;transform:rotate(' + crackAngle + 'deg) scaleX(0);animation:fxLightBurst 0.5s ease-out forwards;';
+          document.body.appendChild(crack);
+          setTimeout(function(c){ if(c.parentNode) c.remove(); }, 2000);
+        }, idx * 60);
+      })(i);
+    }
+    // 中央黑洞
+    setTimeout(function() {
+      var blackhole = document.createElement('div');
+      var bhSize = Math.min(w, h) * 2;
+      blackhole.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + bhSize + 'px;height:' + bhSize + 'px;border-radius:50%;background:radial-gradient(circle, #000 20%, ' + color + '66 40%, rgba(63,81,181,0.3) 60%, transparent 80%);box-shadow:0 0 80px ' + color + ',0 0 160px rgba(63,81,181,0.6),inset 0 0 60px #000;pointer-events:none;z-index:9997;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 0.8s ease-out forwards;';
+      document.body.appendChild(blackhole);
+      // 黑洞吸积盘旋转
+      var disk = document.createElement('div');
+      disk.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (bhSize*1.2) + 'px;height:' + (bhSize*0.3) + 'px;border:4px solid ' + color + ';border-radius:50%;box-shadow:0 0 30px ' + color + ';pointer-events:none;z-index:9998;transform:translate(-50%,-50%) rotateX(70deg) scale(0);animation:spaceDisk 1.5s linear infinite;';
+      document.body.appendChild(disk);
+      setTimeout(function(){ if(blackhole.parentNode) blackhole.remove(); if(disk.parentNode) disk.remove(); }, 2200);
+    }, 200);
+    // 空间碎片（被吸入的方块）
+    for (var i = 0; i < 25; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var frag = document.createElement('div');
+          var fx = cx + (Math.random()-0.5) * vw;
+          var fy = cy + (Math.random()-0.5) * vh;
+          var fsize = 10 + Math.random() * 20;
+          frag.style.cssText = 'position:fixed;left:' + fx + 'px;top:' + fy + 'px;width:' + fsize + 'px;height:' + fsize + 'px;background:' + color + ';box-shadow:0 0 15px ' + color + ';pointer-events:none;z-index:9998;opacity:0.8;transition:all 1s cubic-bezier(0.5, 0, 0.8, 0.5);transform:rotate(' + (Math.random()*360) + 'deg);';
+          document.body.appendChild(frag);
+          requestAnimationFrame(function(f) { return function() {
+            f.style.left = cx + 'px';
+            f.style.top = cy + 'px';
+            f.style.width = '2px';
+            f.style.height = '2px';
+            f.style.opacity = '0';
+            f.style.transform = 'rotate(720deg)';
+          }; }(frag));
+          setTimeout(function(f){ if(f.parentNode) f.remove(); }, 1200);
+        }, idx * 40);
+      })(i);
+    }
+  }
+
+  // ========== 混沌：五彩混沌 ==========
+  if (element === 'chaos') {
+    var chaosColors = ['#FF5722', '#FFEB3B', '#4CAF50', '#2196F3', '#9C27B0', '#E91E63', '#00BCD4', '#FF9800'];
+    // 全屏混沌闪光（随机颜色）
+    for (var i = 0; i < 4; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var rc = chaosColors[Math.floor(Math.random() * chaosColors.length)];
+          var flash = document.createElement('div');
+          flash.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9997;background:radial-gradient(circle at 50% 50%, ' + rc + '55, ' + rc + '22 40%, transparent 70%);transition:opacity 0.25s;opacity:1;';
+          document.body.appendChild(flash);
+          setTimeout(function() { flash.style.opacity = '0'; setTimeout(function(){ if(flash.parentNode) flash.remove(); }, 250); }, 120);
+        }, idx * 150);
+      })(i);
+    }
+    // 屏幕剧烈震动
+    var battleScene = document.getElementById('battleScene');
+    if (battleScene) { battleScene.style.animation = 'shake 0.8s'; setTimeout(function(){ battleScene.style.animation = ''; }, 800); }
+    // 混沌漩涡（五彩旋转）
+    var vortex = document.createElement('div');
+    var vSize = Math.min(vw, vh) * 0.8;
+    vortex.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + vSize + 'px;height:' + vSize + 'px;border-radius:50%;background:conic-gradient(from 0deg, #FF5722, #FFEB3B, #4CAF50, #2196F3, #9C27B0, #E91E63, #00BCD4, #FF9800, #FF5722);box-shadow:0 0 60px rgba(233,30,99,0.6),0 0 120px rgba(156,39,176,0.4);pointer-events:none;z-index:9997;transform:translate(-50%,-50%) scale(0) rotate(0deg);animation:chaosVortex 1.5s ease-out forwards;';
+    document.body.appendChild(vortex);
+    setTimeout(function(){ if(vortex.parentNode) vortex.remove(); }, 2000);
+    // 混沌能量球（五彩爆炸）
+    for (var i = 0; i < 15; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var orb = document.createElement('div');
+          var oc = chaosColors[Math.floor(Math.random() * chaosColors.length)];
+          var ox = cx + (Math.random()-0.5) * w * 1.5;
+          var oy = cy + (Math.random()-0.5) * h * 1.5;
+          var osize = 25 + Math.random() * 35;
+          orb.style.cssText = 'position:fixed;left:' + ox + 'px;top:' + oy + 'px;width:' + osize + 'px;height:' + osize + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + oc + ', transparent);box-shadow:0 0 25px ' + oc + ',0 0 50px ' + oc + '88;pointer-events:none;z-index:9998;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 0.5s ease-out forwards;';
+          document.body.appendChild(orb);
+          setTimeout(function(o){ if(o.parentNode) o.remove(); }, 1200);
+        }, idx * 50);
+      })(i);
+    }
+    // 混沌闪电（随机颜色连接）
+    for (var i = 0; i < 12; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var lc = chaosColors[Math.floor(Math.random() * chaosColors.length)];
+          var lx1 = cx + (Math.random()-0.5) * w * 2;
+          var ly1 = cy + (Math.random()-0.5) * h * 2;
+          var lx2 = cx + (Math.random()-0.5) * w;
+          var ly2 = cy + (Math.random()-0.5) * h;
+          var ldist = Math.sqrt(Math.pow(lx2-lx1,2) + Math.pow(ly2-ly1,2));
+          var langle = Math.atan2(ly2-ly1, lx2-lx1) * 180 / Math.PI;
+          var lightning = document.createElement('div');
+          lightning.style.cssText = 'position:fixed;left:' + lx1 + 'px;top:' + ly1 + 'px;width:' + ldist + 'px;height:4px;background:linear-gradient(to right, transparent, ' + lc + ', #fff, ' + lc + ', transparent);box-shadow:0 0 15px ' + lc + ',0 0 30px ' + lc + '88;pointer-events:none;z-index:9999;transform-origin:left center;transform:rotate(' + langle + 'deg) scaleX(0);animation:fxLightBurst 0.3s ease-out forwards;';
+          document.body.appendChild(lightning);
+          setTimeout(function(l){ if(l.parentNode) l.remove(); }, 600);
+        }, idx * 40);
+      })(i);
+    }
+  }
+
+  // ========== 星系：星辰陨落 ==========
+  if (element === 'star') {
+    var color = ELEMENT_COLORS.star || '#FFFFFF';
+    // 全屏星空背景
+    var starfield = document.createElement('div');
+    starfield.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9996;background:radial-gradient(ellipse at 50% 30%, rgba(63,81,181,0.3), rgba(13,20,66,0.5) 60%, rgba(0,0,10,0.7));transition:opacity 1s;opacity:1;';
+    document.body.appendChild(starfield);
+    setTimeout(function() { starfield.style.opacity = '0'; setTimeout(function(){ if(starfield.parentNode) starfield.remove(); }, 1000); }, 1500);
+    // 背景星星（闪烁）
+    for (var i = 0; i < 60; i++) {
+      (function(idx) {
+        var star = document.createElement('div');
+        var sx = Math.random() * vw;
+        var sy = Math.random() * vh * 0.7;
+        var ss = 1 + Math.random() * 3;
+        star.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + sy + 'px;width:' + ss + 'px;height:' + ss + 'px;border-radius:50%;background:#fff;box-shadow:0 0 ' + (ss*3) + 'px #fff,0 0 ' + (ss*6) + 'px rgba(255,255,255,0.6);pointer-events:none;z-index:9997;opacity:0;animation:starTwinkle 1.5s ease-in-out ' + (Math.random()*1) + 's infinite;';
+        document.body.appendChild(star);
+        setTimeout(function(s){ if(s.parentNode) s.remove(); }, 2500);
+      })(i);
+    }
+    // 流星雨（从右上向左下坠落）
+    for (var i = 0; i < 20; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var meteor = document.createElement('div');
+          var mx = vw * (0.5 + Math.random() * 0.5);
+          var my = -50;
+          var mlen = 60 + Math.random() * 80;
+          var mangle = 30 + Math.random() * 20;
+          var starColors = ['#FFFFFF', '#FFD700', '#87CEEB', '#FFB6C1', '#E6E6FA'];
+          var mc = starColors[Math.floor(Math.random() * starColors.length)];
+          meteor.style.cssText = 'position:fixed;left:' + mx + 'px;top:' + my + 'px;width:3px;height:' + mlen + 'px;background:linear-gradient(to bottom, transparent, ' + mc + ', #fff);box-shadow:0 0 15px ' + mc + ',0 0 30px ' + mc + '88;pointer-events:none;z-index:9998;transform:rotate(' + mangle + 'deg);transform-origin:top center;opacity:0;';
+          document.body.appendChild(meteor);
+          requestAnimationFrame(function(m) { return function() {
+            m.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.7, 1)';
+            m.style.left = (cx + (Math.random()-0.5)*w*1.5) + 'px';
+            m.style.top = (cy + (Math.random()-0.5)*h) + 'px';
+            m.style.opacity = '1';
+          }; }(meteor));
+          // 命中爆炸（星光）
+          setTimeout(function(m) { return function() {
+            m.style.opacity = '0';
+            var burst = document.createElement('div');
+            burst.style.cssText = 'position:fixed;left:' + m.style.left + ';top:' + m.style.top + ';width:50px;height:50px;border-radius:50%;background:radial-gradient(circle, #fff, ' + mc + ', transparent);box-shadow:0 0 30px ' + mc + ',0 0 60px rgba(255,255,255,0.8);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:fxLightBurst 0.5s ease-out forwards;';
+            document.body.appendChild(burst);
+            setTimeout(function(b){ if(b.parentNode) b.remove(); }, 700);
+            setTimeout(function(mt){ if(mt.parentNode) mt.remove(); }, 200);
+          }; }(meteor), 700);
+        }, idx * 60);
+      })(i);
+    }
+    // 中央巨型星辰爆炸
+    setTimeout(function() {
+      var bigStar = document.createElement('div');
+      var bsSize = Math.min(w, h) * 2;
+      bigStar.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + bsSize + 'px;height:' + bsSize + 'px;border-radius:50%;background:radial-gradient(circle, #fff 10%, #FFD700 25%, rgba(255,215,0,0.6) 45%, rgba(135,206,235,0.3) 65%, transparent 80%);box-shadow:0 0 80px #fff,0 0 160px #FFD700,0 0 240px rgba(255,255,255,0.5);pointer-events:none;z-index:9997;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 0.8s ease-out forwards;';
+      document.body.appendChild(bigStar);
+      setTimeout(function(s){ if(s.parentNode) s.remove(); }, 1800);
+    }, 500);
+    // 8层星光冲击波
+    for (var i = 0; i < 8; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var ring = document.createElement('div');
+          ring.style.cssText = 'position:fixed;left:' + cx + 'px;top:' + cy + 'px;width:' + (w*(0.5+idx*0.8)) + 'px;height:' + (w*(0.5+idx*0.8)) + 'px;border:6px solid rgba(255,255,255,0.8);border-radius:50%;box-shadow:0 0 30px #fff,0 0 60px #FFD70088,inset 0 0 30px rgba(255,255,255,0.5);pointer-events:none;z-index:9997;transform:translate(-50%,-50%) scale(0);animation:fxLightBurst 0.9s ease-out forwards;';
+          document.body.appendChild(ring);
+          setTimeout(function(r){ if(r.parentNode) r.remove(); }, 1600);
+        }, 600 + idx * 80);
+      })(i);
+    }
+  }
+
   } catch(e) { console.warn('元素特效异常:', e); }
 }
 
