@@ -546,6 +546,7 @@ input, textarea, select { font-family: inherit; outline: none; }
 @keyframes spaceDisk { 0%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(0deg) scale(0.5);opacity:0.8} 50%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(180deg) scale(1.2);opacity:1} 100%{transform:translate(-50%,-50%) rotateX(70deg) rotateZ(360deg) scale(0.5);opacity:0} }
 @keyframes chaosVortex { 0%{transform:translate(-50%,-50%) scale(0) rotate(0deg);opacity:0} 30%{transform:translate(-50%,-50%) scale(1) rotate(180deg);opacity:1} 70%{transform:translate(-50%,-50%) scale(1.2) rotate(360deg);opacity:0.9} 100%{transform:translate(-50%,-50%) scale(2) rotate(720deg);opacity:0} }
 @keyframes starTwinkle { 0%,100%{opacity:0.2;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.5)} }
+@keyframes alarmFlash { 0%,100%{opacity:0} 50%{opacity:1} }
 .combatant.player.hurt .combatant-char { animation: hurtShakeP 0.4s ease; }
 .combatant.monster.hurt .combatant-char { animation: hurtShakeM 0.4s ease; }
 @keyframes hurtShakeP { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-12px)} 40%{transform:translateX(12px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
@@ -1472,6 +1473,7 @@ input, textarea, select { font-family: inherit; outline: none; }
               <button class="equip-tab" data-equip-tab="permanent">永久法宝</button>
               <button class="equip-tab" data-equip-tab="consumable">消耗法宝</button>
             </div>
+            <div id="presetLoadoutBar"></div>
             <div class="category-selector" id="prepareCatSelector"></div>
             <div class="equip-list" id="prepareEquipList"></div>
           </div>
@@ -1583,6 +1585,8 @@ input, textarea, select { font-family: inherit; outline: none; }
       <button class="inventory-tab" data-inv-tab="consumable">消耗法宝</button>
       <button class="inventory-tab" data-inv-tab="all">全部</button>
     </div>
+    <!-- 背包管理工具栏 -->
+    <div id="invManageBar"></div>
     <!-- 分类管理 -->
     <div class="category-manager" id="categoryManager"></div>
     <div class="inventory-grid" id="inventoryGrid" style="margin-top:16px;"></div>
@@ -2084,7 +2088,7 @@ function calcDailyCombatPower() {
   var equipCrit = 0;
   var equipHp = 0;
   (gameState.equipment.gongfa||[]).forEach(function(e){ if(prepareState.selectedGongfa.indexOf(e.id)>=0){ var lb=getGongfaLevelBonus(e); equipAtk+=Math.floor((e.power||0)*lb.atkMult); equipCrit+=(e.crit||0)+lb.critAdd; } });
-  (gameState.equipment.permanent||[]).forEach(function(e){ if(prepareState.selectedPermanent.indexOf(e.id)>=0){ var plb=getPermanentLevelBonus(e); equipAtk+=Math.floor((e.power||0)*plb.atkMult); equipCrit+=(e.crit||0)+plb.critAdd; equipHp+=plb.hpAdd||0; if(e.affixes){ equipHp+=(e.affixes.hp||0); } } });
+  (gameState.equipment.permanent||[]).forEach(function(e){ if(prepareState.selectedPermanent.indexOf(e.id)>=0){ var plb=getPermanentLevelBonus(e); equipAtk+=Math.floor(e.power||0)+(plb.atkAdd||0); equipCrit+=(e.crit||0)+plb.critAdd; equipHp+=plb.hpAdd||0; if(e.affixes){ equipHp+=(e.affixes.hp||0); } } });
   // 神兽加成
   getActiveBeasts().forEach(function(b){ equipAtk += Math.floor(baseAtk * (b.atkMult||0)); equipCrit += (b.critAdd||0); });
   // 法宝/功法暴击上限20%
@@ -2102,19 +2106,24 @@ function calcMonsterStats(monster) {
     return { maxHp: monster.maxHp, attack: monster.attack || 10, tierName: monster.label || '固定', targetRounds: '--' };
   }
   var cp = calcDailyCombatPower();
-  var tier = getTierConfig(monster.tier || 3);
+  var displayTier = getTierConfig(monster.tier || 3);
+  // 实际强度后移2个境界：泥胚→水银，木胎→金身...
+  var actualTierNum = Math.min(15, (monster.tier || 3) + 2);
+  var tier = getTierConfig(actualTierNum);
   var zhoumuMult = 1 + ((gameState.season?.zhoumu || 1) - 1) * 0.15;
   var diffMult = difficultyMult;
-  // 专注200分钟的DPS基准（确保专注0分钟打不过，需要200分钟以上才能通关）
-  var focus200Atk = 200 * 1.2;  // 每分钟1.2攻击加成
+  // 凶兽强度随修士每日战力动态调整：基于裸战力+专注基准
+  var focus200Atk = 200 * 1.2;
   var focus200Dps = (cp.nakedAtk + focus200Atk) * (1 + cp.nakedCrit/100 * 0.5);
-  // 凶兽血量 = 专注200分钟DPS × 目标回合数（专注越久越容易）
-  var maxHp = Math.floor(focus200Dps * tier.targetRounds * zhoumuMult * diffMult);
-  // 攻击基于玩家当日实际生命，dmgRatio为每回合承伤比例（已提高）
+  // 玩家装备越强，凶兽血量也相应提升（动态难度）
+  var powerScale = 1 + (cp.nakedAtk - 86) / 200;  // 裸战力越高，凶兽越强
+  var maxHp = Math.floor(focus200Dps * tier.targetRounds * zhoumuMult * diffMult * Math.min(powerScale, 2.5));
+  // 攻击基于玩家当日实际生命，dmgRatio为每回合承伤比例
   var todayFocus = getTodayFocus();
   var todayTotalHp = cp.nakedHp + Math.floor(todayFocus * 0.5);
-  var attack = Math.max(10, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult)));
-  return { maxHp: maxHp, attack: attack, tierName: tier.name, targetRounds: tier.targetRounds };
+  var attack = Math.max(10, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult) * Math.min(powerScale, 2.0)));
+  // 显示名称用原境界，实际强度用后移后的境界
+  return { maxHp: maxHp, attack: attack, tierName: displayTier.name, targetRounds: tier.targetRounds };
 }
 const DEFAULT_MONSTERS = [
   { id:'m1', name:'朱厌',   tier:1, reqMinutes:0,   desc:'白猿凶兽，现则天下大乱', image:'https://aka.doubaocdn.com/s/tUOlUrUx0F' },
@@ -2217,6 +2226,25 @@ let prepareState = {
   screenshotData: null,
   activeCatFilter: 'all',
 };
+// 渲染预设套装栏
+function renderPresetLoadoutBar() {
+  var bar = document.getElementById('presetLoadoutBar');
+  if (!bar) return;
+  var preset = getPresetLoadout();
+  var hasPreset = preset && preset.gongfa && preset.gongfa.length > 0;
+  var html = '<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;padding:8px 10px;background:linear-gradient(135deg,rgba(212,175,55,0.08),rgba(127,200,200,0.05));border:1px solid rgba(212,175,55,0.2);border-radius:8px;">';
+  html += '<span style="font-size:12px;color:var(--gold-light);font-weight:600;white-space:nowrap;">📦 预设套装</span>';
+  if (hasPreset) {
+    html += '<span style="font-size:11px;color:var(--text-dim);">功法' + preset.gongfa.length + ' / 法宝' + (preset.permanent?preset.permanent.length:0) + ' / 消耗' + (preset.consumable?preset.consumable.length:0) + '</span>';
+  } else {
+    html += '<span style="font-size:11px;color:var(--text-dim);">未设置</span>';
+  }
+  html += '<div style="flex:1;"></div>';
+  html += '<button class="btn btn-primary btn-sm" onclick="savePresetLoadout()" style="font-size:11px;padding:4px 10px;">💾 保存当前为预设</button>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="applyPresetLoadout();renderPrepareEquipList();renderPresetLoadoutBar();updatePreview();" style="font-size:11px;padding:4px 10px;">📋 应用预设</button>';
+  html += '</div>';
+  bar.innerHTML = html;
+}
 let editingMonsterId = null;
 let battleState = null;
 let battleTimeouts = [];
@@ -2227,6 +2255,52 @@ let currentDungeonFolder = null;
 let currentBookId = null;
 let currentEditingBookId = null;
 let addingCategoryType = null;
+// 背包管理状态
+let invManageState = {
+  sortBy: 'power',
+  filterElement: 'all',
+  filterQuality: 'all',
+  searchKeyword: '',
+  favorites: JSON.parse(localStorage.getItem('xinmo_inv_favorites') || '[]')
+};
+function saveFavorites() {
+  localStorage.setItem('xinmo_inv_favorites', JSON.stringify(invManageState.favorites));
+}
+function toggleFavorite(equipId) {
+  var idx = invManageState.favorites.indexOf(equipId);
+  if (idx >= 0) invManageState.favorites.splice(idx, 1);
+  else invManageState.favorites.push(equipId);
+  saveFavorites();
+  renderInventoryGrid();
+}
+function getQualityLevel(eq) {
+  var lv = eq.level || 1;
+  if (eq.type === 'gongfa') return lv;
+  if (eq.type === 'permanent') return lv;
+  return 1;
+}
+function getQualityName(eq) {
+  if (eq.type === 'consumable') return '消耗';
+  return getLevelName(eq.type, eq.level || 1);
+}
+function calcEquipPower(eq) {
+  if (eq.type === 'gongfa') {
+    var lb = getGongfaLevelBonus(eq);
+    return Math.floor(eq.power * lb.atkMult) + (eq.crit || 0) * 2;
+  } else if (eq.type === 'permanent') {
+    var plb = getPermanentLevelBonus(eq);
+    return Math.floor(eq.power || 0) + (plb.atkAdd || 0) + (eq.crit || 0) * 2 + (plb.hpAdd || 0);
+  }
+  return (eq.power || 0) + (eq.crit || 0) * 2;
+}
+function setGongfaSkillName(equipId, skillIdx, name) {
+  var eq = gameState.equipment.gongfa.find(function(g){ return g.id === equipId; });
+  if (!eq) return;
+  if (!eq.skillNames) eq.skillNames = [];
+  eq.skillNames[skillIdx] = name.trim();
+  saveGame();
+  showToast('技能名已更新', 'success');
+}
 let editingEquipId = null;
 let equipImageData = '';
 let editingAffixes = [];
@@ -2996,6 +3070,7 @@ function setPrepareCatFilter(catId) {
   renderPrepareEquipList();
 }
 function renderPrepareEquipList() {
+  renderPresetLoadoutBar();
   const activeTab = document.querySelector('.equip-tab.active')?.dataset.equipTab || 'gongfa';
   let list = gameState.equipment[activeTab] || [];
   if (prepareState.activeCatFilter !== 'all') {
@@ -3033,8 +3108,17 @@ function togglePrepareEquip(type, id) {
     : type === 'permanent' ? prepareState.selectedPermanent
     : prepareState.selectedConsumable;
   const idx = arr.indexOf(id);
-  if (idx >= 0) arr.splice(idx, 1);
-  else arr.push(id);
+  if (idx >= 0) {
+    arr.splice(idx, 1);
+  } else {
+    var limit = EQUIP_LIMITS[type] || 99;
+    if (arr.length >= limit) {
+      var typeName = type === 'gongfa' ? '功法' : type === 'permanent' ? '永久法宝' : '消耗法宝';
+      showToast(typeName + '最多携带' + limit + '件，请先取消其他选择', 'error');
+      return;
+    }
+    arr.push(id);
+  }
   renderPrepareEquipList();
   updatePreview();
 }
@@ -3055,7 +3139,7 @@ function updatePreview() {
         critBonus += (eq.crit || 0) + lb.critAdd;
       } else if (eq.type === 'permanent') {
         var plb = getPermanentLevelBonus(eq);
-        equipBonus += Math.floor((eq.power || 0) * plb.atkMult);
+        equipBonus += Math.floor(eq.power || 0) + (plb.atkAdd || 0);
         critBonus += (eq.crit || 0) + plb.critAdd;
         baseHp += plb.hpAdd || 0;
       } else {
@@ -3399,6 +3483,79 @@ var GONGFA_SKILL_CONFIG = {
   multihit: { name:'残影', cost:40, dmgMult:1.1, hits:2, cooldown:0 },
   burst:    { name:'乾坤', cost:45, dmgMult:1.5, burnChance:0.15, cooldown:0 },
 };
+// ========== 功法多技能系统 ==========
+// 技能类型解锁顺序（排除功法本身类型后，按此优先级解锁）
+var SKILL_UNLOCK_ORDER = ['burst', 'slash', 'multihit', 'heal'];
+// 获取功法解锁的技能类型列表
+function getGongfaSkillTypes(eq) {
+  var lv = eq.level || 1;
+  var baseType = gongfaTypeOf(eq);
+  var types = [baseType];
+  // 玄级(2级)解锁第2个技能
+  if (lv >= 2) {
+    for (var i = 0; i < SKILL_UNLOCK_ORDER.length; i++) {
+      if (SKILL_UNLOCK_ORDER[i] !== baseType && !types.includes(SKILL_UNLOCK_ORDER[i])) {
+        types.push(SKILL_UNLOCK_ORDER[i]);
+        break;
+      }
+    }
+  }
+  // 神级(5级)解锁第3个技能
+  if (lv >= 5) {
+    for (var j = 0; j < SKILL_UNLOCK_ORDER.length; j++) {
+      if (!types.includes(SKILL_UNLOCK_ORDER[j])) {
+        types.push(SKILL_UNLOCK_ORDER[j]);
+        break;
+      }
+    }
+  }
+  return types;
+}
+// 获取功法技能显示名称（支持自定义）
+function getGongfaSkillName(eq, skillType, idx) {
+  if (eq.skillNames && eq.skillNames[idx]) return eq.skillNames[idx];
+  var cfg = GONGFA_SKILL_CONFIG[skillType];
+  return eq.name + '·' + (cfg ? cfg.name : skillType);
+}
+// ========== 永久法宝技能系统 ==========
+// 永久法宝作为技能：1-3级1回合冷却，4级以上无冷却
+function getPermanentSkillCooldown(eq) {
+  var lv = eq.level || 1;
+  return lv >= 4 ? 0 : 1;
+}
+// ========== 携带上限 ==========
+var EQUIP_LIMITS = { gongfa: 3, permanent: 4, consumable: 2 };
+// ========== 预设套装系统 ==========
+function getPresetLoadout() {
+  try {
+    var p = JSON.parse(localStorage.getItem('xinmo_preset_loadout') || 'null');
+    if (p) return p;
+  } catch(e) {}
+  return null;
+}
+function savePresetLoadout() {
+  var preset = {
+    gongfa: prepareState.selectedGongfa.slice(),
+    permanent: prepareState.selectedPermanent.slice(),
+    consumable: prepareState.selectedConsumable.slice(),
+    savedAt: Date.now()
+  };
+  localStorage.setItem('xinmo_preset_loadout', JSON.stringify(preset));
+  showToast('预设套装已保存', 'success');
+}
+function applyPresetLoadout() {
+  var p = getPresetLoadout();
+  if (!p) { showToast('暂无预设套装，请先在准备界面保存', 'error'); return false; }
+  // 过滤掉已不存在的装备
+  var validGongfa = p.gongfa.filter(function(id){ return gameState.equipment.gongfa.find(function(e){return e.id===id;}); });
+  var validPerm = p.permanent.filter(function(id){ return gameState.equipment.permanent.find(function(e){return e.id===id;}); });
+  var validCons = p.consumable.filter(function(id){ return gameState.equipment.consumable.find(function(e){return e.id===id;}); });
+  // 应用上限
+  prepareState.selectedGongfa = validGongfa.slice(0, EQUIP_LIMITS.gongfa);
+  prepareState.selectedPermanent = validPerm.slice(0, EQUIP_LIMITS.permanent);
+  prepareState.selectedConsumable = validCons.slice(0, EQUIP_LIMITS.consumable);
+  return true;
+}
 // ========== 属性效果配置 ==========
 var ELEMENT_EFFECTS = {
   light:    { name:'光', status:'vuln',       duration:2, value:0.15, desc:'受伤+15%' },
@@ -3459,16 +3616,31 @@ function gongfaTypeOf(eq) {
 }
 function buildGongfaSkills() {
   var skills = [];
+  // 功法：每本功法作为一个"功法组"，点击后展开技能选择
+  battleState.gongfaGroups = [];
   battleState.usedEquips.filter(function(e){ return e.type === 'gongfa'; }).forEach(function(eq) {
-    var type = gongfaTypeOf(eq);
-    var cfg = GONGFA_SKILL_CONFIG[type];
-    skills.push({ type:type, name: eq.name + '·' + cfg.name, cost:cfg.cost, dmgMult:cfg.dmgMult,
-      healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits, burnChance:cfg.burnChance,
-      element: eq.element || '', desc: skillDesc(type), cooldown: cfg.cooldown || 0 });
+    var skillTypes = getGongfaSkillTypes(eq);
+    var groupSkills = skillTypes.map(function(st, idx) {
+      var cfg = GONGFA_SKILL_CONFIG[st];
+      return { type:st, name: getGongfaSkillName(eq, st, idx), cost:cfg.cost, dmgMult:cfg.dmgMult,
+        healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits, burnChance:cfg.burnChance,
+        element: eq.element || '', desc: skillDesc(st), cooldown: cfg.cooldown || 0,
+        gongfaId: eq.id, gongfaName: eq.name };
+    });
+    battleState.gongfaGroups.push({ eq: eq, skills: groupSkills, expanded: false });
+  });
+  // 永久法宝作为技能（带冷却）
+  battleState.usedEquips.filter(function(e){ return e.type === 'permanent'; }).forEach(function(eq) {
+    var cd = getPermanentSkillCooldown(eq);
+    var lv = eq.level || 1;
+    var lvName = getLevelName('permanent', lv);
+    skills.push({ type:'permanent_attack', name: eq.name, cost: 20,
+      dmgMult: 1.3 + (eq.power || 0) / 100, critBonus: (eq.crit || 0),
+      element: eq.element || '', desc: lvName + '法宝技' + (cd > 0 ? '（冷却' + cd + '回合）' : '（无冷却）'),
+      cooldown: cd, isPermanent: true, equipId: eq.id });
   });
   // 消耗法宝作为一次性技能（使用后扣除）
   battleState.usedEquips.filter(function(e){ return e.type === 'consumable'; }).forEach(function(eq) {
-    // 根据法宝属性决定使用效果
     var hasHeal = eq.affixes && eq.affixes.some(function(a){ return a.type === 'hp' || a.type === 'lifesteal'; });
     var hasShield = eq.affixes && eq.affixes.some(function(a){ return a.type === 'shield'; });
     var skillType = hasHeal ? 'consumable_heal' : (hasShield ? 'consumable_shield' : 'consumable_attack');
@@ -3480,13 +3652,30 @@ function buildGongfaSkills() {
       critBonus: 20, hits: 1, burnChance: 0, element: eq.element || '',
       desc: skillDesc, cooldown: 0, isConsumable: true, equipId: eq.id });
   });
-  return skills.slice(0, 6);
+  return skills;
+}
+// 切换功法组展开状态
+function toggleGongfaGroup(groupIdx) {
+  if (!battleState.gongfaGroups) return;
+  battleState.gongfaGroups.forEach(function(g, i) { g.expanded = (i === groupIdx) ? !g.expanded : false; });
+  renderActions();
+}
+// 使用功法子技能
+function useGongfaSubSkill(groupIdx, skillIdx) {
+  if (!battleState.gongfaGroups || !battleState.gongfaGroups[groupIdx]) return;
+  var sk = battleState.gongfaGroups[groupIdx].skills[skillIdx];
+  if (!sk) return;
+  // 在battleState.skills中找到对应的索引（功法技能不在skills数组中，直接处理）
+  playerAct('gongfa_skill', groupIdx, skillIdx);
 }
 // 全装备辅助函数（功法+永久法宝+消耗法宝）
 function equipAllForBattle() {
-  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).map(function(e){ return e.id; });
-  prepareState.selectedPermanent = (gameState.equipment.permanent || []).map(function(e){ return e.id; });
-  prepareState.selectedConsumable = (gameState.equipment.consumable || []).map(function(e){ return e.id; });
+  // 优先使用预设套装
+  if (applyPresetLoadout()) return;
+  // 无预设时全装备（应用上限）
+  prepareState.selectedGongfa = (gameState.equipment.gongfa || []).slice(0, EQUIP_LIMITS.gongfa).map(function(e){ return e.id; });
+  prepareState.selectedPermanent = (gameState.equipment.permanent || []).slice(0, EQUIP_LIMITS.permanent).map(function(e){ return e.id; });
+  prepareState.selectedConsumable = (gameState.equipment.consumable || []).slice(0, EQUIP_LIMITS.consumable).map(function(e){ return e.id; });
 }
 // 使用后从背包中扣除消耗法宝
 function removeConsumableAfterUse(equipId) {
@@ -3611,7 +3800,7 @@ function getRealmInfo() {
   var enlightenNeeded = Math.max(0, nextLevelEnlightenReq - (gameState.enlightenCount || 0));
   return {
     idx: idx, name: name, progress: progress, total: total,
-    bonusAtk: idx * 5, bonusHp: idx * 30, bonusSpirit: idx * 10,
+    bonusAtk: idx * 5, bonusHp: idx * 30, bonusSpirit: idx * 20,
     realmMult: 1 + idx * 0.12,
     focusIdx: focusIdx,
     pendingEnlighten: pendingEnlighten,
@@ -3805,6 +3994,19 @@ function updateEnlightenUI() {
 }
 
 // ===== 闹铃提醒 =====
+// 全局共享AudioContext：必须在用户手势中创建并resume，iOS才允许播放
+var sharedAudioCtx = null;
+function ensureAudioCtx() {
+  try {
+    if (!sharedAudioCtx) {
+      sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (sharedAudioCtx.state === 'suspended') {
+      sharedAudioCtx.resume();
+    }
+    return sharedAudioCtx;
+  } catch(e) { return null; }
+}
 function requestNotificationPermission() {
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission();
@@ -3812,9 +4014,10 @@ function requestNotificationPermission() {
 }
 
 function playAlarmSound() {
-  // 多音节闹铃声
+  // 多音节闹铃声（复用已激活的AudioContext）
+  var ctx = ensureAudioCtx();
+  if (!ctx) return;
   try {
-    var ctx = new (window.AudioContext || window.webkitAudioContext)();
     var notes = [880, 660, 880, 660, 880, 660];
     notes.forEach(function(freq, i) {
       var osc = ctx.createOscillator();
@@ -4043,6 +4246,8 @@ function startTimer() {
   timerState.running = true;
   timerState.startTime = Date.now();
   document.getElementById('timerStartBtn').textContent = '暂停';
+  // 用户手势中激活AudioContext（iOS必须，否则结束时无声）
+  ensureAudioCtx();
   if (timerState.interval) { clearInterval(timerState.interval); }
   timerState.interval = setInterval(timerTick, 1000);
   saveTimerState();
@@ -4101,32 +4306,40 @@ function finishTimer() {
   updateTimerDisplay();
   showToast('专注完成！今日累计 ' + getTodayFocus() + ' 分钟', 'success');
   if (timerState.mode === 'countdown') {
-    // 手机震动（200ms震动，100ms暂停，重复3次）
+    // 手机震动（Android支持，iOS不支持Web Vibration API）
     try { if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); } catch(e) {}
-    // 系统通知（需要用户授权）
+    // 系统通知（需要用户授权，iOS需PWA加到主屏幕）
     try {
       if ('Notification' in window && Notification.permission === 'granted') {
         new Notification('心魔试炼', { body: '专注完成！今日累计 ' + getTodayFocus() + ' 分钟', icon: '', tag: 'focus-complete' });
       }
     } catch(e) {}
-    // 提示音播放3次，更醒目
-    try {
-      var audio = new AudioContext();
+    // 提示音播放3次（复用已激活的共享AudioContext）
+    var audio = ensureAudioCtx();
+    if (audio) {
       for (var t = 0; t < 3; t++) {
         (function(idx) {
           setTimeout(function() {
-            var osc = audio.createOscillator();
-            var gain = audio.createGain();
-            osc.connect(gain);
-            gain.connect(audio.destination);
-            osc.frequency.value = 880;
-            gain.gain.value = 0.3;
-            osc.start();
-            setTimeout(function(){ osc.stop(); }, 400);
-            if (idx === 2) setTimeout(function(){ audio.close(); }, 500);
+            try {
+              var osc = audio.createOscillator();
+              var gain = audio.createGain();
+              osc.connect(gain);
+              gain.connect(audio.destination);
+              osc.frequency.value = 880;
+              gain.gain.value = 0.3;
+              osc.start();
+              setTimeout(function(){ osc.stop(); }, 400);
+            } catch(e) {}
           }, idx * 600);
         })(t);
       }
+    }
+    // 全屏视觉闪烁提醒（iPhone无震动时的替代方案）
+    try {
+      var flash = document.createElement('div');
+      flash.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(212,175,55,0.4);pointer-events:none;animation:alarmFlash 0.5s ease-in-out 6;';
+      document.body.appendChild(flash);
+      setTimeout(function(){ if(flash.parentNode) flash.remove(); }, 3200);
     } catch(e) {}
   }
 }
@@ -4548,7 +4761,9 @@ function getGongfaLevelBonus(eq) {
 }
 function getPermanentLevelBonus(eq) {
   var lv = eq.level || 1;
-  return { atkMult: 1 + (lv - 1) * 0.12, critAdd: (lv - 1) * 2, hpAdd: (lv - 1) * 20, levelName: getLevelName('permanent', lv) };
+  // 攻击力固定加成：第1次升级+3，第2次+6，第3次+9... 累计 = 3×(lv-1)×lv/2
+  var atkAdd = 3 * (lv - 1) * lv / 2;
+  return { atkMult: 1, atkAdd: atkAdd, critAdd: (lv - 1) * 2, hpAdd: (lv - 1) * 20, levelName: getLevelName('permanent', lv) };
 }
 function getCultivation(eq) { return eq.cultivation || 0; }
 function getGongfaCultivation(eq) { return getCultivation(eq); }
@@ -5473,13 +5688,42 @@ function renderActions() {
       '<span class="aa-name">⚔ 万剑齐发</span>' +
       '<span class="aa-sub">' + swords.length + '剑齐攻 · 每场1次</span></button>';
   }
+  // 功法组：点击展开技能选择
+  if (battleState.gongfaGroups && battleState.gongfaGroups.length > 0) {
+    battleState.gongfaGroups.forEach(function(g, gi) {
+      var lv = g.eq.level || 1;
+      var lvName = getLevelName('gongfa', lv);
+      var skillCount = g.skills.length;
+      html += `<button class="battle-action-btn" style="border-color:var(--jade);" onclick="toggleGongfaGroup(${gi})">
+        <span class="aa-name">📖 ${g.eq.name}</span>
+        <span class="aa-sub">${lvName} · ${skillCount}技能 ${g.expanded ? '▲' : '▼'}</span>
+      </button>`;
+      if (g.expanded) {
+        g.skills.forEach(function(sk, si) {
+          // 功法技能冷却：用gongfaId+skillType作为key
+          var cdKey = 'gf_' + sk.gongfaId + '_' + sk.type;
+          var cd = battleState.skillCooldowns[cdKey] || 0;
+          var onCd = cd > 0;
+          var canUse = !onCd && p.spirit >= sk.cost;
+          var cdText = onCd ? `冷却 ${cd}回合` : `灵力 ${sk.cost}`;
+          html += `<button class="battle-action-btn skill" style="margin-left:16px;${onCd || !canUse ? 'opacity:0.5;filter:grayscale(0.5);' : ''}" onclick="useGongfaSubSkill(${gi}, ${si})" ${!canUse ? 'disabled' : ''}>
+            <span class="aa-name">└ ${sk.name}</span><span class="aa-cost">${cdText}</span>
+          </button>`;
+        });
+      }
+    });
+  }
+  // 永久法宝技能 + 消耗法宝技能
   battleState.skills.forEach((sk, i) => {
-    var cd = battleState.skillCooldowns[i] || 0;
+    var cdKey = sk.isPermanent ? 'perm_' + sk.equipId : ('skill_' + i);
+    var cd = battleState.skillCooldowns[cdKey] || 0;
     var onCd = cd > 0;
-    var cdText = onCd ? `冷却 ${cd}回合` : `灵力 ${sk.cost}`;
+    var canUse = !onCd && p.spirit >= sk.cost;
+    var cdText = onCd ? `冷却 ${cd}回合` : (sk.cost > 0 ? `灵力 ${sk.cost}` : '一次性');
+    var borderColor = sk.isPermanent ? 'var(--gold-light)' : (sk.isConsumable ? 'var(--cinnabar-light)' : '');
     html += `
-      <button class="battle-action-btn skill" onclick="playerAct('skill', ${i})" data-cost="${sk.cost}" ${onCd ? 'disabled style="opacity:0.5;filter:grayscale(0.5);"' : ''}>
-        <span class="aa-name">${sk.name}</span><span class="aa-cost">${cdText}</span>
+      <button class="battle-action-btn skill" onclick="playerAct('skill', ${i})" data-cost="${sk.cost}" ${!canUse ? 'disabled style="opacity:0.5;filter:grayscale(0.5);"' : ''} ${borderColor ? 'style="border-color:' + borderColor + ';"' : ''}>
+        <span class="aa-name">${sk.isPermanent ? '🔮 ' : ''}${sk.name}</span><span class="aa-cost">${cdText}</span>
       </button>`;
   });
   html += `
@@ -5542,7 +5786,7 @@ function launchNianLayer() {
         critBonus += (eq.crit || 0) + lb.critAdd;
       } else {
         var plb = getPermanentLevelBonus(eq);
-        equipBonus += Math.floor((eq.power || 0) * plb.atkMult);
+        equipBonus += Math.floor(eq.power || 0) + (plb.atkAdd || 0);
         critBonus += (eq.crit || 0) + plb.critAdd;
         equipHp += plb.hpAdd || 0;
       }
@@ -5676,6 +5920,8 @@ function startBattle(monsterInput, opts) {
     minutes = opts.focusMinutes || 0;
     note = opts.note || '';
   } else {
+    // 普通凶兽战斗：自动应用预设套装
+    applyPresetLoadout();
     note = document.getElementById('difficultyDesc').value.trim();
     minutes = getTodayFocus();
     if (minutes <= 0) { showToast('今日专注时长为0，请先在试炼大殿开始专注计时', 'error'); return; }
@@ -5693,7 +5939,7 @@ function startBattle(monsterInput, opts) {
         critBonus += (eq.crit || 0) + lb.critAdd;
       } else if (eq.type === 'permanent') {
         var plb = getPermanentLevelBonus(eq);
-        equipBonus += Math.floor((eq.power || 0) * plb.atkMult);
+        equipBonus += Math.floor(eq.power || 0) + (plb.atkAdd || 0);
         critBonus += (eq.crit || 0) + plb.critAdd;
         baseHp += plb.hpAdd || 0;
       } else {
@@ -5882,11 +6128,11 @@ var ELEMENT_COLORS = {
 
 // ========== 赛季周目系统配置 ==========
 var SEASON_RANKS = [
-  { name: '炼气期', minScore: 0,    fragments: 50,  color: '#9E9E9E' },
-  { name: '筑基期', minScore: 100,  fragments: 100, color: '#4CAF50' },
-  { name: '金丹期', minScore: 250,  fragments: 200, color: '#FF9800' },
-  { name: '元婴期', minScore: 500,  fragments: 400, color: '#E91E63' },
-  { name: '化神期', minScore: 900,  fragments: 800, color: '#9C27B0' },
+  { name: '玄牝境', minScore: 0,    fragments: 50,  color: '#9E9E9E' },
+  { name: '守中境', minScore: 100,  fragments: 100, color: '#4CAF50' },
+  { name: '抱一境', minScore: 250,  fragments: 200, color: '#FF9800' },
+  { name: '坐忘境', minScore: 500,  fragments: 400, color: '#E91E63' },
+  { name: '逍遥境', minScore: 900,  fragments: 800, color: '#9C27B0' },
 ];
 var ZHOUMU_NAMES = ['初入轮回', '二周目', '三周目', '四周目'];
 var ZHOUMU_ACHIEVEMENTS = [
@@ -5979,7 +6225,7 @@ function settleWeek() {
   if (!gameState.season.zhoumuBestScores[z] || score > gameState.season.zhoumuBestScores[z]) {
     gameState.season.zhoumuBestScores[z] = score;
   }
-  // 金丹期以上掉法宝
+  // 抱一境以上掉法宝
   if (score >= SEASON_RANKS[2].minScore) {
     var quality = score >= SEASON_RANKS[4].minScore ? 'top' : (score >= SEASON_RANKS[3].minScore ? 'high' : 'mid');
     var eq = generateSeasonEquip(quality);
@@ -6148,8 +6394,8 @@ function renderSeasonPanel() {
   html += '<div><b style="color:var(--gold-light);">每日证道</b>：每次 +3分（每日1次）</div>';
   html += '<div><b style="color:var(--gold-light);">副本通关</b>：每个副本 +8分（每天最多2个副本=16分，需副本内每只凶兽至少赢1次）</div>';
   html += '<div><b style="color:var(--gold-light);">挑战「念」</b>：击败一层 +2分（每天从第1层开始，全装备挑战）</div>';
-  html += '<div style="margin-top:4px;color:var(--text-dim);">段位：炼气0 / 筑基100 / 金丹250 / 元婴500 / 化神900</div>';
-  html += '<div style="color:var(--text-dim);">周日24点结算，按段位发碎片，金丹期以上额外掉落赛季法宝</div>';
+  html += '<div style="margin-top:4px;color:var(--text-dim);">段位：玄牝0 / 守中100 / 抱一250 / 坐忘500 / 逍遥900</div>';
+  html += '<div style="color:var(--text-dim);">周日24点结算，按段位发碎片，抱一境以上额外掉落赛季法宝</div>';
   html += '</div>';
   el.innerHTML = html;
   // 更新星星
@@ -6462,7 +6708,7 @@ var CELL_TYPE_MAP = {
 
 function getActionPoints() {
   var todayFocus = getTodayFocus();
-  var totalAp = Math.floor(todayFocus / 30);
+  var totalAp = Math.floor(todayFocus / 20);
   var spent = gameState.adventure.apSpent || 0;
   var today = getTodayStr();
   if (gameState.adventure.apSpentDate !== today) {
@@ -6633,7 +6879,7 @@ function renderAdventureMap() {
   html += '<button class="btn btn-ghost btn-sm" onclick="resetAdventureMap()">🔄 重置地图</button>';
   html += '<button class="btn btn-ghost btn-sm" onclick="showMapDex()">📖 凶兽图鉴</button>';
   html += '<div style="flex:1;"></div>';
-  html += '<div style="font-size:11px;color:var(--text-dim);align-self:center;">每专注30分钟=1行动力 · 已探索格子可免费回溯</div>';
+  html += '<div style="font-size:11px;color:var(--text-dim);align-self:center;">每专注20分钟=1行动力 · 已探索格子可免费回溯</div>';
   html += '</div>';
 
   // 事件面板
@@ -6694,7 +6940,7 @@ function moveToMapCell(x, y) {
   // 已清理或起点不消耗行动力
   if (!isCleared && !isStart) {
     var ap = getActionPoints();
-    if (ap <= 0) { showToast('行动力不足，专注30分钟可获得1点', 'error'); return; }
+    if (ap <= 0) { showToast('行动力不足，专注20分钟可获得1点', 'error'); return; }
     var today = getTodayStr();
     if (gameState.adventure.apSpentDate !== today) {
       gameState.adventure.apSpentDate = today;
@@ -7383,9 +7629,66 @@ function playerAct(type, idx) {
     // 普攻获得灵力
     p.spirit = Math.min(p.maxSpirit, p.spirit + 15);
     updateSpiritBar();
+  } else if (type === 'gongfa_skill') {
+    // 功法子技能：idx=groupIdx, 额外参数skillIdx
+    var groupIdx = idx;
+    var skillIdx = arguments[2] || 0;
+    if (!battleState.gongfaGroups || !battleState.gongfaGroups[groupIdx]) {
+      battleState.awaitingAction = false; setActionsEnabled(true); return;
+    }
+    var gsk = battleState.gongfaGroups[groupIdx].skills[skillIdx];
+    if (!gsk) { battleState.awaitingAction = false; setActionsEnabled(true); return; }
+    var gcdKey = 'gf_' + gsk.gongfaId + '_' + gsk.type;
+    var gcd = battleState.skillCooldowns[gcdKey] || 0;
+    if (gcd > 0) {
+      addLog('system', `「${gsk.name}」冷却中（剩余${gcd}回合），改以挥剑攻击！`);
+      pCrit = Math.random() * 100 < p.crit;
+      pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+      p.spirit = Math.min(p.maxSpirit, p.spirit + 15);
+      updateSpiritBar();
+    } else if (p.spirit < gsk.cost) {
+      addLog('system', `灵力不足，无法施展「${gsk.name}」，改以挥剑攻击！`);
+      pCrit = Math.random() * 100 < p.crit;
+      pDmg = Math.floor(atk * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+      p.spirit = Math.min(p.maxSpirit, p.spirit + 15);
+      updateSpiritBar();
+    } else {
+      p.spirit -= gsk.cost;
+      updateSpiritBar();
+      pSkill = gsk;
+      playerElement = gsk.element || playerElement;
+      if (gsk.cooldown && gsk.cooldown > 0) {
+        battleState.skillCooldowns[gcdKey] = gsk.cooldown;
+      }
+      if (gsk.type === 'heal') {
+        healAmount = Math.floor(p.maxHp * Math.min(gsk.healPct || 0.05, 0.05));
+        p.hp = Math.min(p.maxHp, p.hp + healAmount);
+        pDmg = Math.floor(atk * (gsk.dmgMult || 0.8) * (0.9 + Math.random() * 0.2));
+        applyStatus('player', { type:'dmgReduce', value:0.15, duration:2 });
+      } else if (gsk.type === 'slash') {
+        pCrit = Math.random() * 100 < Math.min(p.crit + Math.min(gsk.critBonus || 0, 30), 100);
+        pDmg = Math.floor(atk * Math.min(gsk.dmgMult, 2.5) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        applyStatus('monster', { type:'armorBreak', value:0.25, duration:2 });
+      } else if (gsk.type === 'multihit') {
+        var hits = gsk.hits || 2;
+        var totalDmg = 0;
+        for (var hi = 0; hi < hits; hi++) {
+          var hCrit = Math.random() * 100 < p.crit;
+          totalDmg += Math.floor(atk * (gsk.dmgMult || 1.1) * (hCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        }
+        pDmg = totalDmg;
+        pCrit = false;
+      } else { // burst
+        pDmg = Math.floor(atk * Math.min(gsk.dmgMult || 1.5, 2.5) * (0.9 + Math.random() * 0.2));
+        if (Math.random() < (gsk.burnChance || 0.15)) {
+          applyStatus('monster', { type:'burn', value:Math.max(3,Math.floor(m.maxHp*0.05)), duration:3 });
+        }
+      }
+    }
   } else if (type === 'skill') {
     const sk = battleState.skills[idx];
-    var cd = battleState.skillCooldowns[idx] || 0;
+    var cdKey = sk.isPermanent ? 'perm_' + sk.equipId : ('skill_' + idx);
+    var cd = battleState.skillCooldowns[cdKey] || 0;
     if (cd > 0) {
       addLog('system', `「${sk ? sk.name : '神通'}」冷却中（剩余${cd}回合），改以挥剑攻击！`);
       pCrit = Math.random() * 100 < p.crit;
@@ -7402,9 +7705,10 @@ function playerAct(type, idx) {
       p.spirit -= sk.cost;
       updateSpiritBar();
       pSkill = sk;
+      playerElement = sk.element || playerElement;
       // 设置技能冷却
       if (sk.cooldown && sk.cooldown > 0) {
-        battleState.skillCooldowns[idx] = sk.cooldown;
+        battleState.skillCooldowns[cdKey] = sk.cooldown;
       }
       if (sk.type === 'consumable_heal') {
         // 消耗法宝：回血型
@@ -7427,6 +7731,11 @@ function playerAct(type, idx) {
         pDmg = Math.floor(atk * Math.min(sk.dmgMult || 2, 4) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
         addLog('crit', '使用「' + sk.name + '」，爆发强力一击！法宝已消耗。');
         removeConsumableAfterUse(sk.equipId);
+      } else if (sk.type === 'permanent_attack') {
+        // 永久法宝技能
+        pCrit = Math.random() * 100 < Math.min(p.crit + (sk.critBonus || 0), 100);
+        pDmg = Math.floor(atk * Math.min(sk.dmgMult || 1.5, 3) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        addLog('crit', '催动「' + sk.name + '」，法宝威能爆发！');
       } else if (sk.type === 'heal') {
         healAmount = Math.floor(p.maxHp * Math.min(sk.healPct || 0.05, 0.05));
         p.hp = Math.min(p.maxHp, p.hp + healAmount);
@@ -7776,7 +8085,7 @@ function afterMonsterTurn() {
   tickStatuses();
   if (battleState.finished) return;
   const p = battleState.player;
-  p.spirit = Math.min(p.maxSpirit, p.spirit + 30 + (p.affixes.regen || 0));
+  p.spirit = Math.min(p.maxSpirit, p.spirit + 15 + (p.affixes.regen || 0));
   updateSpiritBar();
   // 减少玩家技能冷却
   Object.keys(battleState.skillCooldowns || {}).forEach(function(idx) {
@@ -8570,6 +8879,32 @@ function renderInventory() {
   renderCategoryManager();
   renderInventoryGrid();
 }
+function renderInvManageBar() {
+  var bar = document.getElementById('invManageBar');
+  if (!bar) return;
+  var elements = [['all','全部'],['light','光'],['dark','暗'],['fire','火'],['water','水'],['electric','电'],['wood','木'],['ice','冰'],['thunder','雷'],['wind','风'],['earth','土'],['metal','金'],['time','时'],['space','空'],['chaos','混沌'],['star','星']];
+  var qualities = [['all','全部'],['黄级','黄'],['玄级','玄'],['地级','地'],['天级','天'],['神级功法','神'],['神器级','神器'],['消耗','消耗']];
+  var html = '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;">';
+  // 搜索
+  html += '<input type="text" placeholder="🔍 搜索名称..." value="' + invManageState.searchKeyword + '" oninput="invManageState.searchKeyword=this.value;renderInventoryGrid();" style="flex:1;min-width:120px;padding:5px 8px;font-size:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--text);">';
+  // 排序
+  html += '<select onchange="invManageState.sortBy=this.value;renderInventoryGrid();" style="padding:5px;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--text);">';
+  html += '<option value="power"' + (invManageState.sortBy==='power'?' selected':'') + '>战力排序</option>';
+  html += '<option value="quality"' + (invManageState.sortBy==='quality'?' selected':'') + '>品质排序</option>';
+  html += '<option value="level"' + (invManageState.sortBy==='level'?' selected':'') + '>等级排序</option>';
+  html += '<option value="element"' + (invManageState.sortBy==='element'?' selected':'') + '>元素排序</option>';
+  html += '</select>';
+  // 元素筛选
+  html += '<select onchange="invManageState.filterElement=this.value;renderInventoryGrid();" style="padding:5px;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--text);">';
+  elements.forEach(function(e) { html += '<option value="' + e[0] + '"' + (invManageState.filterElement===e[0]?' selected':'') + '>' + e[1] + '</option>'; });
+  html += '</select>';
+  // 品质筛选
+  html += '<select onchange="invManageState.filterQuality=this.value;renderInventoryGrid();" style="padding:5px;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--text);">';
+  qualities.forEach(function(q) { html += '<option value="' + q[0] + '"' + (invManageState.filterQuality===q[0]?' selected':'') + '>' + q[1] + '</option>'; });
+  html += '</select>';
+  html += '</div>';
+  bar.innerHTML = html;
+}
 function renderCategoryManager() {
   const type = currentInvTab === 'all' ? 'permanent' : currentInvTab;
   const cats = gameState.categories[type] || [];
@@ -8631,6 +8966,31 @@ function renderInventoryGrid() {
   } else {
     list = gameState.equipment[currentInvTab] || [];
   }
+  // 搜索过滤
+  if (invManageState.searchKeyword) {
+    var kw = invManageState.searchKeyword.toLowerCase();
+    list = list.filter(function(e) { return (e.name || '').toLowerCase().includes(kw); });
+  }
+  // 元素筛选
+  if (invManageState.filterElement !== 'all') {
+    list = list.filter(function(e) { return e.element === invManageState.filterElement; });
+  }
+  // 品质筛选
+  if (invManageState.filterQuality !== 'all') {
+    list = list.filter(function(e) { return getQualityName(e) === invManageState.filterQuality; });
+  }
+  // 排序：收藏优先，然后按排序方式
+  list.sort(function(a, b) {
+    var aFav = invManageState.favorites.includes(a.id) ? 1 : 0;
+    var bFav = invManageState.favorites.includes(b.id) ? 1 : 0;
+    if (aFav !== bFav) return bFav - aFav;
+    if (invManageState.sortBy === 'power') return calcEquipPower(b) - calcEquipPower(a);
+    if (invManageState.sortBy === 'quality') return getQualityLevel(b) - getQualityLevel(a);
+    if (invManageState.sortBy === 'level') return (b.level || 1) - (a.level || 1);
+    if (invManageState.sortBy === 'element') return (a.element || '').localeCompare(b.element || '');
+    return 0;
+  });
+  renderInvManageBar();
   const grid = document.getElementById('inventoryGrid');
   if (list.length === 0) {
     grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">法宝空空，点击右上角锻造新法宝</div>';
@@ -8641,8 +9001,9 @@ function renderInventoryGrid() {
     var isPermanent = eq.type === 'permanent';
     var canCultivate = isGongfa || isPermanent;
     var lv = eq.level || 1;
-    var lvBonus = isGongfa ? getGongfaLevelBonus(eq) : (isPermanent ? getPermanentLevelBonus(eq) : {atkMult:1, critAdd:0, hpAdd:0});
-    var dispAtk = canCultivate ? Math.floor(eq.power * lvBonus.atkMult) : eq.power;
+    var lvBonus = isGongfa ? getGongfaLevelBonus(eq) : (isPermanent ? getPermanentLevelBonus(eq) : {atkMult:1, atkAdd:0, critAdd:0, hpAdd:0});
+    // 功法用百分比加成，永久法宝用固定值加成
+    var dispAtk = isGongfa ? Math.floor(eq.power * lvBonus.atkMult) : (isPermanent ? Math.floor(eq.power) + (lvBonus.atkAdd || 0) : eq.power);
     var dispCrit = canCultivate ? (eq.crit || 0) + lvBonus.critAdd : (eq.crit || 0);
     var levelName = canCultivate ? getLevelName(eq.type, lv) : '';
     // 功法/法宝修炼UI
@@ -8670,8 +9031,8 @@ function renderInventoryGrid() {
       '<div class="inventory-card-head">' +
         '<div class="inventory-card-thumb">' + equipThumbHtml(eq) + '</div>' +
         '<div class="inventory-card-title">' +
-          '<div class="inventory-card-name">' + eq.name + (canCultivate ? ' <span style="font-size:11px;color:var(--gold-light);">' + levelName + '</span>' : '') + '</div>' +
-          '<span class="inventory-card-cat">' + getCatName(eq.type, eq.categoryId) + '</span>' +
+          '<div class="inventory-card-name">' + (invManageState.favorites.includes(eq.id) ? '⭐ ' : '') + eq.name + (canCultivate ? ' <span style="font-size:11px;color:var(--gold-light);">' + levelName + '</span>' : '') + '</div>' +
+          '<span class="inventory-card-cat">' + getCatName(eq.type, eq.categoryId) + (eq.element ? ' · ' + (ELEMENT_EFFECTS[eq.element] ? ELEMENT_EFFECTS[eq.element].name : '') + '系' : '') + '</span>' +
         '</div>' +
       '</div>' +
       '<div class="inventory-card-stats">' +
@@ -8682,7 +9043,25 @@ function renderInventoryGrid() {
       '<div class="inventory-card-effect">' + (eq.effect || '—') + '</div>' +
       ((eq.affixes && eq.affixes.length > 0) ? '<div class="affix-list">' + eq.affixes.map(function(a){ return '<span class="affix-tag good">' + affixText(a) + '</span>'; }).join('') + '</div>' : '') +
       cultHtml +
+        // 功法技能名称自定义（玄级以上显示）
+        (isGongfa && lv >= 2 ? '<div style="margin-top:8px;padding:8px;background:rgba(127,200,200,0.06);border-radius:6px;border:1px solid rgba(127,200,200,0.15);">' +
+          '<div style="font-size:11px;color:var(--jade-light);margin-bottom:4px;">⚡ 技能名称自定义</div>' +
+          (function() {
+            var types = getGongfaSkillTypes(eq);
+            var html = '';
+            types.forEach(function(st, idx) {
+              var curName = (eq.skillNames && eq.skillNames[idx]) ? eq.skillNames[idx] : '';
+              var cfg = GONGFA_SKILL_CONFIG[st];
+              html += '<div style="display:flex;gap:4px;margin-bottom:3px;align-items:center;">' +
+                '<span style="font-size:10px;color:var(--text-dim);width:40px;">' + (cfg?cfg.name:st) + '</span>' +
+                '<input type="text" value="' + curName + '" placeholder="自定义技能名" style="flex:1;padding:3px 6px;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:3px;color:var(--text);" onchange="setGongfaSkillName(\'' + eq.id + '\',' + idx + ',this.value)">' +
+                '</div>';
+            });
+            return html;
+          })() +
+        '</div>' : '') +
       '<div class="inventory-card-actions">' +
+        '<button class="btn btn-ghost btn-sm" style="' + (invManageState.favorites.includes(eq.id) ? 'color:var(--gold);border-color:var(--gold);' : '') + '" onclick="toggleFavorite(\'' + eq.id + '\')">' + (invManageState.favorites.includes(eq.id) ? '★ 已收藏' : '☆ 收藏') + '</button>' +
         '<button class="btn btn-ghost btn-sm" data-action="edit-equip" data-equip-id="' + eq.id + '">编辑</button>' +
         '<button class="btn btn-danger btn-sm" data-action="del-equip" data-equip-id="' + eq.id + '">销毁</button>' +
       '</div>' +
