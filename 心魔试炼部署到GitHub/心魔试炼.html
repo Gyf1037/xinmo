@@ -1575,6 +1575,7 @@ input, textarea, select { font-family: inherit; outline: none; }
     <div class="inventory-header">
       <div class="panel-title" style="margin-bottom:0;">法宝背包</div>
       <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost btn-sm" onclick="toggleSkillAtlas()">📖 技能图谱</button>
         <button class="btn btn-ghost btn-sm" onclick="toggleFusionPanel()">法宝融合</button>
         <button class="btn btn-primary btn-sm" onclick="toggleAddForm()">+ 新增法宝</button>
       </div>
@@ -1587,6 +1588,19 @@ input, textarea, select { font-family: inherit; outline: none; }
     </div>
     <!-- 背包管理工具栏 -->
     <div id="invManageBar"></div>
+    <!-- 功法技能规则图谱 -->
+    <div id="skillAtlasPanel" style="display:none;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(127,200,200,0.04));border:1px solid rgba(212,175,55,0.2);border-radius:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-size:14px;font-weight:700;color:var(--gold-light);font-family:Noto Serif SC,serif;">📖 功法技能规则图谱</div>
+        <span style="font-size:10px;color:var(--text-dim);">不关联元素 · 每种元素均可拥有这十种技能</span>
+      </div>
+      <div id="skillAtlasContent"></div>
+      <div style="margin-top:10px;padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;font-size:11px;color:var(--text-dim);line-height:1.8;">
+        <span style="color:var(--gold-light);">等级成长：</span>黄级×1.0 → 玄级×1.15 → 地级×1.3 → 天级×1.45 → <span style="color:var(--cinnabar-light);">神级×1.6（质变）</span><br>
+        <span style="color:var(--gold-light);">解锁规则：</span>1级1技能 · 玄级(2级)解锁第2技能 · 神级(5级)解锁第3技能<br>
+        <span style="color:var(--gold-light);">技能名称：</span>可在功法详情中自定义，功能固定为以上十种
+      </div>
+    </div>
     <!-- 分类管理 -->
     <div class="category-manager" id="categoryManager"></div>
     <div class="inventory-grid" id="inventoryGrid" style="margin-top:16px;"></div>
@@ -2087,7 +2101,7 @@ function calcDailyCombatPower() {
   var equipAtk = 0;
   var equipCrit = 0;
   var equipHp = 0;
-  (gameState.equipment.gongfa||[]).forEach(function(e){ if(prepareState.selectedGongfa.indexOf(e.id)>=0){ var lb=getGongfaLevelBonus(e); equipAtk+=Math.floor((e.power||0)*lb.atkMult); equipCrit+=(e.crit||0)+lb.critAdd; } });
+  (gameState.equipment.gongfa||[]).forEach(function(e){ if(prepareState.selectedGongfa.indexOf(e.id)>=0){ var lb=getGongfaLevelBonus(e); equipAtk+=Math.floor(e.power||0)+(lb.atkAdd||0); equipCrit+=(e.crit||0)+lb.critAdd; } });
   (gameState.equipment.permanent||[]).forEach(function(e){ if(prepareState.selectedPermanent.indexOf(e.id)>=0){ var plb=getPermanentLevelBonus(e); equipAtk+=Math.floor(e.power||0)+(plb.atkAdd||0); equipCrit+=(e.crit||0)+plb.critAdd; equipHp+=plb.hpAdd||0; if(e.affixes){ equipHp+=(e.affixes.hp||0); } } });
   // 神兽加成
   getActiveBeasts().forEach(function(b){ equipAtk += Math.floor(baseAtk * (b.atkMult||0)); equipCrit += (b.critAdd||0); });
@@ -2286,7 +2300,7 @@ function getQualityName(eq) {
 function calcEquipPower(eq) {
   if (eq.type === 'gongfa') {
     var lb = getGongfaLevelBonus(eq);
-    return Math.floor(eq.power * lb.atkMult) + (eq.crit || 0) * 2;
+    return Math.floor(eq.power || 0) + (lb.atkAdd || 0) + (eq.crit || 0) * 2;
   } else if (eq.type === 'permanent') {
     var plb = getPermanentLevelBonus(eq);
     return Math.floor(eq.power || 0) + (plb.atkAdd || 0) + (eq.crit || 0) * 2 + (plb.hpAdd || 0);
@@ -3135,7 +3149,7 @@ function updatePreview() {
     if (eq) {
       if (eq.type === 'gongfa') {
         var lb = getGongfaLevelBonus(eq);
-        equipBonus += Math.floor(eq.power * lb.atkMult);
+        equipBonus += Math.floor(eq.power || 0) + (lb.atkAdd || 0);
         critBonus += (eq.crit || 0) + lb.critAdd;
       } else if (eq.type === 'permanent') {
         var plb = getPermanentLevelBonus(eq);
@@ -3478,14 +3492,20 @@ function parsePassives(usedEquips) {
 // 功法 → 神通（按分类与名称推导）
 // 功法神通配置（可自定义，持久化保存）
 var GONGFA_SKILL_CONFIG = {
-  heal:     { name:'归元', cost:35, dmgMult:0.8, healPct:0.05, cooldown:4 },
-  slash:    { name:'破军', cost:45, dmgMult:1.8, critBonus:15, cooldown:0 },
-  multihit: { name:'残影', cost:40, dmgMult:1.1, hits:2, cooldown:0 },
-  burst:    { name:'乾坤', cost:45, dmgMult:1.5, burnChance:0.15, cooldown:0 },
+  burst:    { name:'乾坤', cost:45, dmgMult:2.0, critBonus:10, cooldown:0, desc:'全力一击' },
+  slash:    { name:'破军', cost:35, dmgMult:1.5, critBonus:25, armorBreak:0.25, cooldown:0, desc:'暴击破甲' },
+  multihit: { name:'残影', cost:40, dmgMult:0.8, hits:3, cooldown:0, desc:'多段连击' },
+  dot:      { name:'蚀骨', cost:35, dmgMult:1.0, dotDuration:3, dotPct:0.05, cooldown:0, desc:'持续伤害' },
+  control:  { name:'冰封', cost:35, dmgMult:1.2, controlChance:0.35, controlDuration:1, cooldown:0, desc:'冻结麻痹' },
+  debuff:   { name:'震慑', cost:30, dmgMult:1.0, debuffDuration:2, debuffValue:0.25, cooldown:0, desc:'虚弱易伤' },
+  heal:     { name:'归元', cost:30, dmgMult:0.6, healPct:0.10, dmgReduce:0.20, cooldown:4, desc:'回血减伤' },
+  shield:   { name:'灵盾', cost:30, dmgMult:0.5, shieldPct:0.30, cooldown:0, desc:'护盾护体' },
+  buff:     { name:'狂澜', cost:35, dmgMult:0.8, buffDuration:2, buffValue:0.25, cooldown:0, desc:'攻击强化' },
+  special:  { name:'噬魂', cost:40, dmgMult:1.2, lifesteal:0.30, executePct:0.15, cooldown:0, desc:'吸血斩杀' },
 };
 // ========== 功法多技能系统 ==========
 // 技能类型解锁顺序（排除功法本身类型后，按此优先级解锁）
-var SKILL_UNLOCK_ORDER = ['burst', 'slash', 'multihit', 'heal'];
+var SKILL_UNLOCK_ORDER = ['burst', 'slash', 'multihit', 'dot', 'control', 'debuff', 'heal', 'shield', 'buff', 'special'];
 // 获取功法解锁的技能类型列表
 function getGongfaSkillTypes(eq) {
   var lv = eq.level || 1;
@@ -3600,19 +3620,50 @@ function loadGongfaConfig() {
 function saveGongfaConfig() { localStorage.setItem('xinmo_gongfa_cfg', JSON.stringify(GONGFA_SKILL_CONFIG)); }
 function skillDesc(type) {
   var c = GONGFA_SKILL_CONFIG[type];
-  if (type === 'heal') return '攻击×' + c.dmgMult + '，回血' + Math.round(c.healPct*100) + '%';
-  if (type === 'slash') return '攻击×' + c.dmgMult + '，暴击+' + c.critBonus + '%';
-  if (type === 'multihit') return c.hits + '连击，每次攻击×' + c.dmgMult;
-  if (type === 'burst') return '攻击×' + c.dmgMult + '，' + Math.round(c.burnChance*100) + '%灼烧';
+  if (!c) return '';
+  if (type === 'burst') return '攻击×' + c.dmgMult + '，暴击+' + c.critBonus + '%';
+  if (type === 'slash') return '攻击×' + c.dmgMult + '，暴击+' + c.critBonus + '%，破甲' + Math.round(c.armorBreak*100) + '%';
+  if (type === 'multihit') return c.hits + '连击，每段攻击×' + c.dmgMult;
+  if (type === 'dot') return '攻击×' + c.dmgMult + '，持续' + c.dotDuration + '回合伤害';
+  if (type === 'control') return '攻击×' + c.dmgMult + '，' + Math.round(c.controlChance*100) + '%控制' + c.controlDuration + '回合';
+  if (type === 'debuff') return '攻击×' + c.dmgMult + '，虚弱易伤' + c.debuffDuration + '回合';
+  if (type === 'heal') return '攻击×' + c.dmgMult + '，回血' + Math.round(c.healPct*100) + '%，减伤' + Math.round(c.dmgReduce*100) + '%';
+  if (type === 'shield') return '攻击×' + c.dmgMult + '，护盾' + Math.round(c.shieldPct*100) + '%最大生命';
+  if (type === 'buff') return '攻击×' + c.dmgMult + '，攻击暴击+' + Math.round(c.buffValue*100) + '%' + c.buffDuration + '回合';
+  if (type === 'special') return '攻击×' + c.dmgMult + '，吸血' + Math.round(c.lifesteal*100) + '%，斩杀' + Math.round(c.executePct*100) + '%生命';
   return '';
 }
 function gongfaTypeOf(eq) {
   var catName = getCatName('gongfa', eq.categoryId);
   var n = eq.name || '';
-  if (/心法|心|灵/.test(catName + n)) return 'heal';
-  if (/剑|锋/.test(catName + n)) return 'slash';
-  if (/身法|身|影|步/.test(catName + n)) return 'multihit';
+  var s = catName + n;
+  if (/心法|归元|治疗|回血|疗伤/.test(s)) return 'heal';
+  if (/护盾|防御|护体|灵盾|金钟/.test(s)) return 'shield';
+  if (/破军|暴击|锋|斩|剑|破/.test(s)) return 'slash';
+  if (/残影|身法|影|步|连击|多段/.test(s)) return 'multihit';
+  if (/蚀骨|毒|灼烧|流血|持续|腐蚀/.test(s)) return 'dot';
+  if (/冰封|冻结|麻痹|控制|定身|封印/.test(s)) return 'control';
+  if (/震慑|削弱|虚弱|易伤|减攻|破甲/.test(s)) return 'debuff';
+  if (/狂澜|强化|增益|攻击|狂暴|蓄力/.test(s)) return 'buff';
+  if (/噬魂|吸血|斩杀|吸星|吞噬/.test(s)) return 'special';
   return 'burst';
+}
+// 技能等级成长系数：黄1.0/玄1.15/地1.3/天1.45/神1.6
+function getSkillLevelMult(level) {
+  var lv = level || 1;
+  var mults = [1.0, 1.0, 1.15, 1.3, 1.45, 1.6];
+  return mults[Math.min(lv, 5)] || 1.0;
+}
+// 判断是否神级功法（5级）
+function isGodLevel(level) { return (level || 1) >= 5; }
+// 判断永久法宝是否为剑（剑已有挥剑系统，不再作为技能显示）
+function isSwordEquip(eq) {
+  if (!eq || eq.type !== 'permanent') return false;
+  var swordCatIds = (gameState.categories.permanent || []).filter(function(c) {
+    return c.name === '剑' || c.name === '神剑' || c.name === '名剑';
+  }).map(function(c) { return c.id; });
+  if (swordCatIds.indexOf('cat_sword') < 0) swordCatIds.push('cat_sword');
+  return swordCatIds.indexOf(eq.categoryId) >= 0;
 }
 function buildGongfaSkills() {
   var skills = [];
@@ -3620,17 +3671,26 @@ function buildGongfaSkills() {
   battleState.gongfaGroups = [];
   battleState.usedEquips.filter(function(e){ return e.type === 'gongfa'; }).forEach(function(eq) {
     var skillTypes = getGongfaSkillTypes(eq);
+    var lv = eq.level || 1;
+    var lvMult = getSkillLevelMult(lv);
+    var isGod = isGodLevel(lv);
     var groupSkills = skillTypes.map(function(st, idx) {
       var cfg = GONGFA_SKILL_CONFIG[st];
-      return { type:st, name: getGongfaSkillName(eq, st, idx), cost:cfg.cost, dmgMult:cfg.dmgMult,
-        healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits, burnChance:cfg.burnChance,
+      return { type:st, name: getGongfaSkillName(eq, st, idx), cost:cfg.cost,
+        dmgMult:cfg.dmgMult, healPct:cfg.healPct, critBonus:cfg.critBonus, hits:cfg.hits,
+        armorBreak:cfg.armorBreak, dotDuration:cfg.dotDuration, dotPct:cfg.dotPct,
+        controlChance:cfg.controlChance, controlDuration:cfg.controlDuration,
+        debuffDuration:cfg.debuffDuration, debuffValue:cfg.debuffValue,
+        dmgReduce:cfg.dmgReduce, shieldPct:cfg.shieldPct,
+        buffDuration:cfg.buffDuration, buffValue:cfg.buffValue,
+        lifesteal:cfg.lifesteal, executePct:cfg.executePct,
         element: eq.element || '', desc: skillDesc(st), cooldown: cfg.cooldown || 0,
-        gongfaId: eq.id, gongfaName: eq.name };
+        gongfaId: eq.id, gongfaName: eq.name, level: lv, levelMult: lvMult, isGod: isGod };
     });
     battleState.gongfaGroups.push({ eq: eq, skills: groupSkills, expanded: false });
   });
-  // 永久法宝作为技能（带冷却）
-  battleState.usedEquips.filter(function(e){ return e.type === 'permanent'; }).forEach(function(eq) {
+  // 永久法宝作为技能（带冷却，剑除外——剑已有挥剑系统）
+  battleState.usedEquips.filter(function(e){ return e.type === 'permanent' && !isSwordEquip(e); }).forEach(function(eq) {
     var cd = getPermanentSkillCooldown(eq);
     var lv = eq.level || 1;
     var lvName = getLevelName('permanent', lv);
@@ -3700,16 +3760,66 @@ function renderGongfaSkillConfig() {
   var rows = Object.keys(GONGFA_SKILL_CONFIG).map(function(key) {
     var cfg = GONGFA_SKILL_CONFIG[key];
     var special = '';
-    if (key === 'heal') special = '<span style="font-size:11px;color:var(--text-dim);">回血%(上限20)</span><input type="number" min="0" max="20" value="' + Math.round(cfg.healPct*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.healPct=Math.min(20,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
-    else if (key === 'slash') special = '<span style="font-size:11px;color:var(--text-dim);">暴击+%(上限30)</span><input type="number" min="0" max="30" value="' + cfg.critBonus + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.critBonus=Math.min(30,parseInt(this.value)||0);saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
-    else if (key === 'multihit') special = '<span style="font-size:11px;color:var(--text-dim);">连击数(上限3)</span><input type="number" min="1" max="3" value="' + cfg.hits + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.hits=Math.min(3,parseInt(this.value)||1);saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
-    else if (key === 'burst') special = '<span style="font-size:11px;color:var(--text-dim);">灼烧%(上限30)</span><input type="number" min="0" max="30" value="' + Math.round(cfg.burnChance*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.burnChance=Math.min(30,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">';
+    if (key === 'heal') special = '<span style="font-size:11px;color:var(--text-dim);">回血%</span><input type="number" min="0" max="30" value="' + Math.round(cfg.healPct*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.healPct=Math.min(30,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'slash') special = '<span style="font-size:11px;color:var(--text-dim);">暴击+%</span><input type="number" min="0" max="50" value="' + cfg.critBonus + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.critBonus=Math.min(50,parseInt(this.value)||0);saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'multihit') special = '<span style="font-size:11px;color:var(--text-dim);">连击数</span><input type="number" min="1" max="5" value="' + cfg.hits + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.hits=Math.min(5,parseInt(this.value)||1);saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'burst') special = '<span style="font-size:11px;color:var(--text-dim);">暴击+%</span><input type="number" min="0" max="50" value="' + cfg.critBonus + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.critBonus=Math.min(50,parseInt(this.value)||0);saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'dot') special = '<span style="font-size:11px;color:var(--text-dim);">持续回合</span><input type="number" min="1" max="6" value="' + cfg.dotDuration + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.dotDuration=Math.min(6,parseInt(this.value)||3);saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'control') special = '<span style="font-size:11px;color:var(--text-dim);">控制%</span><input type="number" min="0" max="80" value="' + Math.round(cfg.controlChance*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.controlChance=Math.min(80,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'debuff') special = '<span style="font-size:11px;color:var(--text-dim);">减益回合</span><input type="number" min="1" max="5" value="' + cfg.debuffDuration + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.debuffDuration=Math.min(5,parseInt(this.value)||2);saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'shield') special = '<span style="font-size:11px;color:var(--text-dim);">护盾%</span><input type="number" min="0" max="80" value="' + Math.round(cfg.shieldPct*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.shieldPct=Math.min(80,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'buff') special = '<span style="font-size:11px;color:var(--text-dim);">强化回合</span><input type="number" min="1" max="5" value="' + cfg.buffDuration + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.buffDuration=Math.min(5,parseInt(this.value)||2);saveGongfaConfig();renderGongfaSkillConfig();">';
+    else if (key === 'special') special = '<span style="font-size:11px;color:var(--text-dim);">吸血%</span><input type="number" min="0" max="80" value="' + Math.round(cfg.lifesteal*100) + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.lifesteal=Math.min(80,(parseInt(this.value)||0))/100;saveGongfaConfig();renderGongfaSkillConfig();">';
     return '<div class="skill-config-row"><span class="skill-name">' + cfg.name + '</span><span class="skill-desc">' + skillDesc(key) + '</span>' +
-      '<span style="font-size:11px;color:var(--text-dim);">耗灵</span><input type="number" min="0" max="100" value="' + cfg.cost + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.cost=parseInt(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">' +
-      '<span style="font-size:11px;color:var(--text-dim);">伤害×</span><input type="number" step="0.1" min="0" value="' + cfg.dmgMult + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.dmgMult=parseFloat(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();updatePreview();">' +
+      '<span style="font-size:11px;color:var(--text-dim);">耗灵</span><input type="number" min="0" max="100" value="' + cfg.cost + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.cost=parseInt(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();">' +
+      '<span style="font-size:11px;color:var(--text-dim);">伤害×</span><input type="number" step="0.1" min="0" value="' + cfg.dmgMult + '" onchange="GONGFA_SKILL_CONFIG.' + key + '.dmgMult=parseFloat(this.value)||0;saveGongfaConfig();renderGongfaSkillConfig();">' +
       special + '</div>';
   }).join('');
   container.innerHTML = rows;
+}
+// 切换技能图谱面板
+function toggleSkillAtlas() {
+  var panel = document.getElementById('skillAtlasPanel');
+  if (!panel) return;
+  if (panel.style.display === 'none') {
+    renderSkillAtlas();
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+}
+// 渲染10种功法技能图谱
+function renderSkillAtlas() {
+  var container = document.getElementById('skillAtlasContent');
+  if (!container) return;
+  var icons = {
+    burst:'💥', slash:'⚔️', multihit:'🌀', dot:'☠️', control:'❄️',
+    debuff:'😵', heal:'💚', shield:'🛡️', buff:'🔥', special:'🩸'
+  };
+  var colors = {
+    burst:'#ff6b6b', slash:'#ffd93d', multihit:'#6bcb77', dot:'#9b59b6',
+    control:'#4ecdc4', debuff:'#e17055', heal:'#00b894', shield:'#74b9ff',
+    buff:'#fdcb6e', special:'#e84393'
+  };
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  Object.keys(GONGFA_SKILL_CONFIG).forEach(function(key) {
+    var cfg = GONGFA_SKILL_CONFIG[key];
+    var icon = icons[key] || '✨';
+    var color = colors[key] || '#ccc';
+    html += '<div style="padding:10px;background:rgba(0,0,0,0.25);border-radius:8px;border-left:3px solid ' + color + ';">';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
+    html += '<span style="font-size:18px;">' + icon + '</span>';
+    html += '<span style="font-size:13px;font-weight:700;color:' + color + ';">' + cfg.name + '</span>';
+    html += '<span style="font-size:10px;color:var(--text-dim);margin-left:auto;">耗灵' + cfg.cost + '</span>';
+    html += '</div>';
+    html += '<div style="font-size:11px;color:var(--text-dim);line-height:1.6;">' + skillDesc(key) + '</div>';
+    if (cfg.cooldown > 0) {
+      html += '<div style="font-size:10px;color:var(--cinnabar-light);margin-top:2px;">冷却' + cfg.cooldown + '回合</div>';
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
 }
 // ========== 境界修为系统（每1500分钟一境界） ==========
 var REALM_NAMES = ['炼气', '筑基', '金丹', '元婴', '化神', '炼虚', '合体', '大乘', '渡劫', '仙人', '真仙', '金仙', '太乙', '大罗', '道祖'];
@@ -4757,7 +4867,9 @@ function getLevelName(type, level) {
 }
 function getGongfaLevelBonus(eq) {
   var lv = eq.level || 1;
-  return { atkMult: 1 + (lv - 1) * 0.15, critAdd: (lv - 1) * 2, levelName: getLevelName('gongfa', lv) };
+  // 攻击力固定加成：第1次升级+3，第2次+6，第3次+9... 累计 = 3×(lv-1)×lv/2
+  var atkAdd = 3 * (lv - 1) * lv / 2;
+  return { atkMult: 1, atkAdd: atkAdd, critAdd: (lv - 1) * 2, levelName: getLevelName('gongfa', lv) };
 }
 function getPermanentLevelBonus(eq) {
   var lv = eq.level || 1;
@@ -5782,7 +5894,7 @@ function launchNianLayer() {
     if (eq) {
       if (eq.type === 'gongfa') {
         var lb = getGongfaLevelBonus(eq);
-        equipBonus += Math.floor(eq.power * lb.atkMult);
+        equipBonus += Math.floor(eq.power || 0) + (lb.atkAdd || 0);
         critBonus += (eq.crit || 0) + lb.critAdd;
       } else {
         var plb = getPermanentLevelBonus(eq);
@@ -5935,7 +6047,7 @@ function startBattle(monsterInput, opts) {
     if (eq) {
       if (eq.type === 'gongfa') {
         var lb = getGongfaLevelBonus(eq);
-        equipBonus += Math.floor(eq.power * lb.atkMult);
+        equipBonus += Math.floor(eq.power || 0) + (lb.atkAdd || 0);
         critBonus += (eq.crit || 0) + lb.critAdd;
       } else if (eq.type === 'permanent') {
         var plb = getPermanentLevelBonus(eq);
@@ -5971,7 +6083,7 @@ function startBattle(monsterInput, opts) {
   aff.lifesteal = Math.max(aff.lifesteal, Math.round(pass.lifestealPct * 100), stoneBonus.lifesteal);
   aff.shield = Math.max(aff.shield || 0, stoneBonus.shield);
   var maxHp = baseHp + aff.hp;
-  var maxSpirit = 100 + aff.spirit + realm.bonusSpirit;
+  var maxSpirit = 150 + aff.spirit + realm.bonusSpirit;
   // 动态血量系统：根据裸战力+强度等级计算凶兽血攻
   var dynStats = calcMonsterStats(monster);
   monster.maxHp = dynStats.maxHp;
@@ -6878,6 +6990,7 @@ function renderAdventureMap() {
   html += '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">';
   html += '<button class="btn btn-ghost btn-sm" onclick="resetAdventureMap()">🔄 重置地图</button>';
   html += '<button class="btn btn-ghost btn-sm" onclick="showMapDex()">📖 凶兽图鉴</button>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="showMapMonsterImageEditor()">🖼️ 凶兽图片</button>';
   html += '<div style="flex:1;"></div>';
   html += '<div style="font-size:11px;color:var(--text-dim);align-self:center;">每专注20分钟=1行动力 · 已探索格子可免费回溯</div>';
   html += '</div>';
@@ -6954,12 +7067,93 @@ function moveToMapCell(x, y) {
 
   var cellType = getCellType(x, y);
   if (!isCleared && !isStart) {
-    handleMapCellEvent(cellType, x, y);
+    // 先显示确认面板，不直接触发事件
+    promptMapCellEvent(cellType, x, y);
   } else if (isCleared || isStart) {
     showToast('已探索区域，免费回溯', 'info');
   }
   saveGame();
   renderAdventureMap();
+}
+
+// 地图格子事件确认面板（带对话）
+function promptMapCellEvent(cellType, x, y) {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  var isEnd = x === map.end.x && y === map.end.y;
+  var info = CELL_TYPES[cellType] || CELL_TYPES.empty;
+  var dialogues = {
+    monster: ['前方传来凶兽的低吼，一只凶兽拦住了去路！', '是否迎战？'],
+    elite: ['一股强大的气息逼近，精英凶兽出现了！', '精英凶兽实力不凡，是否挑战？'],
+    boss: ['终点的BOSS散发着恐怖的威压，大地都在颤抖！', '这是最终考验，是否决战？'],
+    treasure: ['发现一个古朴的宝箱，上面刻着神秘的符文。', '是否打开宝箱？'],
+    spirit: ['浓郁的灵气在此汇聚，散发着柔和的光芒。', '是否吸纳灵气？'],
+    trap: ['地面似乎有些不对劲，隐约可见机关的痕迹。', '小心！是否继续前进？'],
+    question: ['前方出现一个神秘的景象，似乎隐藏着什么。', '是否一探究竟？'],
+    merchant: ['一位神秘商人摆开了摊位，"道友，看看货？"', '是否与商人交易？'],
+    elder: ['一位白发老者盘膝而坐，"年轻人，可愿听老夫一言？"', '是否上前请教？'],
+    portal: ['一座古老的传送阵散发着空间波动。', '是否激活传送阵？'],
+    fog: ['浓雾弥漫，看不清前方的道路。', '是否踏入迷雾？'],
+    nest: ['发现一处凶兽巢穴，里面传来阵阵咆哮！', '是否闯入巢穴？'],
+    hidden: ['这里似乎有什么隐藏的东西...', '是否仔细搜寻？'],
+    empty: ['一片空地，什么也没有。', '继续探索。'],
+  };
+  var dlg = dialogues[cellType] || ['前方似乎有什么。', '是否继续？'];
+  var buttons = [];
+  if (cellType === 'empty') {
+    buttons = [{ label: '继续', action: 'confirmMapCellEvent(\'' + cellType + '\',' + x + ',' + y + ')', primary: true }];
+  } else if (cellType === 'monster' || cellType === 'elite' || (cellType === 'boss' && isEnd)) {
+    buttons = [
+      { label: '⚔️ 迎战', action: 'confirmMapCellEvent(\'' + cellType + '\',' + x + ',' + y + ')', primary: true },
+      { label: '撤退', action: 'retreatFromMapCell(' + x + ',' + y + ')' }
+    ];
+  } else if (cellType === 'treasure') {
+    buttons = [
+      { label: '📦 打开宝箱', action: 'confirmMapCellEvent(\'' + cellType + '\',' + x + ',' + y + ')', primary: true },
+      { label: '离开', action: 'retreatFromMapCell(' + x + ',' + y + ')' }
+    ];
+  } else {
+    buttons = [
+      { label: '确认', action: 'confirmMapCellEvent(\'' + cellType + '\',' + x + ',' + y + ')', primary: true },
+      { label: '离开', action: 'retreatFromMapCell(' + x + ',' + y + ')' }
+    ];
+  }
+  showMapEvent(info.icon + ' ' + info.name, dlg[0] + '<br><span style="color:var(--text-dim);font-size:12px;">' + dlg[1] + '</span>', buttons);
+}
+
+// 确认触发地图事件
+function confirmMapCellEvent(cellType, x, y) {
+  closeMapEvent();
+  handleMapCellEvent(cellType, x, y);
+}
+
+// 从地图格子撤退（不触发事件，格子保持未探索状态）
+function retreatFromMapCell(x, y) {
+  closeMapEvent();
+  // 回退玩家位置到上一格（简单处理：不移动，保持原位）
+  // 实际上玩家已经移动了，这里标记格子为未探索，让玩家可以重新选择
+  var key = x + ',' + y;
+  delete gameState.adventure.explored[key];
+  // 玩家位置回退：找到相邻的已探索格子
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  var dirs = [[0,1],[0,-1],[1,0],[-1,0]];
+  for (var i = 0; i < dirs.length; i++) {
+    var nx = x + dirs[i][0], ny = y + dirs[i][1];
+    if (nx >= 0 && nx < map.size && ny >= 0 && ny < map.size) {
+      var nkey = nx + ',' + ny;
+      if (gameState.adventure.explored[nkey] || (nx === map.start.x && ny === map.start.y)) {
+        gameState.adventure.playerPos = { x: nx, y: ny };
+        break;
+      }
+    }
+  }
+  // 退还行动力
+  var today = getTodayStr();
+  if (gameState.adventure.apSpentDate === today && gameState.adventure.apSpent > 0) {
+    gameState.adventure.apSpent -= 1;
+  }
+  saveGame();
+  renderAdventureMap();
+  showToast('已撤退，行动力已退还', 'info');
 }
 
 function markCellCleared(x, y) {
@@ -7019,6 +7213,16 @@ function handleMapCellEvent(cellType, x, y) {
   }
 }
 
+// 地图凶兽自定义图片（localStorage存储）
+function getMapMonsterImages() {
+  try { return JSON.parse(localStorage.getItem('xinmo_map_monster_images') || '{}'); } catch(e) { return {}; }
+}
+function saveMapMonsterImage(mapId, monsterName, url) {
+  var all = getMapMonsterImages();
+  if (!all[mapId]) all[mapId] = {};
+  all[mapId][monsterName] = url;
+  localStorage.setItem('xinmo_map_monster_images', JSON.stringify(all));
+}
 function getMapMonster(tier, isElite, isBoss) {
   var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
   var candidates = map.monsters.filter(function(m) {
@@ -7028,18 +7232,34 @@ function getMapMonster(tier, isElite, isBoss) {
   });
   if (candidates.length === 0) candidates = map.monsters.filter(function(m) { return !m.isBoss; });
   var m = candidates[Math.floor(Math.random() * candidates.length)];
+  // 自定义图片覆盖
+  var customImgs = getMapMonsterImages();
+  var customImg = (customImgs[gameState.adventure.currentMap] || {})[m.name];
   return {
     id: 'map_' + m.name + '_' + Date.now(),
     name: m.name + (isElite ? '·精英' : ''),
     tier: m.tier,
-    image: m.image,
+    image: customImg || m.image,
     isElite: isElite,
     isBoss: isBoss,
   };
 }
 
+// 根据格子到起点的曼哈顿距离计算凶兽强度（距离越远越强）
+function getMapCellTier(x, y, isElite, isBoss) {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  if (isBoss) return 8 + Math.floor(Math.random() * 3); // BOSS: 8-10
+  var dist = Math.abs(x - map.start.x) + Math.abs(y - map.start.y);
+  var baseTier = 1 + Math.floor(dist / 4); // 距离0-3→1, 4-7→2, 8-11→3, 12-15→4, 16+→5
+  baseTier = Math.max(1, Math.min(5, baseTier));
+  // 随机浮动±1
+  baseTier += Math.floor(Math.random() * 3) - 1;
+  baseTier = Math.max(1, Math.min(6, baseTier));
+  if (isElite) baseTier = Math.min(8, baseTier + 2); // 精英+2
+  return baseTier;
+}
 function startMapMonsterBattle(x, y, isElite) {
-  var tier = isElite ? 5 : 3;
+  var tier = getMapCellTier(x, y, isElite, false);
   var m = getMapMonster(tier, isElite, false);
   // 记录图鉴
   gameState.adventure.monsterDex[m.name] = true;
@@ -7077,12 +7297,13 @@ function startMapMonsterBattle(x, y, isElite) {
 }
 
 function startMapBossBattle(x, y) {
-  var m = getMapMonster(7, false, true);
+  var bossTier = getMapCellTier(x, y, false, true);
+  var m = getMapMonster(bossTier, false, true);
   gameState.adventure.monsterDex[m.name] = true;
   equipAllForBattle();
 
   var monsterObj = {
-    id: m.id, name: m.name, tier: 8,
+    id: m.id, name: m.name, tier: bossTier,
     image: m.image,
     skill: { name: '狂暴吞噬', type: 'enrage', atkBonus: 0.5, triggerHp: 0.4, once: true, text: m.name + '进入狂暴状态，攻击力暴涨！' },
   };
@@ -7132,12 +7353,13 @@ function startMapNestBattle(x, y) {
 
 function startNestChain(x, y, count) {
   closeMapEvent();
-  var m = getMapMonster(3, false, false);
+  var nestTier = 2 + Math.floor(Math.random() * 3); // 2-4随机
+  var m = getMapMonster(nestTier, false, false);
   gameState.adventure.monsterDex[m.name] = true;
   equipAllForBattle();
 
   var monsterObj = {
-    id: m.id, name: m.name + '(1/' + count + ')', tier: 3,
+    id: m.id, name: m.name + '(1/' + count + ')', tier: nestTier,
     image: m.image,
   };
 
@@ -7163,10 +7385,12 @@ function startNestChain(x, y, count) {
 
 function continueNestChain(x, y, remaining) {
   document.getElementById('battleOverlay').style.display = 'none';
-  var m = getMapMonster(3 + (3-remaining), false, false);
+  var chainTier = 2 + (3-remaining) + Math.floor(Math.random() * 2);
+  chainTier = Math.min(8, chainTier);
+  var m = getMapMonster(chainTier, false, false);
   gameState.adventure.monsterDex[m.name] = true;
   var monsterObj = {
-    id: m.id, name: m.name + '(' + (4-remaining) + '/3)', tier: 3 + (3-remaining),
+    id: m.id, name: m.name + '(' + (4-remaining) + '/3)', tier: chainTier,
     image: m.image,
   };
   // 保留上一场的生命值
@@ -7396,10 +7620,11 @@ function enterMapFog(x, y) {
 
 function fogMonsterBattle(x, y) {
   closeMapEvent();
-  var m = getMapMonster(4, false, false);
+  var fogTier = 3 + Math.floor(Math.random() * 3); // 3-5随机
+  var m = getMapMonster(fogTier, false, false);
   gameState.adventure.monsterDex[m.name] = true;
   equipAllForBattle();
-  var monsterObj = { id: m.id, name: m.name, tier: 4, image: m.image };
+  var monsterObj = { id: m.id, name: m.name, tier: fogTier, image: m.image };
   startBattle(monsterObj, {
     onWin: function(bs) {
       dailyState.fragments += 12;
@@ -7461,6 +7686,40 @@ function closeBattleAndGoToMap() {
   navigate('adventure');
 }
 
+// 地图凶兽图片编辑器
+function showMapMonsterImageEditor() {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  var customImgs = getMapMonsterImages();
+  var mapImgs = customImgs[gameState.adventure.currentMap] || {};
+  var html = '<div class="map-event-panel">';
+  html += '<div class="map-event-title">🖼️ ' + map.name + ' · 凶兽图片自定义</div>';
+  html += '<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">输入图片URL，留空则使用默认图片</div>';
+  map.monsters.forEach(function(m, idx) {
+    var tag = m.isBoss ? '🐉BOSS' : (m.isElite ? '💀精英' : '👹凶兽');
+    var cur = mapImgs[m.name] || '';
+    html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">';
+    html += '<span style="font-size:11px;width:70px;flex-shrink:0;">' + tag + ' ' + m.name + '</span>';
+    html += '<input type="text" id="mapImg_' + idx + '" value="' + cur + '" placeholder="图片URL" style="flex:1;padding:4px 6px;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--text);">';
+    html += '</div>';
+  });
+  html += '<div style="margin-top:10px;display:flex;gap:8px;">';
+  html += '<button class="btn btn-primary btn-sm" onclick="saveMapMonsterImages()">💾 保存</button>';
+  html += '<button class="btn btn-ghost btn-sm" onclick="closeMapEvent()">关闭</button>';
+  html += '</div></div>';
+  var panel = document.getElementById('mapEventPanel');
+  if (panel) { panel.innerHTML = html; panel.style.display = 'block'; }
+}
+function saveMapMonsterImages() {
+  var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
+  map.monsters.forEach(function(m, idx) {
+    var input = document.getElementById('mapImg_' + idx);
+    if (input) {
+      saveMapMonsterImage(gameState.adventure.currentMap, m.name, input.value.trim());
+    }
+  });
+  showToast('凶兽图片已保存', 'success');
+  closeMapEvent();
+}
 function showMapDex() {
   var dex = gameState.adventure.monsterDex || {};
   var names = Object.keys(dex);
@@ -7607,6 +7866,8 @@ function playerAct(type, idx) {
   let atk = p.attack;
   const wk = p.statuses.find(s => s.type === 'weaken');
   if (wk) atk = Math.floor(atk * (1 - wk.value));
+  const emp = p.statuses.find(s => s.type === 'empower');
+  if (emp) atk = Math.floor(atk * (1 + (emp.value || 0.25)));
 
   let pDmg = 0, pCrit = false, pSkill = null, healAmount = 0;
   var playerElement = getPlayerElement();
@@ -7660,29 +7921,95 @@ function playerAct(type, idx) {
       if (gsk.cooldown && gsk.cooldown > 0) {
         battleState.skillCooldowns[gcdKey] = gsk.cooldown;
       }
-      if (gsk.type === 'heal') {
-        healAmount = Math.floor(p.maxHp * Math.min(gsk.healPct || 0.05, 0.05));
-        p.hp = Math.min(p.maxHp, p.hp + healAmount);
-        pDmg = Math.floor(atk * (gsk.dmgMult || 0.8) * (0.9 + Math.random() * 0.2));
-        applyStatus('player', { type:'dmgReduce', value:0.15, duration:2 });
+      var lvMult = gsk.levelMult || 1.0;
+      var isGod = gsk.isGod || false;
+      if (gsk.type === 'burst') {
+        // 乾坤：全力一击
+        var burstCrit = isGod ? 20 : (gsk.critBonus || 10);
+        var burstMult = isGod ? 2.5 : (gsk.dmgMult || 2.0);
+        pCrit = Math.random() * 100 < Math.min(p.crit + burstCrit, 100);
+        pDmg = Math.floor(atk * burstMult * lvMult * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
       } else if (gsk.type === 'slash') {
-        pCrit = Math.random() * 100 < Math.min(p.crit + Math.min(gsk.critBonus || 0, 30), 100);
-        pDmg = Math.floor(atk * Math.min(gsk.dmgMult, 2.5) * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
-        applyStatus('monster', { type:'armorBreak', value:0.25, duration:2 });
+        // 破军：暴击破甲
+        var slashCrit = isGod ? 35 : (gsk.critBonus || 25);
+        var slashMult = isGod ? 2.0 : (gsk.dmgMult || 1.5);
+        var slashArmor = isGod ? 0.40 : (gsk.armorBreak || 0.25);
+        pCrit = Math.random() * 100 < Math.min(p.crit + slashCrit, 100);
+        pDmg = Math.floor(atk * slashMult * lvMult * (pCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+        applyStatus('monster', { type:'armorBreak', value:slashArmor, duration:2 });
       } else if (gsk.type === 'multihit') {
-        var hits = gsk.hits || 2;
+        // 残影：多段连击
+        var mhHits = isGod ? 4 : (gsk.hits || 3);
         var totalDmg = 0;
-        for (var hi = 0; hi < hits; hi++) {
+        for (var hi = 0; hi < mhHits; hi++) {
           var hCrit = Math.random() * 100 < p.crit;
-          totalDmg += Math.floor(atk * (gsk.dmgMult || 1.1) * (hCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
+          totalDmg += Math.floor(atk * (gsk.dmgMult || 0.8) * lvMult * (hCrit ? 2 : 1) * (0.9 + Math.random() * 0.2));
         }
         pDmg = totalDmg;
         pCrit = false;
-      } else { // burst
-        pDmg = Math.floor(atk * Math.min(gsk.dmgMult || 1.5, 2.5) * (0.9 + Math.random() * 0.2));
-        if (Math.random() < (gsk.burnChance || 0.15)) {
-          applyStatus('monster', { type:'burn', value:Math.max(3,Math.floor(m.maxHp*0.05)), duration:3 });
+      } else if (gsk.type === 'dot') {
+        // 蚀骨：持续伤害
+        pDmg = Math.floor(atk * (gsk.dmgMult || 1.0) * lvMult * (0.9 + Math.random() * 0.2));
+        var dotDur = isGod ? 4 : (gsk.dotDuration || 3);
+        var dotVal = Math.max(3, Math.floor(m.maxHp * (isGod ? 0.08 : (gsk.dotPct || 0.05))));
+        // 根据功法属性选择对应持续伤害类型
+        var dotType = 'poison';
+        if (playerElement === 'fire' || playerElement === 'star') dotType = 'burn';
+        else if (playerElement === 'wind') dotType = 'bleed';
+        applyStatus('monster', { type:dotType, value:dotVal, duration:dotDur });
+        addLog('crit', '「' + gsk.name + '」蚀骨之力侵入，凶兽持续受创！');
+      } else if (gsk.type === 'control') {
+        // 冰封：冻结/麻痹
+        pDmg = Math.floor(atk * (gsk.dmgMult || 1.2) * lvMult * (0.9 + Math.random() * 0.2));
+        var ctrlChance = isGod ? 0.50 : (gsk.controlChance || 0.35);
+        var ctrlDur = isGod ? 2 : (gsk.controlDuration || 1);
+        if (Math.random() < ctrlChance) {
+          var ctrlType = (playerElement === 'ice') ? 'freeze' : 'stun';
+          applyStatus('monster', { type:ctrlType, value:1, duration:ctrlDur });
+          addLog('crit', '「' + gsk.name + '」控制生效，凶兽被' + (ctrlType === 'freeze' ? '冻结' : '麻痹') + '！');
         }
+      } else if (gsk.type === 'debuff') {
+        // 震慑：虚弱+易伤
+        pDmg = Math.floor(atk * (gsk.dmgMult || 1.0) * lvMult * (0.9 + Math.random() * 0.2));
+        var debDur = isGod ? 3 : (gsk.debuffDuration || 2);
+        var debVal = isGod ? 0.35 : (gsk.debuffValue || 0.25);
+        applyStatus('monster', { type:'weaken', value:debVal, duration:debDur });
+        applyStatus('monster', { type:'vuln', value:debVal, duration:debDur });
+        addLog('crit', '「' + gsk.name + '」震慑四方，凶兽虚弱且易伤！');
+      } else if (gsk.type === 'heal') {
+        // 归元：回血+减伤
+        var healPct = isGod ? 0.15 : (gsk.healPct || 0.10);
+        var reduceVal = isGod ? 0.30 : (gsk.dmgReduce || 0.20);
+        healAmount = Math.floor(p.maxHp * healPct);
+        p.hp = Math.min(p.maxHp, p.hp + healAmount);
+        pDmg = Math.floor(atk * (gsk.dmgMult || 0.6) * lvMult * (0.9 + Math.random() * 0.2));
+        applyStatus('player', { type:'dmgReduce', value:reduceVal, duration:2 });
+      } else if (gsk.type === 'shield') {
+        // 灵盾：护盾
+        var shieldPct = isGod ? 0.50 : (gsk.shieldPct || 0.30);
+        var shieldVal = Math.floor(p.maxHp * shieldPct);
+        applyStatus('player', { type:'shield', value:shieldVal, duration:3 });
+        pDmg = Math.floor(atk * (gsk.dmgMult || 0.5) * lvMult * (0.9 + Math.random() * 0.2));
+        addLog('crit', '「' + gsk.name + '」灵盾护体，获得' + shieldVal + '点护盾！');
+      } else if (gsk.type === 'buff') {
+        // 狂澜：攻击+暴击强化
+        var buffDur = isGod ? 3 : (gsk.buffDuration || 2);
+        var buffVal = isGod ? 0.40 : (gsk.buffValue || 0.25);
+        applyStatus('player', { type:'empower', value:buffVal, duration:buffDur });
+        pDmg = Math.floor(atk * (gsk.dmgMult || 0.8) * lvMult * (0.9 + Math.random() * 0.2));
+        addLog('crit', '「' + gsk.name + '」狂澜之力涌动，攻击与暴击大幅提升！');
+      } else if (gsk.type === 'special') {
+        // 噬魂：吸血+斩杀
+        var lsPct = isGod ? 0.50 : (gsk.lifesteal || 0.30);
+        var execPct = isGod ? 0.20 : (gsk.executePct || 0.15);
+        pDmg = Math.floor(atk * (gsk.dmgMult || 1.2) * lvMult * (0.9 + Math.random() * 0.2));
+        // 斩杀：额外造成目标当前生命百分比伤害
+        var executeDmg = Math.floor(m.hp * execPct);
+        pDmg += executeDmg;
+        // 吸血
+        healAmount = Math.floor(pDmg * lsPct);
+        p.hp = Math.min(p.maxHp, p.hp + healAmount);
+        addLog('crit', '「' + gsk.name + '」噬魂之力，斩杀' + executeDmg + '点并吸血' + healAmount + '！');
       }
     }
   } else if (type === 'skill') {
@@ -9002,8 +9329,8 @@ function renderInventoryGrid() {
     var canCultivate = isGongfa || isPermanent;
     var lv = eq.level || 1;
     var lvBonus = isGongfa ? getGongfaLevelBonus(eq) : (isPermanent ? getPermanentLevelBonus(eq) : {atkMult:1, atkAdd:0, critAdd:0, hpAdd:0});
-    // 功法用百分比加成，永久法宝用固定值加成
-    var dispAtk = isGongfa ? Math.floor(eq.power * lvBonus.atkMult) : (isPermanent ? Math.floor(eq.power) + (lvBonus.atkAdd || 0) : eq.power);
+    // 功法与永久法宝均用固定值加成（每次升级+3/+6/+9...）
+    var dispAtk = Math.floor(eq.power || 0) + (lvBonus.atkAdd || 0);
     var dispCrit = canCultivate ? (eq.crit || 0) + lvBonus.critAdd : (eq.crit || 0);
     var levelName = canCultivate ? getLevelName(eq.type, lv) : '';
     // 功法/法宝修炼UI
