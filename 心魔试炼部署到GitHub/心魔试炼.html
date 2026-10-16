@@ -1589,16 +1589,18 @@ input, textarea, select { font-family: inherit; outline: none; }
     <!-- 背包管理工具栏 -->
     <div id="invManageBar"></div>
     <!-- 功法技能规则图谱 -->
-    <div id="skillAtlasPanel" style="display:none;margin-bottom:16px;padding:14px;background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(127,200,200,0.04));border:1px solid rgba(212,175,55,0.2);border-radius:10px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <div style="font-size:14px;font-weight:700;color:var(--gold-light);font-family:Noto Serif SC,serif;">📖 功法技能规则图谱</div>
+    <div id="skillAtlasPanel" style="display:block;margin-bottom:16px;padding:0;background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(127,200,200,0.04));border:1px solid rgba(212,175,55,0.2);border-radius:10px;overflow:hidden;">
+      <div id="skillAtlasHead" onclick="toggleSkillAtlas()" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;user-select:none;">
+        <div style="font-size:14px;font-weight:700;color:var(--gold-light);font-family:Noto Serif SC,serif;">📖 功法技能规则图谱 <span id="skillAtlasToggle" style="font-size:11px;color:var(--text-dim);font-weight:400;">（点击收起）</span></div>
         <span style="font-size:10px;color:var(--text-dim);">不关联元素 · 每种元素均可拥有这十种技能</span>
       </div>
-      <div id="skillAtlasContent"></div>
-      <div style="margin-top:10px;padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;font-size:11px;color:var(--text-dim);line-height:1.8;">
-        <span style="color:var(--gold-light);">等级成长：</span>黄级×1.0 → 玄级×1.15 → 地级×1.3 → 天级×1.45 → <span style="color:var(--cinnabar-light);">神级×1.6（质变）</span><br>
-        <span style="color:var(--gold-light);">解锁规则：</span>1级1技能 · 玄级(2级)解锁第2技能 · 神级(5级)解锁第3技能<br>
-        <span style="color:var(--gold-light);">技能名称：</span>可在功法详情中自定义，功能固定为以上十种
+      <div id="skillAtlasBody">
+        <div id="skillAtlasContent" style="padding:0 14px;"></div>
+        <div style="margin:10px 14px;padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;font-size:11px;color:var(--text-dim);line-height:1.8;">
+          <span style="color:var(--gold-light);">等级成长：</span>黄级×1.0 → 玄级×1.15 → 地级×1.3 → 天级×1.45 → <span style="color:var(--cinnabar-light);">神级×1.6（质变）</span><br>
+          <span style="color:var(--gold-light);">解锁规则：</span>1级1技能 · 玄级(2级)解锁第2技能 · 神级(5级)解锁第3技能<br>
+          <span style="color:var(--gold-light);">技能名称：</span>可在功法详情中自定义，功能固定为以上十种
+        </div>
       </div>
     </div>
     <!-- 分类管理 -->
@@ -1971,8 +1973,13 @@ input, textarea, select { font-family: inherit; outline: none; }
         <input type="text" class="form-input" id="sectEditorDesc" placeholder="例如：正道魁首，剑法通神">
       </div>
       <div class="form-group">
-        <label class="form-label">宗门图片URL（可选）</label>
-        <input type="text" class="form-input" id="sectEditorImage" placeholder="https://... 图片链接">
+        <label class="form-label">宗门图片（可选，从相册上传）</label>
+        <input type="file" id="sectEditorImageInput" accept="image/*" style="display:none;" onchange="sectImageSelected(this,'sectEditorImage','sectImagePreview')">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('sectEditorImageInput').click()">📷 选择图片</button>
+          <input type="text" class="form-input" id="sectEditorImage" placeholder="或粘贴图片链接" style="flex:1;">
+        </div>
+        <div id="sectImagePreview" style="margin-top:6px;"></div>
       </div>
       <div class="form-group">
         <label class="form-label">敌人列表（按挑战顺序）</label>
@@ -2010,8 +2017,13 @@ input, textarea, select { font-family: inherit; outline: none; }
           <input type="text" class="form-input" id="sectRewardEffect" placeholder="例如：青云宗镇宗剑诀">
         </div>
         <div class="form-group">
-          <label class="form-label">法宝图片URL（可选）</label>
-          <input type="text" class="form-input" id="sectRewardImage" placeholder="https://... 图片链接">
+          <label class="form-label">法宝图片（可选，从相册上传）</label>
+          <input type="file" id="sectRewardImageInput" accept="image/*" style="display:none;" onchange="sectImageSelected(this,'sectRewardImage','sectRewardImagePreview')">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('sectRewardImageInput').click()">📷 选择图片</button>
+            <input type="text" class="form-input" id="sectRewardImage" placeholder="或粘贴图片链接" style="flex:1;">
+          </div>
+          <div id="sectRewardImagePreview" style="margin-top:6px;"></div>
         </div>
       </div>
       <div style="display:flex;gap:10px;margin-top:16px;">
@@ -2072,24 +2084,25 @@ function getTypeName(t) { return TYPE_NAMES[t] || '法宝'; }
 // ---------- 六档难度配置（上古凶兽）----------
 // ========== 凶兽强度等级配置（动态血量系统） ==========
 const MONSTER_TIERS = [
-  { tier:1,  name:'泥胚境', targetRounds:2,  dmgRatio:0.15 },
-  { tier:2,  name:'木胎境', targetRounds:2,  dmgRatio:0.18 },
-  { tier:3,  name:'水银境', targetRounds:3,  dmgRatio:0.21 },
-  { tier:4,  name:'金身境', targetRounds:3,  dmgRatio:0.24 },
-  { tier:5,  name:'远游境', targetRounds:3,  dmgRatio:0.27 },
-  { tier:6,  name:'山巅境', targetRounds:4,  dmgRatio:0.30 },
-  { tier:7,  name:'止境',   targetRounds:4,  dmgRatio:0.33 },
-  { tier:8,  name:'归真境', targetRounds:4,  dmgRatio:0.36 },
-  { tier:9,  name:'龙门境', targetRounds:5,  dmgRatio:0.39 },
-  { tier:10, name:'金丹境', targetRounds:5,  dmgRatio:0.42 },
-  { tier:11, name:'元婴境', targetRounds:6,  dmgRatio:0.45 },
-  { tier:12, name:'玉璞境', targetRounds:6,  dmgRatio:0.48 },
-  { tier:13, name:'仙人境', targetRounds:7,  dmgRatio:0.54 },
-  { tier:14, name:'飞升境', targetRounds:8,  dmgRatio:0.63 },
-  { tier:15, name:'十四境', targetRounds:10, dmgRatio:0.75 },
+  { tier:1,  name:'泥胚境', targetRounds:2.0, dmgRatio:0.15 },
+  { tier:2,  name:'木胎境', targetRounds:2.5, dmgRatio:0.18 },
+  { tier:3,  name:'水银境', targetRounds:3.0, dmgRatio:0.21 },
+  { tier:4,  name:'金身境', targetRounds:3.5, dmgRatio:0.24 },
+  { tier:5,  name:'远游境', targetRounds:4.0, dmgRatio:0.27 },
+  { tier:6,  name:'山巅境', targetRounds:4.5, dmgRatio:0.30 },
+  { tier:7,  name:'止境',   targetRounds:5.0, dmgRatio:0.33 },
+  { tier:8,  name:'归真境', targetRounds:5.5, dmgRatio:0.36 },
+  { tier:9,  name:'龙门境', targetRounds:6.0, dmgRatio:0.39 },
+  { tier:10, name:'金丹境', targetRounds:6.5, dmgRatio:0.42 },
+  { tier:11, name:'元婴境', targetRounds:7.0, dmgRatio:0.45 },
+  { tier:12, name:'玉璞境', targetRounds:7.5, dmgRatio:0.48 },
+  { tier:13, name:'仙人境', targetRounds:8.0, dmgRatio:0.54 },
+  { tier:14, name:'飞升境', targetRounds:9.0, dmgRatio:0.63 },
+  { tier:15, name:'十四境', targetRounds:10.0,dmgRatio:0.75 },
+  { tier:16, name:'十五境', targetRounds:11.0,dmgRatio:0.82 },
 ];
 function getTierConfig(tier) {
-  return MONSTER_TIERS[Math.max(0, Math.min(14, (tier||1)-1))];
+  return MONSTER_TIERS[Math.max(0, Math.min(15, (tier||1)-1))];
 }
 // 每日裸战力缓存（每天首次打开时计算）
 var dailyCombatPower = { date:'', nakedAtk:0, nakedCrit:0, nakedHp:0, nakedDps:0 };
@@ -2121,8 +2134,8 @@ function calcMonsterStats(monster) {
   }
   var cp = calcDailyCombatPower();
   var displayTier = getTierConfig(monster.tier || 3);
-  // 实际强度后移2个境界：泥胚→水银，木胎→金身...
-  var actualTierNum = Math.min(15, (monster.tier || 3) + 2);
+  // 实际强度前移1个境界：泥胚→木胎，木胎→水银...
+  var actualTierNum = Math.min(16, Math.max(1, (monster.tier || 3) + 1));
   var tier = getTierConfig(actualTierNum);
   var zhoumuMult = 1 + ((gameState.season?.zhoumu || 1) - 1) * 0.15;
   var diffMult = difficultyMult;
@@ -2136,7 +2149,7 @@ function calcMonsterStats(monster) {
   var todayFocus = getTodayFocus();
   var todayTotalHp = cp.nakedHp + Math.floor(todayFocus * 0.5);
   var attack = Math.max(10, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult) * Math.min(powerScale, 2.0)));
-  // 显示名称用原境界，实际强度用后移后的境界
+  // 显示名称用原境界，实际强度用前移后的境界
   return { maxHp: maxHp, attack: attack, tierName: displayTier.name, targetRounds: tier.targetRounds };
 }
 const DEFAULT_MONSTERS = [
@@ -2191,6 +2204,8 @@ let gameState = {
   seededGongfa: false,
   enlightenCount: 0,
   enlightenReq: 1,
+  // 证道不足期间被冻结丢弃的修为时间（不给下一级做时间准备）
+  frozenFocus: 0,
   // 无限战争
   letGoCount: 0,
   lastLetGoTime: 0,
@@ -2406,6 +2421,7 @@ function loadSave() {
   gameState.enlightenCount = data?.enlightenCount || 0;
   gameState.enlightenStreak = data?.enlightenStreak || 0;
   gameState.enlightenDate = data?.enlightenDate || '';
+  gameState.frozenFocus = data?.frozenFocus || 0;
   gameState.letGoCount = data?.letGoCount || 0;
   gameState.lastLetGoTime = data?.lastLetGoTime || 0;
   gameState.fragmentTaskCount = data?.fragmentTaskCount || 0;
@@ -2449,7 +2465,7 @@ function loadSave() {
   if (data?.adventure) {
     gameState.adventure = {
       currentMap: data.adventure.currentMap || 'desert',
-      playerPos: data.adventure.playerPos || { x: 0, y: 9 },
+      playerPos: data.adventure.playerPos || (function(){ var m = (typeof ADVENTURE_MAPS !== 'undefined' && ADVENTURE_MAPS[data.adventure.currentMap]) ? ADVENTURE_MAPS[data.adventure.currentMap] : null; return m ? { x: m.start.x, y: m.start.y } : { x: 0, y: 9 }; })(),
       explored: data.adventure.explored || {},
       mapState: data.adventure.mapState || {},
       clearedMaps: data.adventure.clearedMaps || [],
@@ -2714,6 +2730,10 @@ function navigate(view) {
   if (battleRunning) {
     clearAllBattleTimeouts();
     battleRunning = false;
+  }
+  // 离开念挑战（切到非战斗页）时重置运行状态，允许重新挑战
+  if (nianState.running && view !== 'battle') {
+    nianState.running = false;
   }
   // 切换页面时自动关闭融合面板
   var fp = document.getElementById('fusionPanel');
@@ -3779,13 +3799,16 @@ function renderGongfaSkillConfig() {
 }
 // 切换技能图谱面板
 function toggleSkillAtlas() {
-  var panel = document.getElementById('skillAtlasPanel');
-  if (!panel) return;
-  if (panel.style.display === 'none') {
+  var body = document.getElementById('skillAtlasBody');
+  var tip = document.getElementById('skillAtlasToggle');
+  if (!body) return;
+  if (body.style.display === 'none') {
     renderSkillAtlas();
-    panel.style.display = 'block';
+    body.style.display = 'block';
+    if (tip) tip.textContent = '（点击收起）';
   } else {
-    panel.style.display = 'none';
+    body.style.display = 'none';
+    if (tip) tip.textContent = '（点击展开）';
   }
 }
 // 渲染10种功法技能图谱
@@ -3897,7 +3920,10 @@ function getMaxRealmByEnlighten(count) {
   return realm;
 }
 function getRealmInfo() {
-  var total = getTotalFocus();
+  // 证道不足期间超出当前境界所需的时间被冻结丢弃，不给下一级做时间准备
+  if (gameState.frozenFocus == null) gameState.frozenFocus = 0;
+  var rawTotal = getTotalFocus();
+  var total = rawTotal - (gameState.frozenFocus || 0);
   var focusIdx = Math.floor(total / 1500);
   // 证道境界：第1层4次，第2层5次...递增到10次封顶
   var maxRealmByEnlighten = getMaxRealmByEnlighten(gameState.enlightenCount || 0);
@@ -3905,6 +3931,17 @@ function getRealmInfo() {
   var name = REALM_NAMES[Math.min(idx, REALM_NAMES.length - 1)];
   var progress = (total % 1500) / 1500;
   var pendingEnlighten = focusIdx > idx;
+  // 证道不足：把超出当前境界满值的时间永久冻结，突破后下一级从0开始
+  if (pendingEnlighten) {
+    var cap = 1500 * (idx + 1);
+    if (total > cap) {
+      gameState.frozenFocus = (gameState.frozenFocus || 0) + (total - cap);
+      total = cap;
+      // 冻结量变化时立即存档，防止刷新后丢失
+      if (typeof saveGame === 'function') saveGame();
+    }
+    progress = 0;
+  }
   // 下一级还需多少证道
   var nextLevelEnlightenReq = getEnlightenReqForRealm(idx + 1);
   var enlightenNeeded = Math.max(0, nextLevelEnlightenReq - (gameState.enlightenCount || 0));
@@ -4867,14 +4904,14 @@ function getLevelName(type, level) {
 }
 function getGongfaLevelBonus(eq) {
   var lv = eq.level || 1;
-  // 攻击力固定加成：第1次升级+3，第2次+6，第3次+9... 累计 = 3×(lv-1)×lv/2
-  var atkAdd = 3 * (lv - 1) * lv / 2;
+  // 攻击力固定加成：第1次升级+5，第2次+8，第3次+11... 累计 = (lv-1)×(3lv+4)/2
+  var atkAdd = (lv - 1) * (3 * lv + 4) / 2;
   return { atkMult: 1, atkAdd: atkAdd, critAdd: (lv - 1) * 2, levelName: getLevelName('gongfa', lv) };
 }
 function getPermanentLevelBonus(eq) {
   var lv = eq.level || 1;
-  // 攻击力固定加成：第1次升级+3，第2次+6，第3次+9... 累计 = 3×(lv-1)×lv/2
-  var atkAdd = 3 * (lv - 1) * lv / 2;
+  // 攻击力固定加成：第1次升级+5，第2次+8，第3次+11... 累计 = (lv-1)×(3lv+4)/2
+  var atkAdd = (lv - 1) * (3 * lv + 4) / 2;
   return { atkMult: 1, atkAdd: atkAdd, critAdd: (lv - 1) * 2, hpAdd: (lv - 1) * 20, levelName: getLevelName('permanent', lv) };
 }
 function getCultivation(eq) { return eq.cultivation || 0; }
@@ -5974,25 +6011,33 @@ function onNianVictory() {
     saveGame();
   }
   showToast('击败念·第' + layer + '层！积分+' + NIAN_SCORE_PER_LAYER, 'success');
-  // 询问是否继续下一层
+  // 用游戏内弹层代替 confirm()，避免移动端 WebView 弹窗失效导致流程卡死
   setTimeout(function() {
     document.getElementById('battleOverlay').style.display = 'none';
-    if (confirm('已击败念·第' + layer + '层，获得' + NIAN_SCORE_PER_LAYER + '积分。\n\n是否继续挑战第' + (layer+1) + '层？\n（下一层难度动态提升，血量与攻击基于你当前战力计算）')) {
-      nianState.layer++;
-      launchNianLayer();
-    } else {
-      nianState.running = false;
-      document.getElementById('battleOverlay').style.display = 'none';
-      navigate('prepare');
-    }
+    showBattleOverlay('击败念·第' + layer + '层',
+      '获得 ' + NIAN_SCORE_PER_LAYER + ' 积分',
+      '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">已击败念·第' + layer + '层，历史最高第<b style="color:#CE93D8;">' + (gameState.season.nianBestLayer || 1) + '</b>层。<br>下一层难度动态提升，血量与攻击基于你当前战力计算。</div>',
+      [{ label: '继续挑战第' + (layer+1) + '层', action: "nianContinue()", primary: true },
+       { label: '返回周目殿', action: "nianStop()" }]);
   }, 800);
+}
+function nianContinue() {
+  document.getElementById('battleOverlay').style.display = 'none';
+  nianState.layer++;
+  launchNianLayer();
+}
+function nianStop() {
+  nianState.running = false;
+  document.getElementById('battleOverlay').style.display = 'none';
+  navigate('zhoumu');
 }
 function onNianDefeat() {
   nianState.running = false;
-  showToast('念·第' + nianState.layer + '层挑战失败，已获得' + ((nianState.layer - 1) * NIAN_SCORE_PER_LAYER) + '积分', 'error');
+  var gotLayer = Math.max(0, nianState.layer - 1);
+  showToast('念·第' + nianState.layer + '层挑战失败，已获得' + (gotLayer * NIAN_SCORE_PER_LAYER) + '积分', 'error');
   setTimeout(function() {
     document.getElementById('battleOverlay').style.display = 'none';
-    navigate('prepare');
+    navigate('zhoumu');
   }, 1000);
 }
 // ========== 念·无尽挑战结束 ==========
@@ -7010,9 +7055,14 @@ function switchAdventureMap(mapId) {
   }
   var prevMap = gameState.adventure.currentMap;
   gameState.adventure.currentMap = mapId;
-  // 只有首次进入该地图时才重置位置和天气
+  // 只有首次进入该地图时才重置位置和天气（有已清理格子才算有进度）
   var mapState = gameState.adventure.mapState[mapId];
-  var hasProgress = mapState && Object.keys(mapState).length > 0;
+  var hasProgress = false;
+  if (mapState) {
+    for (var _k in mapState) {
+      if (mapState[_k] && mapState[_k].cleared) { hasProgress = true; break; }
+    }
+  }
   if (!hasProgress) {
     gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
     gameState.adventure.weather = '';
@@ -7066,14 +7116,14 @@ function moveToMapCell(x, y) {
   gameState.adventure.explored[key] = true;
 
   var cellType = getCellType(x, y);
+  saveGame();
+  renderAdventureMap();
   if (!isCleared && !isStart) {
-    // 先显示确认面板，不直接触发事件
+    // 先重绘地图，再显示确认面板（避免面板被重绘清空导致无法触发战斗）
     promptMapCellEvent(cellType, x, y);
   } else if (isCleared || isStart) {
     showToast('已探索区域，免费回溯', 'info');
   }
-  saveGame();
-  renderAdventureMap();
 }
 
 // 地图格子事件确认面板（带对话）
@@ -7686,20 +7736,30 @@ function closeBattleAndGoToMap() {
   navigate('adventure');
 }
 
-// 地图凶兽图片编辑器
+// 地图凶兽图片编辑器（从相册/文件选择，压缩后存储）
 function showMapMonsterImageEditor() {
   var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
   var customImgs = getMapMonsterImages();
   var mapImgs = customImgs[gameState.adventure.currentMap] || {};
   var html = '<div class="map-event-panel">';
   html += '<div class="map-event-title">🖼️ ' + map.name + ' · 凶兽图片自定义</div>';
-  html += '<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">输入图片URL，留空则使用默认图片</div>';
+  html += '<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">点击图片从相册/文件中选择，留空则使用默认图片</div>';
   map.monsters.forEach(function(m, idx) {
     var tag = m.isBoss ? '🐉BOSS' : (m.isElite ? '💀精英' : '👹凶兽');
     var cur = mapImgs[m.name] || '';
-    html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">';
+    html += '<div style="margin-bottom:8px;">';
+    html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;">';
     html += '<span style="font-size:11px;width:70px;flex-shrink:0;">' + tag + ' ' + m.name + '</span>';
-    html += '<input type="text" id="mapImg_' + idx + '" value="' + cur + '" placeholder="图片URL" style="flex:1;padding:4px 6px;font-size:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--text);">';
+    html += '<button class="btn btn-ghost btn-sm" onclick="document.getElementById(\'mapImgInput_' + idx + '\').click()" style="font-size:11px;padding:3px 8px;">📷 选择图片</button>';
+    if (cur) html += '<button class="btn btn-danger btn-sm" onclick="clearMapMonsterImage(' + idx + ')" style="font-size:11px;padding:3px 8px;">✖ 清除</button>';
+    html += '</div>';
+    html += '<input type="file" id="mapImgInput_' + idx + '" accept="image/*" style="display:none;" onchange="mapImgFileSelected(' + idx + ',this)">';
+    if (cur) {
+      html += '<img src="' + cur + '" onclick="document.getElementById(\'mapImgInput_' + idx + '\').click()" style="width:56px;height:56px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;margin-top:2px;">';
+    } else {
+      html += '<div onclick="document.getElementById(\'mapImgInput_' + idx + '\').click()" style="width:56px;height:56px;border-radius:6px;border:1px dashed rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-dim);cursor:pointer;margin-top:2px;">默认图</div>';
+    }
+    html += '<input type="hidden" id="mapImg_' + idx + '" value="' + cur + '">';
     html += '</div>';
   });
   html += '<div style="margin-top:10px;display:flex;gap:8px;">';
@@ -7708,6 +7768,18 @@ function showMapMonsterImageEditor() {
   html += '</div></div>';
   var panel = document.getElementById('mapEventPanel');
   if (panel) { panel.innerHTML = html; panel.style.display = 'block'; }
+}
+function mapImgFileSelected(idx, input) {
+  var file = input.files[0];
+  if (!file) return;
+  compressImage(file, function(dataUrl) {
+    document.getElementById('mapImg_' + idx).value = dataUrl;
+    showMapMonsterImageEditor(); // 重新渲染显示预览
+  });
+}
+function clearMapMonsterImage(idx) {
+  document.getElementById('mapImg_' + idx).value = '';
+  showMapMonsterImageEditor();
 }
 function saveMapMonsterImages() {
   var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
@@ -8443,24 +8515,18 @@ function afterMonsterTurn() {
 function finishBattle(result) {
   if (battleState.finished) return;
   // 复活丹：失败时询问（从一次性法宝里找）
-  if (result === 'lose' && !battleState.reviveUsed) {
+  if (result === 'lose' && !battleState.reviveUsed && !battleState.revivePromptShown) {
     var reviveIdx = (gameState.equipment.consumable || []).findIndex(function(e){ return e.revive; });
     if (reviveIdx >= 0) {
-      if (confirm('💊 你有复活丹，是否使用一颗复活？（满血复活，继续战斗）')) {
-        var used = gameState.equipment.consumable.splice(reviveIdx, 1)[0];
-        battleState.reviveUsed = true;
-        battleState.player.hp = battleState.player.maxHp;
-        battleState.player.spirit = battleState.player.maxSpirit;
-        battleState.player.statuses = [];
-        saveGame();
-        updateHpBars();
-        renderStatuses();
-        addLog('system', '💊 复活丹生效！你满血复活了！');
-        showHeal('player', battleState.player.maxHp);
-        setActionsEnabled(true);
-        battleState.awaitingAction = false;
-        return;
-      }
+      battleState.revivePromptShown = true;
+      battleState.pendingReviveIdx = reviveIdx;
+      battleState.finished = false;
+      showBattleOverlay('战败',
+        '你倒在了 ' + (battleState.monster.name || '对手') + ' 面前…',
+        '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">检测到你携带了 <b style="color:var(--jade-light);">复活丹</b>，是否使用一颗复活？<br>（满血复活，继续战斗）</div>',
+        [{ label: '使用复活丹复活', action: "useRevivePill()", primary: true },
+         { label: '放弃战斗', action: "declineRevive()" }]);
+      return;
     }
   }
   battleState.finished = true;
@@ -8568,6 +8634,34 @@ function finishBattle(result) {
     // 念的战斗由onNianVictory/onNianDefeat处理，不显示普通结果面板
     battleTimeouts.push(setTimeout(function() { showBattleResult(result); }, 800));
   }
+}
+function useRevivePill() {
+  if (!battleState || battleState.finished) return;
+  var idx = battleState.pendingReviveIdx;
+  if (idx == null || idx < 0) return;
+  var used = gameState.equipment.consumable.splice(idx, 1)[0];
+  if (!used) return;
+  battleState.reviveUsed = true;
+  battleState.pendingReviveIdx = null;
+  battleState.player.hp = battleState.player.maxHp;
+  battleState.player.spirit = battleState.player.maxSpirit;
+  battleState.player.statuses = [];
+  saveGame();
+  updateHpBars();
+  renderStatuses();
+  addLog('system', '💊 复活丹生效！你满血复活了！');
+  showHeal('player', battleState.player.maxHp);
+  document.getElementById('battleOverlay').style.display = 'none';
+  setActionsEnabled(true);
+  battleState.awaitingAction = false;
+  renderActions();
+}
+function declineRevive() {
+  if (!battleState) return;
+  battleState.pendingReviveIdx = null;
+  // 保持 revivePromptShown=true，跳过二次询问，直接走正常结算
+  document.getElementById('battleOverlay').style.display = 'none';
+  finishBattle('lose');
 }
 function showBattleResult(result) {
   const overlay = document.getElementById('battleOverlay');
@@ -8713,7 +8807,38 @@ function openSectEditor(sectId) {
   document.getElementById('sectRewardPower').value = r.power || 0;
   document.getElementById('sectRewardCrit').value = r.crit || 0;
   document.getElementById('sectRewardEffect').value = r.effect || '';
+  document.getElementById('sectRewardImage').value = r.image || '';
+  sectImagePreviewShow('sectRewardImagePreview', r.image || '');
+  sectImagePreviewShow('sectImagePreview', s ? (s.image || '') : '');
   renderSectEnemyList();
+}
+// 宗门/奖励法宝图片选择（压缩存储）
+function sectImageSelected(input, targetId, previewId) {
+  var file = input.files[0];
+  if (!file) return;
+  compressImage(file, function(dataUrl) {
+    document.getElementById(targetId).value = dataUrl;
+    sectImagePreviewShow(previewId, dataUrl);
+    showToast('图片已选择', 'success');
+  });
+}
+function sectImagePreviewShow(previewId, url) {
+  var el = document.getElementById(previewId);
+  if (!el) return;
+  if (url) {
+    el.innerHTML = '<img src="' + url + '" style="width:56px;height:56px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.15);">';
+  } else {
+    el.innerHTML = '';
+  }
+}
+function sectEnemyImgSelected(idx, input) {
+  var file = input.files[0];
+  if (!file) return;
+  compressImage(file, function(dataUrl) {
+    sectEditorState.enemies[idx].image = dataUrl;
+    renderSectEnemyList();
+    showToast('敌人图片已选择', 'success');
+  });
 }
 function closeSectEditor() {
   document.getElementById('sectEditorPanel').style.display = 'none';
@@ -8726,7 +8851,10 @@ function renderSectEnemyList() {
   container.innerHTML = sectEditorState.enemies.map(function(e, i) {
     return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap;">' +
       '<input type="text" class="form-input" style="flex:1;min-width:90px;" value="' + e.name + '" onchange="sectEditorState.enemies[' + i + '].name=this.value" placeholder="名称">' +
-      '<input type="text" class="form-input" style="flex:1;min-width:120px;" value="' + (e.image || '') + '" onchange="sectEditorState.enemies[' + i + '].image=this.value" placeholder="图片URL(可选)">' +
+      '<input type="file" id="sectEnemyImgInput_' + i + '" accept="image/*" style="display:none;" onchange="sectEnemyImgSelected(' + i + ',this)">' +
+      '<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:3px 8px;" onclick="document.getElementById(\'sectEnemyImgInput_' + i + '\').click()">📷 图片</button>' +
+      (e.image ? '<img src="' + e.image + '" onclick="document.getElementById(\'sectEnemyImgInput_' + i + '\').click()" style="width:30px;height:30px;object-fit:cover;border-radius:4px;cursor:pointer;">' : '') +
+      '<input type="text" class="form-input" style="flex:1;min-width:120px;" value="' + (e.image || '') + '" onchange="sectEditorState.enemies[' + i + '].image=this.value" placeholder="或粘贴图片链接">' +
       '<select class="form-select" style="width:95px;" onchange="sectEditorState.enemies[' + i + '].tier=parseInt(this.value)">' +
       MONSTER_TIERS.map(function(t) { return '<option value="' + t.tier + '"' + ((e.tier||3) === t.tier ? ' selected' : '') + '>' + t.name + '</option>'; }).join('') +
       '</select>' +
@@ -8755,6 +8883,7 @@ function saveSect() {
     power: parseInt(document.getElementById('sectRewardPower').value) || 0,
     crit: parseInt(document.getElementById('sectRewardCrit').value) || 0,
     effect: document.getElementById('sectRewardEffect').value.trim(),
+    image: document.getElementById('sectRewardImage').value.trim() || '',
     affixes: [],
   };
   var data = {
@@ -9203,6 +9332,7 @@ function confirmFusion() {
   renderInventory();
 }
 function renderInventory() {
+  renderSkillAtlas();
   renderCategoryManager();
   renderInventoryGrid();
 }
@@ -9329,7 +9459,7 @@ function renderInventoryGrid() {
     var canCultivate = isGongfa || isPermanent;
     var lv = eq.level || 1;
     var lvBonus = isGongfa ? getGongfaLevelBonus(eq) : (isPermanent ? getPermanentLevelBonus(eq) : {atkMult:1, atkAdd:0, critAdd:0, hpAdd:0});
-    // 功法与永久法宝均用固定值加成（每次升级+3/+6/+9...）
+    // 功法与永久法宝均用固定值加成（每次升级+5/+8/+11...）
     var dispAtk = Math.floor(eq.power || 0) + (lvBonus.atkAdd || 0);
     var dispCrit = canCultivate ? (eq.crit || 0) + lvBonus.critAdd : (eq.crit || 0);
     var levelName = canCultivate ? getLevelName(eq.type, lv) : '';
