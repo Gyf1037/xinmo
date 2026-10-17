@@ -1591,10 +1591,10 @@ input, textarea, select { font-family: inherit; outline: none; }
     <!-- 功法技能规则图谱 -->
     <div id="skillAtlasPanel" style="display:block;margin-bottom:16px;padding:0;background:linear-gradient(135deg,rgba(212,175,55,0.06),rgba(127,200,200,0.04));border:1px solid rgba(212,175,55,0.2);border-radius:10px;overflow:hidden;">
       <div id="skillAtlasHead" onclick="toggleSkillAtlas()" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;user-select:none;">
-        <div style="font-size:14px;font-weight:700;color:var(--gold-light);font-family:Noto Serif SC,serif;">📖 功法技能规则图谱 <span id="skillAtlasToggle" style="font-size:11px;color:var(--text-dim);font-weight:400;">（点击收起）</span></div>
+        <div style="font-size:14px;font-weight:700;color:var(--gold-light);font-family:Noto Serif SC,serif;">📖 功法技能规则图谱 <span id="skillAtlasToggle" style="font-size:11px;color:var(--text-dim);font-weight:400;">（点击展开）</span></div>
         <span style="font-size:10px;color:var(--text-dim);">不关联元素 · 每种元素均可拥有这十种技能</span>
       </div>
-      <div id="skillAtlasBody">
+      <div id="skillAtlasBody" style="display:none;">
         <div id="skillAtlasContent" style="padding:0 14px;"></div>
         <div style="margin:10px 14px;padding:8px;background:rgba(0,0,0,0.2);border-radius:6px;font-size:11px;color:var(--text-dim);line-height:1.8;">
           <span style="color:var(--gold-light);">等级成长：</span>黄级×1.0 → 玄级×1.15 → 地级×1.3 → 天级×1.45 → <span style="color:var(--cinnabar-light);">神级×1.6（质变）</span><br>
@@ -1663,6 +1663,22 @@ input, textarea, select { font-family: inherit; outline: none; }
             <option value="space">🌌 空系</option>
             <option value="chaos">🌀 混沌</option>
             <option value="star">⭐ 星系</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">功法技能类型（十种功能之一）</label>
+          <select class="form-input" id="newEquipSkillType">
+            <option value="">按名称自动匹配</option>
+            <option value="burst">💥 乾坤·全力一击</option>
+            <option value="slash">⚔️ 破军·暴击破甲</option>
+            <option value="multihit">🌀 残影·多段连击</option>
+            <option value="dot">☠️ 蚀骨·持续伤害</option>
+            <option value="control">❄️ 冰封·冻结麻痹</option>
+            <option value="debuff">😵 震慑·虚弱易伤</option>
+            <option value="heal">💚 归元·回血减伤</option>
+            <option value="shield">🛡️ 灵盾·护盾护体</option>
+            <option value="buff">🔥 狂澜·攻击强化</option>
+            <option value="special">🩸 噬魂·吸血斩杀</option>
           </select>
         </div>
       </div>
@@ -2441,6 +2457,7 @@ function loadSave() {
   gameState.customBookInfo = data?.customBookInfo || {};
   gameState.customFolders = data?.customFolders || [];
   gameState.dailyMonsterKills = data?.dailyMonsterKills || null;
+  gameState.dailyChallengeUsed = data?.dailyChallengeUsed || null;
   gameState.beasts = data?.beasts || getDefaultBeasts();
   gameState.activeBeasts = data?.activeBeasts || [];
   gameState.reviveCharges = data?.reviveCharges || 0;
@@ -3529,7 +3546,8 @@ var SKILL_UNLOCK_ORDER = ['burst', 'slash', 'multihit', 'dot', 'control', 'debuf
 // 获取功法解锁的技能类型列表
 function getGongfaSkillTypes(eq) {
   var lv = eq.level || 1;
-  var baseType = gongfaTypeOf(eq);
+  // 优先使用自定义技能类型（十种功能之一），未设置则按名称自动匹配
+  var baseType = (eq.skillType && GONGFA_SKILL_CONFIG[eq.skillType]) ? eq.skillType : gongfaTypeOf(eq);
   var types = [baseType];
   // 玄级(2级)解锁第2个技能
   if (lv >= 2) {
@@ -3757,9 +3775,10 @@ function equipAllForBattle() {
   prepareState.selectedPermanent = (gameState.equipment.permanent || []).slice(0, EQUIP_LIMITS.permanent).map(function(e){ return e.id; });
   prepareState.selectedConsumable = (gameState.equipment.consumable || []).slice(0, EQUIP_LIMITS.consumable).map(function(e){ return e.id; });
 }
-// 使用后从背包中扣除消耗法宝
+// 使用后从背包中扣除消耗法宝（宗门战斗不算一次性装备，不扣）
 function removeConsumableAfterUse(equipId) {
   if (!equipId) return;
+  if (battleState && battleState.context === 'sect') return;
   // 从背包中移除
   gameState.equipment.consumable = gameState.equipment.consumable.filter(function(e) { return e.id !== equipId; });
   // 从选中列表中移除
@@ -4250,15 +4269,15 @@ function toggleTask(idx) {
   if (!t.text.trim()) { showToast('先填写任务内容', 'error'); return; }
   t.done = !t.done;
   if (t.done) {
-    dailyState.fragments++;
+    dailyState.fragments += 3;
     gameState.fragmentTaskCount = (gameState.fragmentTaskCount || 0) + 1;
   } else {
-    dailyState.fragments = Math.max(0, dailyState.fragments - 1);
+    dailyState.fragments = Math.max(0, dailyState.fragments - 3);
     gameState.fragmentTaskCount = Math.max(0, (gameState.fragmentTaskCount || 0) - 1);
   }
   saveDaily();
   renderDailyTasks();
-  if (t.done) showToast('心魔碎片 +1（共' + dailyState.fragments + '枚）', 'success');
+  if (t.done) showToast('心魔碎片 +3（共' + dailyState.fragments + '枚）', 'success');
 }
 function craftFragment() {
   if (dailyState.fragments < 90) { showToast('需要90枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
@@ -4630,10 +4649,14 @@ renderMonsterSelector = function() {
       req = defM ? (defM.reqMinutes || 0) : 0;
     }
     var lockHtml = unlocked ? '' : '<div class="monster-lock-overlay">需专注' + req + '分钟</div>';
-    // 今日挑战次数
+    // 今日挑战次数（每30分钟1次机会）
     var todayD = getTodayStr();
-    var todayCnt = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.date === todayD && gameState.dailyMonsterKills.kills[m.id]) ? gameState.dailyMonsterKills.kills[m.id] : 0;
-    var cntHtml = '<span style="font-size:10px;color:' + (todayCnt >= 2 ? '#ff6b6b' : '#d4af37') + ';margin-left:4px;">今日' + todayCnt + '/2</span>';
+    if (!gameState.dailyChallengeUsed || gameState.dailyChallengeUsed.date !== todayD) {
+      gameState.dailyChallengeUsed = { date: todayD, used: 0 };
+    }
+    var todayCnt = gameState.dailyChallengeUsed.used;
+    var challengeQuota = Math.floor(getTodayFocus() / 30);
+    var cntHtml = '<span style="font-size:10px;color:' + (todayCnt >= challengeQuota ? '#ff6b6b' : '#d4af37') + ';margin-left:4px;">挑战' + todayCnt + '/' + challengeQuota + '</span>';
     // 图片：优先用凶兽自己的图片，没有则用默认配置的图片
     var monsterImg = m.image;
     if (!monsterImg) {
@@ -4647,11 +4670,12 @@ renderMonsterSelector = function() {
     var imgHtml = monsterImg
       ? '<img src="' + monsterImg + '" style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;display:block;margin:0 auto;" onerror="this.outerHTML=\'<div style=\\\'width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;margin:0 auto;\\\'>🐾</div>\'">'
       : '<div style="width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;margin:0 auto;">🐾</div>';
-    if (todayCnt >= 2) lockHtml = '<div class="monster-lock-overlay">今日已挑战2次</div>';
+    if (todayCnt >= challengeQuota) lockHtml = '<div class="monster-lock-overlay">今日挑战次数已用完</div>';
     // 越级通关标记
     var autoCleared = gameState.autoCleared && gameState.autoCleared.date === todayD && gameState.autoCleared.ids[m.id];
     var autoHtml = autoCleared ? '<div style="font-size:9px;color:#80CBC4;font-weight:600;margin-top:2px;">⚡已越级通关</div>' : '';
-    return '<button class="diff-btn ' + (prepareState.selectedMonsterId === m.id ? 'active' : '') + (unlocked && todayCnt < 2 ? '' : ' monster-locked') + '" data-action="select-monster" data-monster-id="' + m.id + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;">' +
+    var isOverTierBtn = (m.tier || 1) > (getRealmInfo().idx + 1);
+    return '<button class="diff-btn ' + (prepareState.selectedMonsterId === m.id ? 'active' : '') + (unlocked && (todayCnt < challengeQuota || isOverTierBtn) ? '' : ' monster-locked') + '" data-action="select-monster" data-monster-id="' + m.id + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;">' +
       imgHtml +
       '<div style="flex:1;min-width:0;text-align:center;">' +
         '<div class="diff-name">' + m.name + cntHtml + '</div>' +
@@ -6057,15 +6081,25 @@ function startBattle(monsterInput, opts) {
     showToast('今日专注不足' + (monster.reqMinutes || 0) + '分钟，无法挑战' + monster.name, 'error');
     return;
   }
-  // 每日限打2次（普通战斗）
+  // 挑战次数配额：每30分钟专注=1次挑战机会，越级挑战不受限制（越级赢了不算次数）
   if (!opts.baseAtk) {
     var today = getTodayStr();
     if (!gameState.dailyMonsterKills) gameState.dailyMonsterKills = {};
     if (!gameState.dailyMonsterKills.date || gameState.dailyMonsterKills.date !== today) {
       gameState.dailyMonsterKills = { date: today, kills: {} };
     }
+    if (!gameState.dailyChallengeUsed || gameState.dailyChallengeUsed.date !== today) {
+      gameState.dailyChallengeUsed = { date: today, used: 0 };
+    }
     var todayKills = gameState.dailyMonsterKills.kills[monster.id] || 0;
-    if (todayKills >= 2) {
+    // 挑战配额 = 今日专注/30 分钟
+    var challengeQuota = Math.floor(getTodayFocus() / 30);
+    var isOverTier = (monster.tier || 1) > (getRealmInfo().idx + 1);
+    if (!isOverTier && gameState.dailyChallengeUsed.used >= challengeQuota) {
+      showToast('今日挑战次数已用完（每专注30分钟获得1次机会，当前' + challengeQuota + '次），越级挑战不计次数', 'error');
+      return;
+    }
+    if (todayKills >= 999) {
       showToast(monster.name + ' 今日已挑战' + todayKills + '次，每日限2次', 'error');
       return;
     }
@@ -7721,6 +7755,10 @@ function showMapEvent(title, desc, buttons) {
   html += '</div></div>';
   panel.innerHTML = html;
   panel.style.display = 'block';
+  // 手机上地图占满屏幕，事件面板可能被推出视口，自动滚动到面板位置
+  try {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch(e) { panel.scrollIntoView(); }
 }
 
 function closeMapEvent() {
@@ -8542,11 +8580,13 @@ function finishBattle(result) {
     }
   }
   var isNormal = battleState.context === 'normal' && !battleState.isNian;
-  // 消耗一次性装备
-  prepareState.selectedConsumable.forEach(function(id) {
-    var idx = gameState.equipment.consumable.findIndex(function(e) { return e.id === id; });
-    if (idx >= 0) gameState.equipment.consumable.splice(idx, 1);
-  });
+  // 消耗一次性装备（宗门战斗不算一次性装备，不扣）
+  if (battleState.context !== 'sect') {
+    prepareState.selectedConsumable.forEach(function(id) {
+      var idx = gameState.equipment.consumable.findIndex(function(e) { return e.id === id; });
+      if (idx >= 0) gameState.equipment.consumable.splice(idx, 1);
+    });
+  }
   // 普通战斗记录战绩 + 胜利奖励
   if (isNormal) {
     var record = {
@@ -8560,13 +8600,22 @@ function finishBattle(result) {
       equipsUsed: battleState.usedEquips.map(function(e) { return e.name; }),
     };
     gameState.history.push(record);
-    // 每日挑战次数计数（不管胜负都算一次）
+    // 战绩录只保留最近30场
+    if (gameState.history.length > 30) gameState.history = gameState.history.slice(-30);
+    // 每日挑战次数计数：越级胜利不消耗次数，其他情况消耗1次
     var todayK = getTodayStr();
     if (!gameState.dailyMonsterKills || gameState.dailyMonsterKills.date !== todayK) {
       gameState.dailyMonsterKills = { date: todayK, kills: {} };
     }
+    if (!gameState.dailyChallengeUsed || gameState.dailyChallengeUsed.date !== todayK) {
+      gameState.dailyChallengeUsed = { date: todayK, used: 0 };
+    }
     var mId = battleState.monster.monsterId;
     if (mId) gameState.dailyMonsterKills.kills[mId] = (gameState.dailyMonsterKills.kills[mId] || 0) + 1;
+    var isOverTier = (battleState.monster.tier || 1) > (getRealmInfo().idx + 1);
+    if (!(result === 'win' && isOverTier)) {
+      gameState.dailyChallengeUsed.used++;
+    }
     // 胜利奖励
     battleState.rewards = null;
     if (result === 'win') {
@@ -9559,6 +9608,7 @@ function addEquipment() {
   const crit = parseInt(document.getElementById('newEquipCrit').value) || 0;
   const effect = document.getElementById('newEquipEffect').value.trim();
   const element = document.getElementById('newEquipElement').value || '';
+  const skillType = document.getElementById('newEquipSkillType').value || '';
   const type = document.querySelector('input[name="equipType"]:checked')?.value || 'gongfa';
   const categoryId = document.getElementById('newEquipCategory').value || '';
   if (!name) { showToast('法宝需有名号', 'error'); return; }
@@ -9581,6 +9631,7 @@ function addEquipment() {
       target.eq.crit = crit;
       target.eq.effect = effect;
       target.eq.element = element;
+      target.eq.skillType = skillType || '';
       target.eq.categoryId = categoryId;
       target.eq.image = equipImageData || '';
       target.eq.affixes = JSON.parse(JSON.stringify(editingAffixes));
@@ -9590,7 +9641,7 @@ function addEquipment() {
     editingEquipId = null;
   } else {
     // 新增模式
-    const eq = { id: genId(), name, type, categoryId, power, crit, effect, element: element, image: equipImageData || '', affixes: JSON.parse(JSON.stringify(editingAffixes)), createdAt: Date.now() };
+    const eq = { id: genId(), name, type, categoryId, power, crit, effect, element: element, skillType: skillType || '', image: equipImageData || '', affixes: JSON.parse(JSON.stringify(editingAffixes)), createdAt: Date.now() };
     gameState.equipment[type].push(eq);
     saveGame();
     showToast(`法宝「${name}」锻造完成`, 'success');
@@ -9631,6 +9682,7 @@ function editEquipment(id) {
   document.getElementById('newEquipCrit').value = eq.crit;
   document.getElementById('newEquipEffect').value = eq.effect || '';
   document.getElementById('newEquipElement').value = eq.element || '';
+  document.getElementById('newEquipSkillType').value = eq.skillType || '';
   // 设置类型单选
   document.querySelectorAll('.type-radio').forEach(r => {
     r.classList.toggle('active', r.dataset.type === eq._type);
@@ -11214,6 +11266,7 @@ function resetMonsterKills() {
   if (dailyState.fragments < 45) { showToast('需要45枚心魔碎片，当前' + dailyState.fragments + '枚', 'error'); return; }
   dailyState.fragments -= 45;
   if (gameState.dailyMonsterKills) gameState.dailyMonsterKills.kills = {};
+  if (gameState.dailyChallengeUsed) gameState.dailyChallengeUsed.used = 0;
   saveDaily(); saveGame();
   renderMonsterSelector();
   showToast('今日凶兽挑战次数已重置', 'success');
