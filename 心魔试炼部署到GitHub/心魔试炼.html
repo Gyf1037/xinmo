@@ -2929,12 +2929,10 @@ function renderSwordWall() {
   html += '</div>';
   html += '</div>';
 
-  // 刻字按钮
-  if (stones > 0) {
-    html += '<div style="text-align:center;margin-bottom:16px;">';
-    html += '<button class="btn btn-primary" onclick="showCarveForm()" style="background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dim) 100%);color:#1a1a1a;padding:10px 28px;font-size:15px;font-weight:700;">✍️ 刻字（消耗1枚铸字石）</button>';
-    html += '</div>';
-  }
+  // 刻字按钮（始终显示：无铸字石也可打开表单编辑/上传图片预览，点"刻入石墙"时才检查铸字石）
+  html += '<div style="text-align:center;margin-bottom:16px;">';
+  html += '<button class="btn btn-primary" onclick="showCarveForm()" style="background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dim) 100%);color:#1a1a1a;padding:10px 28px;font-size:15px;font-weight:700;">✍️ 刻字（' + (stones > 0 ? '消耗1枚铸字石' : '需1枚铸字石·可先编辑') + '）</button>';
+  html += '</div>';
 
   // 刻字输入框（默认隐藏）
   html += '<div class="panel" id="carveForm" style="display:none;margin-bottom:16px;padding:16px;">';
@@ -2944,9 +2942,11 @@ function renderSwordWall() {
   html += '<input type="text" class="form-input" id="carveText" maxlength="7" placeholder="例如：道阻且长" style="font-size:18px;text-align:center;font-family:Noto Serif SC,serif;letter-spacing:4px;">';
   html += '</div>';
   html += '<div class="form-group">';
-  html += '<label class="form-label">或上传石刻图片（二选一）</label>';
+  html += '<label class="form-label">📷 上传石刻图片（可选，二选一）</label>';
   html += '<div style="display:flex;gap:8px;align-items:center;">';
-  html += '<button class="btn btn-ghost btn-sm" type="button" onclick="uploadCarveImage()" style="flex:1;">📷 从相册选择图片</button>';
+  html += '<input type="file" id="carveImageInput" accept="image/*" style="display:none;" onchange="carveImgFileSelected(this)">';
+  html += '<button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById(\'carveImageInput\').click()" style="flex:1;">📷 从相册选择图片</button>';
+  html += '<button class="btn btn-danger btn-sm" type="button" onclick="clearCarveImage()" style="display:none;flex-shrink:0;" id="carveImgClearBtn">✖</button>';
   html += '</div>';
   html += '<div id="carveImgPreview" style="display:none;margin-top:8px;text-align:center;"></div>';
   html += '</div>';
@@ -2970,12 +2970,16 @@ function renderSwordWall() {
       var d = new Date(ins.date);
       var dateStr = d.getFullYear() + '.' + (d.getMonth()+1) + '.' + d.getDate();
       html += '<div style="text-align:center;margin-bottom:20px;cursor:pointer;" onclick="viewInscription(\'' + ins.id + '\')">';
-      html += '<div style="display:inline-block;padding:18px 24px;background:linear-gradient(160deg,#3a3530 0%,#2a2520 40%,#1f1c18 100%);border:2px solid #5a4f40;border-radius:4px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.6),0 4px 16px rgba(0,0,0,0.5),inset 0 -1px 0 rgba(255,220,150,0.08);position:relative;">';
+      html += '<div style="display:block;width:100%;box-sizing:border-box;padding:22px 16px;background:linear-gradient(160deg,#3a3530 0%,#2a2520 40%,#1f1c18 100%);border:2px solid #5a4f40;border-radius:4px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.6),0 4px 16px rgba(0,0,0,0.5),inset 0 -1px 0 rgba(255,220,150,0.08);position:relative;">';
       html += '<div style="position:absolute;top:-6px;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#5a4f40 0px,#5a4f40 18px,#2a2520 18px,#2a2520 24px);border-radius:2px 2px 0 0;"></div>';
       if (ins.image) {
-        html += '<img src="' + ins.image + '" style="max-width:200px;max-height:120px;border-radius:3px;object-fit:cover;display:block;margin:0 auto;border:1px solid #5a4f40;">';
+        html += '<img src="' + ins.image + '" style="max-width:100%;width:auto;max-height:55vh;border-radius:3px;object-fit:contain;display:block;margin:0 auto;border:1px solid #5a4f40;">';
+        // 图片下方同以前一样显示刻的字
+        if (ins.text && ins.text !== '石刻') {
+          html += '<div style="font-size:24px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4);margin-top:10px;">' + ins.text + '</div>';
+        }
       } else {
-        html += '<div style="font-size:22px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4),inset 0 -1px 0 rgba(0,0,0,0.8);">' + ins.text + '</div>';
+        html += '<div style="font-size:26px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4),inset 0 -1px 0 rgba(0,0,0,0.8);">' + ins.text + '</div>';
       }
       html += '<div style="font-size:10px;color:#8a7a60;margin-top:8px;font-family:monospace;">' + dateStr + ' 刻</div>';
       html += '</div></div>';
@@ -2995,6 +2999,32 @@ function showCarveForm() {
 }
 
 var carveImageData = '';
+function carveImgFileSelected(input) {
+  var file = input.files[0];
+  if (!file) return;
+  compressImage(file, function(dataUrl) {
+    carveImageData = dataUrl;
+    showCarveImagePreview(dataUrl);
+  });
+}
+function showCarveImagePreview(dataUrl) {
+  var preview = document.getElementById('carveImgPreview');
+  if (!preview) return;
+  preview.style.display = 'block';
+  preview.innerHTML = '<img src="' + dataUrl + '" style="max-width:150px;max-height:100px;border-radius:6px;border:1px solid var(--gold);">';
+  var clearBtn = document.getElementById('carveImgClearBtn');
+  if (clearBtn) clearBtn.style.display = 'inline-block';
+}
+function clearCarveImage() {
+  carveImageData = '';
+  var preview = document.getElementById('carveImgPreview');
+  if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
+  var clearBtn = document.getElementById('carveImgClearBtn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  var input = document.getElementById('carveImageInput');
+  if (input) input.value = '';
+  showToast('已清除石刻图片', 'info');
+}
 function uploadCarveImage() {
   var input = document.createElement('input');
   input.type = 'file';
@@ -3004,9 +3034,7 @@ function uploadCarveImage() {
     if (!file) return;
     compressImage(file, function(dataUrl) {
       carveImageData = dataUrl;
-      var preview = document.getElementById('carveImgPreview');
-      preview.style.display = 'block';
-      preview.innerHTML = '<img src="' + dataUrl + '" style="max-width:150px;max-height:100px;border-radius:6px;border:1px solid var(--gold);">';
+      showCarveImagePreview(dataUrl);
     });
   };
   input.click();
@@ -3042,11 +3070,12 @@ function viewInscription(insId) {
   var dateStr = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
   // 全屏大字弹窗
   var overlay = document.createElement('div');
+  overlay.className = 'inscription-overlay';
   overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;';
   overlay.onclick = function() { document.body.removeChild(overlay); };
   var middleHtml;
   if (ins.image) {
-    middleHtml = '<img src="' + ins.image + '" style="max-width:90vw;max-height:60vh;border-radius:8px;box-shadow:0 0 40px rgba(212,175,55,0.4);">' +
+    middleHtml = '<img src="' + ins.image + '" style="max-width:90vw;max-height:55vh;border-radius:8px;box-shadow:0 0 40px rgba(212,175,55,0.4);">' +
       (ins.text && ins.text !== '石刻' ? '<div style="font-size:28px;font-weight:700;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:8px;margin-top:20px;text-shadow:0 0 20px rgba(212,175,55,0.5);">' + ins.text + '</div>' : '');
   } else {
     middleHtml = '<div style="font-size:64px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:12px;text-shadow:0 0 30px rgba(212,175,55,0.6);">' + ins.text + '</div>';
@@ -3055,8 +3084,49 @@ function viewInscription(insId) {
     '<div style="font-size:14px;color:var(--text-dim);letter-spacing:6px;margin-bottom:20px;">剑 气 长 城</div>' +
     middleHtml +
     '<div style="font-size:12px;color:var(--text-dim);margin-top:30px;">' + dateStr + ' 刻</div>' +
-    '<div style="font-size:11px;color:var(--text-dim);margin-top:40px;">点击关闭</div>';
+    '<div style="display:flex;gap:14px;margin-top:24px;flex-wrap:wrap;justify-content:center;">' +
+      '<button onclick="event.stopPropagation();changeInscriptionImage(\'' + insId + '\')" style="padding:8px 16px;font-size:13px;background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:#1a1a1a;border:none;border-radius:6px;cursor:pointer;font-weight:700;">🖼️ 更换图片</button>' +
+      (ins.image ? '<button onclick="event.stopPropagation();clearInscriptionImage(\'' + insId + '\')" style="padding:8px 16px;font-size:13px;background:rgba(255,107,107,0.15);color:#ff8a8a;border:1px solid rgba(255,107,107,0.4);border-radius:6px;cursor:pointer;">✖ 清除图片</button>' : '') +
+    '</div>' +
+    '<div style="font-size:11px;color:var(--text-dim);margin-top:20px;">点击空白关闭</div>';
   document.body.appendChild(overlay);
+}
+// 更换已刻石刻的图片（从相册/文件选择）
+function changeInscriptionImage(insId) {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    compressImage(file, function(dataUrl) {
+      var ins = (gameState.swordInscriptions || []).find(function(x) { return x.id === insId; });
+      if (!ins) { showToast('石刻不存在', 'error'); return; }
+      ins.image = dataUrl;
+      if (!ins.text || ins.text === '石刻') ins.text = '石刻';
+      saveGame();
+      // 关闭旧弹窗并重新打开显示新图
+      var overlays = document.querySelectorAll('.inscription-overlay');
+      for (var i = 0; i < overlays.length; i++) { if (overlays[i].parentNode) overlays[i].parentNode.removeChild(overlays[i]); }
+      renderSwordWall();
+      viewInscription(insId);
+      showToast('石刻图片已更换', 'success');
+    });
+  };
+  input.click();
+}
+// 清除已刻石刻的图片（回到纯文字显示）
+function clearInscriptionImage(insId) {
+  var ins = (gameState.swordInscriptions || []).find(function(x) { return x.id === insId; });
+  if (!ins) return;
+  delete ins.image;
+  if (!ins.text || ins.text === '石刻') ins.text = '石刻';
+  saveGame();
+  var overlays = document.querySelectorAll('.inscription-overlay');
+  for (var i = 0; i < overlays.length; i++) { if (overlays[i].parentNode) overlays[i].parentNode.removeChild(overlays[i]); }
+  renderSwordWall();
+  viewInscription(insId);
+  showToast('石刻图片已清除，恢复文字显示', 'success');
 }
 function saveMonster() {
   const name = document.getElementById('newMonsterName').value.trim();
@@ -7898,8 +7968,11 @@ function showMapMonsterImageEditor() {
   var mapNameMap = mapNames[gameState.adventure.currentMap] || {};
   map.monsters.forEach(function(m, idx) {
     var tag = m.isBoss ? '🐉BOSS' : (m.isElite ? '💀精英' : '👹凶兽');
-    var cur = mapImgs[m.name] || '';
-    var curName = mapNameMap[m.name] || '';
+    // 优先读取当前面板中已选择但未保存的图片（hidden input），为空才回退已保存的localStorage图片
+    var existingCur = document.getElementById('mapImg_' + idx);
+    var cur = (existingCur && existingCur.value) ? existingCur.value : (mapImgs[m.name] || '');
+    var existingNameInput = document.getElementById('mapName_' + idx);
+    var curName = (existingNameInput && existingNameInput.value !== undefined && existingNameInput.value !== '') ? existingNameInput.value : (mapNameMap[m.name] || '');
     html += '<div style="margin-bottom:10px;padding:6px;background:rgba(0,0,0,0.2);border-radius:6px;">';
     html += '<div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;">';
     html += '<span style="font-size:11px;width:70px;flex-shrink:0;">' + tag + '</span>';
@@ -9104,8 +9177,11 @@ function renderSects() {
   var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
   grid.innerHTML = sectors.map(function(s) {
     var isCleared = cleared[s.id];
+    var iconHtml = s.image
+      ? '<img src="' + s.image + '" onclick="event.stopPropagation();showSectDetail(\'' + s.id + '\')" style="width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid rgba(212,175,55,0.35);margin-bottom:6px;cursor:pointer;">'
+      : '<div class="sector-icon">' + (s.icon || '🏯') + '</div>';
     return '<div class="sector-card ' + (isCleared ? 'cleared' : '') + '" onclick="showSectDetail(\'' + s.id + '\')">' +
-      '<div class="sector-icon">' + (s.icon || '🏯') + '</div>' +
+      iconHtml +
       '<div class="sector-name">' + s.name + (isCleared ? ' <span style="font-size:11px;color:var(--jade-light);">已通关</span>' : '') + '</div>' +
       '<div class="sector-desc">' + (s.desc || '') + '</div>' +
       '<div class="sector-meta"><span>' + s.enemies.length + ' 连战</span><span>奖励：' + (s.reward ? s.reward.name : '—') + '</span></div>' +
