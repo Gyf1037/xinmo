@@ -2258,6 +2258,7 @@ let gameState = {
     apSpentDate: '',          // 行动力消耗日期
     weather: '',              // 当前天气
     mapBuffs: [],             // 地图内临时buff [{type, value, duration}]
+    mapDebuffs: [],           // 地图内临时debuff（陷阱伤害等，仅本地图战斗生效）
     mapItems: [],             // 地图内收集的道具
     bestRecords: {},          // 各地图最佳记录 {mapId: {apUsed, cleared}}
     monsterDex: {},           // 地图凶兽图鉴 {"monsterId": true}
@@ -2501,6 +2502,7 @@ function loadSave() {
       apSpentDate: data.adventure.apSpentDate || '',
       weather: data.adventure.weather || '',
       mapBuffs: data.adventure.mapBuffs || [],
+      mapDebuffs: data.adventure.mapDebuffs || [],
       mapItems: data.adventure.mapItems || [],
       bestRecords: data.adventure.bestRecords || {},
       monsterDex: data.adventure.monsterDex || {},
@@ -3742,7 +3744,8 @@ function buildGongfaSkills() {
         dmgReduce:cfg.dmgReduce, shieldPct:cfg.shieldPct,
         buffDuration:cfg.buffDuration, buffValue:cfg.buffValue,
         lifesteal:cfg.lifesteal, executePct:cfg.executePct,
-        element: eq.element || '', desc: skillDesc(st), cooldown: cfg.cooldown || 0,
+        element: eq.element || '', desc: skillDesc(st),
+        cooldown: (lv >= 4) ? (cfg.cooldown || 0) : Math.max(1, cfg.cooldown || 1),
         gongfaId: eq.id, gongfaName: eq.name, level: lv, levelMult: lvMult, isGod: isGod };
     });
     battleState.gongfaGroups.push({ eq: eq, skills: groupSkills, expanded: false });
@@ -4707,11 +4710,16 @@ renderMonsterSelector = function() {
       ? '<img src="' + monsterImg + '" style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;display:block;margin:0 auto;" onerror="this.outerHTML=\'<div style=\\\'width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;margin:0 auto;\\\'>🐾</div>\'">'
       : '<div style="width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;margin:0 auto;">🐾</div>';
     if (todayCnt >= challengeQuota) lockHtml = '<div class="monster-lock-overlay">今日挑战次数已用完</div>';
+    // 每凶兽每日最多挑战2次（双重限制）
+    var monsterTodayKills = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.date === todayD && gameState.dailyMonsterKills.kills[m.id]) || 0;
+    if (monsterTodayKills >= 2) lockHtml = '<div class="monster-lock-overlay">今日已挑战' + monsterTodayKills + '次（限2次）</div>';
     // 越级通关标记
     var autoCleared = gameState.autoCleared && gameState.autoCleared.date === todayD && gameState.autoCleared.ids[m.id];
     var autoHtml = autoCleared ? '<div style="font-size:9px;color:#80CBC4;font-weight:600;margin-top:2px;">⚡已越级通关</div>' : '';
     var isOverTierBtn = (m.tier || 1) > (getRealmInfo().idx + 1);
-    return '<button class="diff-btn ' + (prepareState.selectedMonsterId === m.id ? 'active' : '') + (unlocked && (todayCnt < challengeQuota || isOverTierBtn) ? '' : ' monster-locked') + '" data-action="select-monster" data-monster-id="' + m.id + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;">' +
+    var monsterTodayKills2 = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.date === todayD && gameState.dailyMonsterKills.kills[m.id]) || 0;
+    var perMonsterLocked = monsterTodayKills2 >= 2;
+    return '<button class="diff-btn ' + (prepareState.selectedMonsterId === m.id ? 'active' : '') + (unlocked && (todayCnt < challengeQuota || isOverTierBtn) && !perMonsterLocked ? '' : ' monster-locked') + '" data-action="select-monster" data-monster-id="' + m.id + '" style="display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;">' +
       imgHtml +
       '<div style="flex:1;min-width:0;text-align:center;">' +
         '<div class="diff-name">' + m.name + '</div>' +
@@ -6136,7 +6144,7 @@ function startBattle(monsterInput, opts) {
       showToast('今日挑战次数已用完（每专注30分钟获得1次机会，当前' + challengeQuota + '次），越级挑战不计次数', 'error');
       return;
     }
-    if (todayKills >= 999) {
+    if (todayKills >= 2) {
       showToast(monster.name + ' 今日已挑战' + todayKills + '次，每日限2次', 'error');
       return;
     }
@@ -6276,6 +6284,25 @@ function startBattle(monsterInput, opts) {
   });
   battleState.selectedSwordIdx = 0;
   battleState.allSwordsUsed = false;
+  // 地图内临时效果（buff/debuff）只在本地图战斗生效
+  if (opts.context === 'map') {
+    var mapBuffsNow = gameState.adventure.mapBuffs || [];
+    mapBuffsNow.forEach(function(b) {
+      if (!b || b.duration <= 0) return;
+      if (b.type === 'atk') battleState.player.attack = Math.floor(battleState.player.attack * (1 + (b.value || 0)));
+      else if (b.type === 'crit') battleState.player.crit = Math.min(100, battleState.player.crit + Math.round((b.value || 0) * 100));
+      else if (b.type === 'hp') battleState.player.maxHp = Math.floor(battleState.player.maxHp * (1 + (b.value || 0)));
+    });
+    if (battleState.player.hp > battleState.player.maxHp) battleState.player.hp = battleState.player.maxHp;
+    var mapDebuffsNow = gameState.adventure.mapDebuffs || [];
+    mapDebuffsNow.forEach(function(d) {
+      if (!d || d.duration <= 0) return;
+      if (d.type === 'hp_dmg') {
+        battleState.player.hp = Math.max(1, battleState.player.hp - (d.value || 0));
+        battleState.mapTrapDmg = (battleState.mapTrapDmg || 0) + (d.value || 0);
+      }
+    });
+  }
   if (aff.shield > 0) applyStatus('player', { type: 'shield', value: aff.shield, duration: 99 });
   navigate('battle');
   initBattleUI();
@@ -7023,11 +7050,14 @@ function renderAdventureMap() {
   html += '<div class="map-stat"><div class="map-stat-value">' + (isCleared ? '已通关' : '未通关') + '</div><div class="map-stat-label">地图状态</div></div>';
   html += '</div>';
 
-  // 地图buff
-  if (gameState.adventure.mapBuffs && gameState.adventure.mapBuffs.length > 0) {
+  // 地图buff/debuff
+  if ((gameState.adventure.mapBuffs && gameState.adventure.mapBuffs.length > 0) || (gameState.adventure.mapDebuffs && gameState.adventure.mapDebuffs.length > 0)) {
     html += '<div class="map-buff-list">';
-    gameState.adventure.mapBuffs.forEach(function(b) {
+    (gameState.adventure.mapBuffs || []).forEach(function(b) {
       html += '<span class="map-buff-tag">' + b.name + '(' + b.duration + ')</span>';
+    });
+    (gameState.adventure.mapDebuffs || []).forEach(function(d) {
+      html += '<span class="map-buff-tag" style="background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#ff8a8a;">⚠ ' + d.name + '(' + d.duration + ')</span>';
     });
     html += '</div>';
   }
@@ -7138,8 +7168,9 @@ function switchAdventureMap(mapId) {
     gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
     gameState.adventure.weather = '';
   }
-  // 切换地图时清空临时buff
+  // 切换地图时清空临时buff/debuff
   gameState.adventure.mapBuffs = [];
+  gameState.adventure.mapDebuffs = [];
   saveGame();
   renderAdventureMap();
   showToast('进入' + map.name, 'info');
@@ -7154,6 +7185,7 @@ function resetAdventureMap() {
   gameState.adventure.mapState[mapId] = {};
   gameState.adventure.weather = '';
   gameState.adventure.mapBuffs = [];
+  gameState.adventure.mapDebuffs = [];
   saveGame();
   renderAdventureMap();
   showToast('地图已重置', 'info');
@@ -7609,7 +7641,10 @@ function getMapSpirit(x, y) {
 function triggerMapTrap(x, y) {
   var dmg = 30 + Math.floor(Math.random() * 30);
   markCellCleared(x, y);
-  showMapEvent('⚠️ 触发陷阱！', '你触发了隐藏陷阱，受到' + dmg + '点伤害。（仅作记录，不影响实际战斗）',
+  // 陷阱伤害存入地图内临时效果：只在本地图战斗中生效
+  if (!gameState.adventure.mapDebuffs) gameState.adventure.mapDebuffs = [];
+  gameState.adventure.mapDebuffs.push({ name: '陷阱之伤', type: 'hp_dmg', value: dmg, duration: 2 });
+  showMapEvent('⚠️ 触发陷阱！', '你触发了隐藏陷阱！接下来' + dmg + '点伤害将在本地图下次战斗开始时扣除（仅本地图战斗生效）。',
     [{ label: '继续', action: 'closeMapEvent()', primary: true }]
   );
 }
@@ -8761,6 +8796,16 @@ function finishBattle(result) {
     prepareState.selectedGongfa = [];
     prepareState.selectedPermanent = [];
     prepareState.selectedConsumable = [];
+  }
+  // 地图战斗结算后扣减地图内临时效果时长（buff/debuff 只在地图内战斗生效）
+  if (battleState.context === 'map') {
+    var buffsAfter = gameState.adventure.mapBuffs || [];
+    buffsAfter.forEach(function(b) { if (b) b.duration = (b.duration || 1) - 1; });
+    gameState.adventure.mapBuffs = buffsAfter.filter(function(b) { return b && b.duration > 0; });
+    var debuffsAfter = gameState.adventure.mapDebuffs || [];
+    debuffsAfter.forEach(function(d) { if (d) d.duration = (d.duration || 1) - 1; });
+    gameState.adventure.mapDebuffs = debuffsAfter.filter(function(d) { return d && d.duration > 0; });
+    saveGame();
   }
   // 回调优先（宗门/擂台自定义结算）
   var cb = (result === 'win' && battleState.onWin) ? battleState.onWin : (result === 'lose' && battleState.onLose ? battleState.onLose : null);
