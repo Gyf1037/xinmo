@@ -6314,6 +6314,9 @@ function startBattle(monsterInput, opts) {
   var dynStats = calcMonsterStats(monster);
   monster.maxHp = dynStats.maxHp;
   monster.attack = dynStats.attack;
+  // 地图自定义难度系数（血/攻倍率）
+  if (monster.hpMult) monster.maxHp = Math.floor(monster.maxHp * monster.hpMult);
+  if (monster.atkMult) monster.attack = Math.floor(monster.attack * monster.atkMult);
   var totalMult = realm.realmMult;
   if (totalMult !== 1.0) {
     monster.maxHp = Math.floor(monster.maxHp * totalMult);
@@ -7088,10 +7091,30 @@ function getMapWeather() {
   return MAP_WEATHERS.find(function(w) { return w.id === gameState.adventure.weather; }) || MAP_WEATHERS[0];
 }
 
+// 随机生成地图布局：起点终点固定，其余事件按权重重新随机分布
+function randomizeMapLayout(mapId) {
+  var map = ADVENTURE_MAPS[mapId];
+  if (!map) return;
+  var size = map.size || 10;
+  var layout = [];
+  for (var y = 0; y < size; y++) { layout.push([]); for (var x = 0; x < size; x++) { layout[y].push(0); } }
+  // 事件池（0空地/1凶兽/2精英/4宝箱/5灵气/6陷阱/7问号/8商人/9老者/10传送/11迷雾/12巢穴/13隐藏）
+  var pool = [0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1, 4,4,4, 5,5, 6,6, 7,7, 8, 9, 10, 11,11, 12, 13, 2];
+  for (var y2 = 0; y2 < size; y2++) {
+    for (var x2 = 0; x2 < size; x2++) {
+      if (x2 === map.start.x && y2 === map.start.y) { layout[y2][x2] = 0; continue; }
+      if (x2 === map.end.x && y2 === map.end.y) { layout[y2][x2] = 3; continue; }
+      layout[y2][x2] = pool[Math.floor(Math.random() * pool.length)];
+    }
+  }
+  if (!gameState.adventure.mapLayouts) gameState.adventure.mapLayouts = {};
+  gameState.adventure.mapLayouts[mapId] = layout;
+}
 function getCellType(x, y) {
   var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
   if (!map) return 'empty';
-  var val = map.layout[y] ? map.layout[y][x] : 0;
+  var layout = (gameState.adventure.mapLayouts || {})[map.id] || map.layout;
+  var val = layout[y] ? layout[y][x] : 0;
   return CELL_TYPE_MAP[val] || 'empty';
 }
 
@@ -7258,26 +7281,21 @@ function switchAdventureMap(mapId) {
     showToast('需先通关灵气荒漠', 'error');
     return;
   }
-  var prevMap = gameState.adventure.currentMap;
   gameState.adventure.currentMap = mapId;
-  // 只有首次进入该地图时才重置位置和天气（有已清理格子才算有进度）
-  var mapState = gameState.adventure.mapState[mapId];
-  var hasProgress = false;
-  if (mapState) {
-    for (var _k in mapState) {
-      if (mapState[_k] && mapState[_k].cleared) { hasProgress = true; break; }
-    }
-  }
-  if (!hasProgress) {
-    gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
-    gameState.adventure.weather = '';
-  }
+  // 首次进入该地图时随机生成事件布局
+  if (!(gameState.adventure.mapLayouts || {})[mapId]) randomizeMapLayout(mapId);
+  // 进入地图：全未知（迷雾不露出格子），事件已重新随机分布
+  gameState.adventure.explored = {};
+  if (!gameState.adventure.mapState) gameState.adventure.mapState = {};
+  gameState.adventure.mapState[mapId] = {};
+  gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
+  gameState.adventure.weather = '';
   // 切换地图时清空临时buff/debuff
   gameState.adventure.mapBuffs = [];
   gameState.adventure.mapDebuffs = [];
   saveGame();
   renderAdventureMap();
-  showToast('进入' + map.name, 'info');
+  showToast('进入' + map.name + '（迷雾重置，事件重新分布）', 'info');
 }
 
 function resetAdventureMap() {
@@ -7287,12 +7305,13 @@ function resetAdventureMap() {
   gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
   gameState.adventure.explored = {};
   gameState.adventure.mapState[mapId] = {};
+  randomizeMapLayout(mapId);
   gameState.adventure.weather = '';
   gameState.adventure.mapBuffs = [];
   gameState.adventure.mapDebuffs = [];
   saveGame();
   renderAdventureMap();
-  showToast('地图已重置', 'info');
+  showToast('地图已重置，事件重新分布', 'info');
 }
 
 function moveToMapCell(x, y) {
@@ -7504,6 +7523,19 @@ function saveMapMonsterImage(mapId, monsterName, url) {
   all[mapId][monsterName] = url;
   localStorage.setItem('xinmo_map_monster_images', JSON.stringify(all));
 }
+// 地图妖怪难度与奖励自定义配置 {mapId: {怪物名: {hpMult, atkMult, frag, focus, score}}}
+function getMapMonsterConfigs() {
+  try { return JSON.parse(localStorage.getItem('xinmo_map_monster_cfg') || '{}'); } catch(e) { return {}; }
+}
+function getMapMonsterConfig(mapId, name) {
+  return (getMapMonsterConfigs()[mapId] || {})[name] || null;
+}
+function saveMapMonsterConfig(mapId, name, cfg) {
+  var all = getMapMonsterConfigs();
+  if (!all[mapId]) all[mapId] = {};
+  all[mapId][name] = cfg;
+  localStorage.setItem('xinmo_map_monster_cfg', JSON.stringify(all));
+}
 function getMapMonster(tier, isElite, isBoss) {
   var map = ADVENTURE_MAPS[gameState.adventure.currentMap];
   var candidates = map.monsters.filter(function(m) {
@@ -7519,6 +7551,7 @@ function getMapMonster(tier, isElite, isBoss) {
   return {
     id: 'map_' + m.name + '_' + Date.now(),
     name: getMapMonsterDisplayName(map, m, isElite, isBoss),
+    origName: m.name,
     tier: m.tier,
     image: customImg || m.image,
     isElite: isElite,
@@ -7547,9 +7580,12 @@ function startMapMonsterBattle(x, y, isElite) {
   // 全装备战斗
   equipAllForBattle();
 
+  var mCfg = getMapMonsterConfig(gameState.adventure.currentMap, m.origName || m.name);
   var monsterObj = {
     id: m.id, name: m.name, tier: m.tier,
     image: m.image,
+    hpMult: mCfg && mCfg.hpMult ? parseFloat(mCfg.hpMult) : 1,
+    atkMult: mCfg && mCfg.atkMult ? parseFloat(mCfg.atkMult) : 1,
     skill: isElite ? { name: '狂暴', type: 'enrage', atkBonus: 0.3, triggerHp: 0.5, once: true, text: m.name + '狂暴了，攻击力大幅提升！' } : null,
   };
   // 精英怪额外+1 tier难度
@@ -7559,13 +7595,18 @@ function startMapMonsterBattle(x, y, isElite) {
     context: 'map',
     onWin: function(bs) {
       markCellCleared(x, y);
-      var frag = isElite ? 15 : 8;
+      var frag = mCfg && mCfg.frag != null ? (parseInt(mCfg.frag) || 0) : (isElite ? 15 : 8);
+      var focusReward = mCfg && mCfg.focus != null ? (parseInt(mCfg.focus) || 0) : 0;
+      var score = mCfg && mCfg.score != null ? (parseInt(mCfg.score) || 0) : (isElite ? 4 : 2);
       dailyState.fragments += frag;
+      if (focusReward > 0) gameState.bonusFocus += focusReward;
       saveDaily();
-      addSeasonScore('beast', isElite ? 4 : 2);
+      addSeasonScore('beast', score);
+      var statHtml = '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">' + frag + '枚</span></div>' +
+        '<div class="result-stat-row"><span class="label">赛季积分</span><span class="value">+' + score + '</span></div>';
+      if (focusReward > 0) statHtml += '<div class="result-stat-row"><span class="label">修为经验</span><span class="value">+' + focusReward + '分钟</span></div>';
       showBattleOverlay('战胜 ' + m.name, '地图凶兽已击败',
-        '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">' + frag + '枚</span></div>' +
-        '<div class="result-stat-row"><span class="label">赛季积分</span><span class="value">+' + (isElite ? 4 : 2) + '</span></div>',
+        statHtml,
         [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
       );
     },
@@ -7584,9 +7625,12 @@ function startMapBossBattle(x, y) {
   gameState.adventure.monsterDex[m.name] = true;
   equipAllForBattle();
 
+  var mCfg = getMapMonsterConfig(gameState.adventure.currentMap, m.origName || m.name);
   var monsterObj = {
     id: m.id, name: m.name, tier: bossTier,
     image: m.image,
+    hpMult: mCfg && mCfg.hpMult ? parseFloat(mCfg.hpMult) : 1,
+    atkMult: mCfg && mCfg.atkMult ? parseFloat(mCfg.atkMult) : 1,
     skill: { name: '狂暴吞噬', type: 'enrage', atkBonus: 0.5, triggerHp: 0.4, once: true, text: m.name + '进入狂暴状态，攻击力暴涨！' },
   };
 
@@ -7598,16 +7642,25 @@ function startMapBossBattle(x, y) {
       if (gameState.adventure.clearedMaps.indexOf(mapId) < 0) {
         gameState.adventure.clearedMaps.push(mapId);
       }
-      dailyState.fragments += 50;
-      gameState.bonusFocus += 100;
+      var frag = mCfg && mCfg.frag != null ? (parseInt(mCfg.frag) || 0) : 50;
+      var focusReward = mCfg && mCfg.focus != null ? (parseInt(mCfg.focus) || 0) : 100;
+      var score = mCfg && mCfg.score != null ? (parseInt(mCfg.score) || 0) : 5;
+      dailyState.fragments += frag;
+      gameState.bonusFocus += focusReward;
       saveDaily();
-      addSeasonScore('beast', 5);
+      addSeasonScore('beast', score);
+      // 下一张地图（全未知 + 事件重新随机）
+      var mapIds = Object.keys(ADVENTURE_MAPS);
+      var _idx = mapIds.indexOf(mapId);
+      var nextMapId = (_idx >= 0 && _idx < mapIds.length - 1) ? mapIds[_idx + 1] : null;
+      var btnAction = nextMapId ? "advanceToNextMap()" : "closeBattleAndGoToMap()";
+      var btnLabel = nextMapId ? ('进入下一地图：' + ADVENTURE_MAPS[nextMapId].name) : '继续探索';
       showBattleOverlay('🎉 通关 ' + ADVENTURE_MAPS[mapId].name + '！', '终点BOSS已被击败',
-        '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">50枚</span></div>' +
-        '<div class="result-stat-row"><span class="label">修为经验</span><span class="value">+100分钟</span></div>' +
-        '<div class="result-stat-row"><span class="label">赛季积分</span><span class="value">+5</span></div>' +
+        '<div class="result-stat-row"><span class="label">获得碎片</span><span class="value">' + frag + '枚</span></div>' +
+        '<div class="result-stat-row"><span class="label">修为经验</span><span class="value">+' + focusReward + '分钟</span></div>' +
+        '<div class="result-stat-row"><span class="label">赛季积分</span><span class="value">+' + score + '</span></div>' +
         '<div class="result-stat-row"><span class="label">探索度</span><span class="value">' + getExplorationRate() + '%</span></div>',
-        [{ label: '继续探索', action: 'closeBattleAndGoToMap()', primary: true }]
+        [{ label: btnLabel, action: btnAction, primary: true }]
       );
     },
     onLose: function(bs) {
@@ -7989,6 +8042,18 @@ function closeBattleAndGoToMap() {
   battleRunning = false;
   navigate('adventure');
 }
+// BOSS 通关后进入下一张地图（全未知 + 事件重新随机分布）
+function advanceToNextMap() {
+  var mapIds = Object.keys(ADVENTURE_MAPS);
+  var idx = mapIds.indexOf(gameState.adventure.currentMap);
+  var nextId = (idx >= 0 && idx < mapIds.length - 1) ? mapIds[idx + 1] : null;
+  if (!nextId) { closeBattleAndGoToMap(); return; }
+  document.getElementById('battleOverlay').style.display = 'none';
+  battleState = null;
+  battleRunning = false;
+  switchAdventureMap(nextId);
+  showToast('新地图迷雾重重，事件已重新分布', 'info');
+}
 
 // 地图凶兽图片编辑器（从相册/文件选择，压缩后存储）
 function showMapMonsterImageEditor() {
@@ -8024,6 +8089,24 @@ function showMapMonsterImageEditor() {
       html += '<div onclick="document.getElementById(\'mapImgInput_' + idx + '\').click()" style="width:56px;height:56px;border-radius:6px;border:1px dashed rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-dim);cursor:pointer;margin-top:2px;">默认图</div>';
     }
     html += '<input type="hidden" id="mapImg_' + idx + '" value="' + cur + '">';
+    // 难度与奖励自定义（默认值按普通/精英/BOSS区分）
+    var _mcfg = getMapMonsterConfig(gameState.adventure.currentMap, m.name) || {};
+    var defFrag = m.isBoss ? 50 : (m.isElite ? 15 : 8);
+    var defFocus = m.isBoss ? 100 : 0;
+    var defScore = m.isBoss ? 5 : (m.isElite ? 4 : 2);
+    var hpV = _mcfg.hpMult != null ? _mcfg.hpMult : 1;
+    var atkV = _mcfg.atkMult != null ? _mcfg.atkMult : 1;
+    var fragV = _mcfg.frag != null ? _mcfg.frag : defFrag;
+    var focusV = _mcfg.focus != null ? _mcfg.focus : defFocus;
+    var scoreV = _mcfg.score != null ? _mcfg.score : defScore;
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-top:3px;font-size:10px;color:var(--text-dim);">';
+    html += '<label>难度·血×<input type="number" step="0.05" min="0.3" max="3" id="mapHpMult_' + idx + '" value="' + hpV + '" style="width:52px;padding:2px 4px;font-size:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:3px;color:var(--text);"></label>';
+    html += '<label>难度·攻×<input type="number" step="0.05" min="0.3" max="3" id="mapAtkMult_' + idx + '" value="' + atkV + '" style="width:52px;padding:2px 4px;font-size:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:3px;color:var(--text);"></label>';
+    html += '<label>碎片<input type="number" min="0" id="mapFrag_' + idx + '" value="' + fragV + '" style="width:52px;padding:2px 4px;font-size:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:3px;color:var(--text);"></label>';
+    html += '<label>修为(分)<input type="number" min="0" id="mapFocus_' + idx + '" value="' + focusV + '" style="width:52px;padding:2px 4px;font-size:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:3px;color:var(--text);"></label>';
+    html += '<label>赛季积分<input type="number" min="0" id="mapScore_' + idx + '" value="' + scoreV + '" style="width:52px;padding:2px 4px;font-size:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:3px;color:var(--text);"></label>';
+    html += '<span style="align-self:center;color:var(--text-dim);">' + (m.isBoss ? '🐉' : m.isElite ? '💀' : '👹') + ' 默认 ' + defFrag + '碎片/' + defFocus + '修为/' + defScore + '分</span>';
+    html += '</div>';
     html += '</div>';
   });
   html += '<div style="margin-top:10px;display:flex;gap:8px;">';
@@ -8033,16 +8116,22 @@ function showMapMonsterImageEditor() {
   var panel = document.getElementById('mapEventPanel');
   if (panel) { panel.innerHTML = html; panel.style.display = 'block'; }
 }
+// 待保存图片缓存：选图压缩是异步的，先存这里，保存时优先取最新结果，避免压缩未完成就保存导致回默认图
+var pendingMapImgs = {};
 function mapImgFileSelected(idx, input) {
   var file = input.files[0];
   if (!file) return;
   compressImage(file, function(dataUrl) {
-    document.getElementById('mapImg_' + idx).value = dataUrl;
+    pendingMapImgs[idx] = dataUrl;
+    var hidden = document.getElementById('mapImg_' + idx);
+    if (hidden) hidden.value = dataUrl;
     showMapMonsterImageEditor(); // 重新渲染显示预览
   });
 }
 function clearMapMonsterImage(idx) {
-  document.getElementById('mapImg_' + idx).value = '';
+  if (pendingMapImgs) delete pendingMapImgs[idx];
+  var hidden = document.getElementById('mapImg_' + idx);
+  if (hidden) hidden.value = '';
   showMapMonsterImageEditor();
 }
 function saveMapMonsterImages() {
@@ -8050,14 +8139,40 @@ function saveMapMonsterImages() {
   map.monsters.forEach(function(m, idx) {
     var input = document.getElementById('mapImg_' + idx);
     if (input) {
-      saveMapMonsterImage(gameState.adventure.currentMap, m.name, input.value.trim());
+      var finalUrl = (pendingMapImgs && pendingMapImgs[idx] != null) ? pendingMapImgs[idx] : input.value.trim();
+      saveMapMonsterImage(gameState.adventure.currentMap, m.name, finalUrl);
     }
     var nameInput = document.getElementById('mapName_' + idx);
     if (nameInput) {
       saveMapMonsterName(gameState.adventure.currentMap, m.name, nameInput.value);
     }
+    // 保存难度与奖励配置
+    var hpMultEl = document.getElementById('mapHpMult_' + idx);
+    var atkMultEl = document.getElementById('mapAtkMult_' + idx);
+    var fragEl = document.getElementById('mapFrag_' + idx);
+    var focusEl = document.getElementById('mapFocus_' + idx);
+    var scoreEl = document.getElementById('mapScore_' + idx);
+    var cfg = {};
+    if (hpMultEl && hpMultEl.value !== '' && parseFloat(hpMultEl.value) !== 1) cfg.hpMult = parseFloat(hpMultEl.value) || 1;
+    if (atkMultEl && atkMultEl.value !== '' && parseFloat(atkMultEl.value) !== 1) cfg.atkMult = parseFloat(atkMultEl.value) || 1;
+    if (fragEl) cfg.frag = parseInt(fragEl.value) || 0;
+    if (focusEl) cfg.focus = parseInt(focusEl.value) || 0;
+    if (scoreEl) cfg.score = parseInt(scoreEl.value) || 0;
+    var defFrag = m.isBoss ? 50 : (m.isElite ? 15 : 8);
+    var defFocus = m.isBoss ? 100 : 0;
+    var defScore = m.isBoss ? 5 : (m.isElite ? 4 : 2);
+    // 与默认值完全一致时清空自定义（使用内置默认）
+    if (cfg.frag === defFrag) delete cfg.frag;
+    if (cfg.focus === defFocus) delete cfg.focus;
+    if (cfg.score === defScore) delete cfg.score;
+    if (Object.keys(cfg).length > 0) saveMapMonsterConfig(gameState.adventure.currentMap, m.name, cfg);
+    else {
+      var _allCfg = getMapMonsterConfigs();
+      if (_allCfg[gameState.adventure.currentMap]) { delete _allCfg[gameState.adventure.currentMap][m.name]; localStorage.setItem('xinmo_map_monster_cfg', JSON.stringify(_allCfg)); }
+    }
   });
-  showToast('凶兽图片与名称已保存', 'success');
+  pendingMapImgs = {};
+  showToast('凶兽图片·名称·难度·奖励已保存', 'success');
   closeMapEvent();
 }
 function showMapDex() {
@@ -9276,10 +9391,10 @@ var sectRun = null;
 function startSectChallenge(sectId) {
   var s = getSectorById(sectId);
   if (!s || s.enemies.length === 0) { showToast('宗门数据异常', 'error'); return; }
-  // 宗门战斗默认全装备
+  // 宗门战斗默认全装备（功法+永久法宝），一次性宝物默认不带，仅复活丹除外
   prepareState.selectedGongfa = gameState.equipment.gongfa.map(function(e){ return e.id; });
   prepareState.selectedPermanent = gameState.equipment.permanent.map(function(e){ return e.id; });
-  prepareState.selectedConsumable = gameState.equipment.consumable.map(function(e){ return e.id; });
+  prepareState.selectedConsumable = gameState.equipment.consumable.filter(function(e){ return e.revive; }).map(function(e){ return e.id; });
   sectRun = { sectId: sectId, enemyIndex: 0, playerHp: null, playerMaxHp: null, rewardGiven: false };
   runNextSectBattle();
 }
@@ -9299,10 +9414,12 @@ function runNextSectBattle() {
   var minutes = getTodayFocus();
   var dynamicBaseAtk = Math.floor(minutes * 1.2);
   var dynamicBaseHp = Math.floor(100 + minutes * 0.5);
-  // 连战从第二场起恢复到最大血量的80%，第一场满血
+  // 连战血量规则：上一场剩余血量>80则沿用上一场血量；≤80则补到80点（80%血），不超过最大血量
   var initHp = null;
   if (sectRun.enemyIndex > 0 && sectRun.playerMaxHp) {
-    initHp = Math.floor(sectRun.playerMaxHp * 0.8);
+    var _prevHp = sectRun.playerHp || 0;
+    initHp = Math.max(Math.round(_prevHp), 80);
+    initHp = Math.min(initHp, sectRun.playerMaxHp);
   }
   startBattle(monsterObj, {
     context: 'sect', baseAtk: dynamicBaseAtk, baseHp: dynamicBaseHp,
@@ -9343,11 +9460,12 @@ function showSectIntermission(s, bs) {
   var isBoss = sectRun.enemyIndex === s.enemies.length - 1;
   var nextStats = calcMonsterStats({ tier: next.tier || 3, name: next.name });
   var tierCfg = getTierConfig(next.tier || 3);
-  var recoverHp = Math.floor(bs.player.maxHp * 0.8);
-  showBattleOverlay('连战连胜', '已击败 ' + sectRun.enemyIndex + '/' + s.enemies.length + ' 名敌人，灵力已回满，血量恢复至80%。',
+  var recoverHp = Math.max(Math.round(bs.player.hp), 80);
+  recoverHp = Math.min(recoverHp, bs.player.maxHp);
+  showBattleOverlay('连战连胜', '已击败 ' + sectRun.enemyIndex + '/' + s.enemies.length + ' 名敌人，灵力已回满，血量保底80（上一场血量>80则保留）。',
     '<div style="font-size:13px;color:var(--text-secondary);line-height:1.8;">' +
       '本场剩余生命：<b style="color:var(--jade-light);">' + bs.player.hp + '/' + bs.player.maxHp + '</b><br>' +
-      '下一场起始生命：<b style="color:var(--gold-light);">' + recoverHp + '/' + bs.player.maxHp + '（80%）</b><br>' +
+      '下一场起始生命：<b style="color:var(--gold-light);">' + recoverHp + '/' + bs.player.maxHp + '（保底80）</b><br>' +
       '下一个对手：<b style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';">' + (isBoss ? '【BOSS】' : '') + next.name + '</b><br>' +
       '强度：' + tierCfg.name + '<br>' +
       '血量：约' + nextStats.maxHp + ' · 攻击：约' + nextStats.attack +
