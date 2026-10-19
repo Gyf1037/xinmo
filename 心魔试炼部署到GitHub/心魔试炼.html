@@ -2397,7 +2397,13 @@ function loadSave() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) data = JSON.parse(raw);
-  } catch(e) { console.warn('读取存档失败', e); }
+  } catch(e) {
+    console.warn('读取存档失败，尝试恢复备份', e);
+    try {
+      const prev = localStorage.getItem(STORAGE_KEY + '_prev');
+      if (prev) data = JSON.parse(prev);
+    } catch(e2) { console.warn('备份存档也损坏', e2); }
+  }
   gameState.categories = data?.categories || { gongfa: [], permanent: [], consumable: [] };
   gameState.equipment = data?.equipment || { gongfa: [], permanent: [], consumable: [] };
   gameState.monsters = data?.monsters || [];
@@ -2610,8 +2616,33 @@ function loadSave() {
   if (needRestore) saveGame();
 }
 function saveGame() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState)); }
-  catch(e) { console.warn('保存失败', e); }
+  var raw;
+  try { raw = JSON.stringify(gameState); } catch(e) { console.warn('序列化失败', e); return; }
+  try {
+    localStorage.setItem(STORAGE_KEY, raw);
+  } catch(e) {
+    console.warn('保存失败，尝试降级存储', e);
+    try {
+      // 存储空间不足：剥离大体积图片字段后重试，保证核心进度（等级/装备/周目/碎片）不丢
+      var light = JSON.parse(JSON.stringify(gameState));
+      light.playerImage = '';
+      if (light.swordInscriptions) {
+        light.swordInscriptions = light.swordInscriptions.map(function(i){ if (i.image) i.image = ''; return i; });
+      }
+      ['gongfa','permanent','consumable'].forEach(function(cat) {
+        var list = light.equipment[cat] || [];
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].image && String(list[i].image).length > 2048) list[i].image = '';
+        }
+      });
+      // 完整版（含图）尝试存备份，图片数据不直接丢
+      try { localStorage.setItem(STORAGE_KEY + '_prev', raw); } catch(e2) {}
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(light));
+      if (typeof showToast === 'function') showToast('存储空间不足：已临时清理部分图片，核心进度已保存，可重新上传图片', 'warn');
+    } catch(e3) {
+      console.warn('降级保存也失败', e3);
+    }
+  }
 }
 
 // ========== 存档导出/导入 ==========
@@ -2757,6 +2788,7 @@ function equipThumbHtml(eq) {
 }
 // ---------- 路由（导航时清理战斗状态）----------
 function navigate(view) {
+  cleanupFxElements(0);
   if (battleRunning) {
     clearAllBattleTimeouts();
     battleRunning = false;
@@ -6560,6 +6592,8 @@ function settleWeek() {
     }
   }
   showToast('赛季结算：' + rank.name + '，获得' + rank.fragments + '枚碎片', 'success');
+  // 结算结果（段位/周目最高分/法宝）立即落盘，防止闪退丢失
+  saveGame();
 }
 function generateSeasonEquip(quality) {
   var pools = {
@@ -8748,6 +8782,7 @@ function afterMonsterTurn() {
 }
 function finishBattle(result) {
   if (battleState.finished) return;
+  cleanupFxElements(0);
   // 复活丹：失败时询问（从一次性法宝里找）
   if (result === 'lose' && !battleState.reviveUsed && !battleState.revivePromptShown) {
     var reviveIdx = (gameState.equipment.consumable || []).findIndex(function(e){ return e.revive; });
@@ -10063,6 +10098,18 @@ window.addEventListener('beforeunload', function() {
   } catch(e) {}
 });
 
+// 切到后台/锁屏时立即保存，防止被系统回收导致闪退丢档（节流：3秒内最多保存一次）
+var _lastAutoSaveTs = 0;
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    var nowTs = Date.now();
+    if (nowTs - _lastAutoSaveTs > 3000) {
+      _lastAutoSaveTs = nowTs;
+      try { saveGame(); } catch(e) {}
+    }
+  }
+});
+
 document.addEventListener('DOMContentLoaded', init);
 // ---------- PWA：Service Worker 注册（离线可用 + 全屏安装）----------
 if ('serviceWorker' in navigator) {
@@ -10300,8 +10347,30 @@ function getPlayerElement() {
   }
   return '';
 }
+// 特效元素数量控制：防止粒子/闪光等特效 DOM 堆积导致内存过大、手机闪退
+function cleanupFxElements(maxKeep) {
+  try {
+    var keep = maxKeep === undefined ? 60 : maxKeep;
+    var all = document.querySelectorAll('body > div');
+    var fx = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      var pos = el.style.position;
+      var z = parseInt(el.style.zIndex, 10) || 0;
+      if (pos === 'fixed' && z >= 9990) fx.push(el);
+    }
+    // 硬上限兜底：即使没有入口调用，特效元素超过 400 也强制压到 120
+    if (maxKeep === undefined && fx.length > 400) keep = 120;
+    var excess = fx.length - keep;
+    for (var j = 0; j < excess; j++) {
+      var victim = fx[j];
+      if (victim && victim.parentNode) victim.parentNode.removeChild(victim);
+    }
+  } catch(e) {}
+}
 function playElementEffect(element) {
   try {
+  cleanupFxElements(50);
   if (!element) return;
   var color = ELEMENT_COLORS[element] || '#fff';
   var elemName = ELEMENT_EFFECTS[element] ? ELEMENT_EFFECTS[element].name : '';
@@ -10378,8 +10447,8 @@ function playElementEffect(element) {
       document.body.appendChild(wing);
       setTimeout(function(w){ return function(){ if(w.parentNode) w.remove(); }; }(wing), 2800);
     }
-    // 60个圣光粒子雨（更多更亮）
-    for (var i = 0; i < 60; i++) {
+    // 36个圣光粒子雨
+    for (var i = 0; i < 36; i++) {
       var particle = document.createElement('div');
       var px = cx + (Math.random() - 0.5) * w * 4;
       particle.style.cssText = 'position:fixed;left:' + px + 'px;top:' + (cy - h*1.5) + 'px;width:' + (6+Math.random()*10) + 'px;height:' + (6+Math.random()*10) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ',0 0 45px #fff;pointer-events:none;z-index:9998;animation:fxFireRise ' + (1.5+Math.random()*1.2) + 's ease-out ' + (Math.random()*0.5) + 's forwards;';
@@ -10492,8 +10561,8 @@ function playElementEffect(element) {
       document.body.appendChild(fireRing);
       setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(fireRing), 2000);
     }
-    // 80个火星雨（更多更广）
-    for (var i = 0; i < 80; i++) {
+    // 40个火星雨
+    for (var i = 0; i < 40; i++) {
       var spark = document.createElement('div');
       var sx = cx + (Math.random() - 0.5) * w * 5;
       var fireColors = ['#FF5722', '#FF9800', '#FFD700', '#FFC107', '#fff', '#FF1744'];
@@ -10501,8 +10570,8 @@ function playElementEffect(element) {
       document.body.appendChild(spark);
       setTimeout(function(s){ return function(){ if(s.parentNode) s.remove(); }; }(spark), 2800);
     }
-    // 40块熔岩飞溅
-    for (var i = 0; i < 40; i++) {
+    // 24块熔岩飞溅
+    for (var i = 0; i < 24; i++) {
       var lava = document.createElement('div');
       var angle = (Math.PI * 2 * i) / 40 + Math.random() * 0.5;
       var dist = 100 + Math.random() * 200;
@@ -10557,8 +10626,8 @@ function playElementEffect(element) {
       document.body.appendChild(wave);
       setTimeout(function(w){ return function(){ if(w.parentNode) w.remove(); }; }(wave), 2800);
     }
-    // 50个水滴从天而降（更多更大）
-    for (var i = 0; i < 50; i++) {
+    // 30个水滴从天而降
+    for (var i = 0; i < 30; i++) {
       var drop = document.createElement('div');
       var dx = cx + (Math.random() - 0.5) * w * 4;
       drop.style.cssText = 'position:fixed;left:' + dx + 'px;top:' + (cy - h*2) + 'px;width:' + (10+Math.random()*14) + 'px;height:' + (16+Math.random()*18) + 'px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(to bottom, #fff, ' + color + ', ' + color + '88);box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ';pointer-events:none;z-index:9998;animation:fxWaterDrop ' + (0.9+Math.random()*0.7) + 's ease-in ' + (Math.random()*0.5) + 's forwards;';
@@ -10630,8 +10699,8 @@ function playElementEffect(element) {
       document.body.appendChild(arc);
       setTimeout(function(a){ return function(){ if(a.parentNode) a.remove(); }; }(arc), 1500);
     }
-    // 60个电火花（更亮更多）
-    for (var i = 0; i < 60; i++) {
+    // 36个电火花
+    for (var i = 0; i < 36; i++) {
       var eSpark = document.createElement('div');
       var ex = cx + (Math.random() - 0.5) * w * 3.5;
       eSpark.style.cssText = 'position:fixed;left:' + ex + 'px;top:' + (cy + (Math.random()-0.5)*h*1.8) + 'px;width:' + (5+Math.random()*7) + 'px;height:' + (5+Math.random()*7) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 12px ' + color + ',0 0 24px ' + color + ',0 0 36px ' + color + ';pointer-events:none;z-index:9998;animation:fxLightBurst 0.7s ease-out ' + (Math.random()*0.4) + 's forwards;';
@@ -10702,8 +10771,8 @@ function playElementEffect(element) {
       document.body.appendChild(root);
       setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(root), 2000);
     }
-    // 80片花瓣/树叶飘落（更多更广）
-    for (var i = 0; i < 80; i++) {
+    // 40片花瓣/树叶飘落
+    for (var i = 0; i < 40; i++) {
       var petal = document.createElement('div');
       var px = cx + (Math.random() - 0.5) * w * 6;
       var petalColors = [color, '#81C784', '#A5D6A7', '#C8E6C9', '#fff', '#FFEB3B', '#FF8A80', '#F8BBD0'];
@@ -10711,8 +10780,8 @@ function playElementEffect(element) {
       document.body.appendChild(petal);
       setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(petal), 4500);
     }
-    // 50个治愈光点上升（更多更亮）
-    for (var i = 0; i < 50; i++) {
+    // 30个治愈光点上升
+    for (var i = 0; i < 30; i++) {
       var healDot = document.createElement('div');
       var hx = cx + (Math.random() - 0.5) * w * 3;
       healDot.style.cssText = 'position:fixed;left:' + hx + 'px;top:' + (cy + h/2) + 'px;width:' + (7+Math.random()*9) + 'px;height:' + (7+Math.random()*9) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 15px ' + color + ',0 0 30px ' + color + ',0 0 45px #81C784;pointer-events:none;z-index:9998;animation:fxFireRise ' + (2+Math.random()*1.2) + 's ease-out ' + (Math.random()*0.6) + 's forwards;';
@@ -10757,8 +10826,8 @@ function playElementEffect(element) {
       document.body.appendChild(iceRing);
       setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(iceRing), 2200);
     }
-    // 50片冰晶碎片（更大更锋利）
-    for (var i = 0; i < 50; i++) {
+    // 30片冰晶碎片
+    for (var i = 0; i < 30; i++) {
       var shard = document.createElement('div');
       var angle = (Math.PI * 2 * i) / 50;
       var dist = 100 + Math.random() * 180;
@@ -10778,8 +10847,8 @@ function playElementEffect(element) {
       document.body.appendChild(icePillar);
       setTimeout(function(p){ return function(){ if(p.parentNode) p.remove(); }; }(icePillar), 2200);
     }
-    // 80片雪花飘落（更多更大）
-    for (var i = 0; i < 80; i++) {
+    // 40片雪花飘落
+    for (var i = 0; i < 40; i++) {
       var snow = document.createElement('div');
       var sx = cx + (Math.random() - 0.5) * w * 5;
       snow.style.cssText = 'position:fixed;left:' + sx + 'px;top:' + (cy - h*2) + 'px;width:' + (8+Math.random()*14) + 'px;height:' + (8+Math.random()*14) + 'px;border-radius:50%;background:radial-gradient(circle, #fff, ' + color + '88, transparent);box-shadow:0 0 12px ' + color + ',0 0 24px #fff;pointer-events:none;z-index:9998;animation:fxLeafFall ' + (2.5+Math.random()*1.5) + 's ease-in ' + (Math.random()*0.8) + 's forwards;';
@@ -10839,8 +10908,8 @@ function playElementEffect(element) {
       document.body.appendChild(tRing);
       setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(r), 2000);
     }
-    // 50个雷电火花（更亮更多）
-    for (var i = 0; i < 50; i++) {
+    // 30个雷电火花
+    for (var i = 0; i < 30; i++) {
       var tSpark = document.createElement('div');
       var tx = cx + (Math.random() - 0.5) * w * 4;
       tSpark.style.cssText = 'position:fixed;left:' + tx + 'px;top:' + (cy + (Math.random()-0.5)*h*2) + 'px;width:' + (7+Math.random()*10) + 'px;height:' + (7+Math.random()*10) + 'px;border-radius:50%;background:#fff;box-shadow:0 0 18px ' + color + ',0 0 36px ' + color + ',0 0 54px #E1BEE7;pointer-events:none;z-index:9998;animation:fxLightBurst 0.8s ease-out ' + (Math.random()*0.5) + 's forwards;';
@@ -10937,8 +11006,8 @@ function playElementEffect(element) {
       document.body.appendChild(rock);
       setTimeout(function(r){ return function(){ if(r.parentNode) r.remove(); }; }(rock), 2000);
     }
-    // 60个碎石向四周飞溅（更多）
-    for (var i = 0; i < 60; i++) {
+    // 36个碎石向四周飞溅
+    for (var i = 0; i < 36; i++) {
       var eshard = document.createElement('div');
       var angle = (Math.PI * 2 * i) / 60 + Math.random() * 0.5;
       var dist = 120 + Math.random() * 250;
@@ -11236,7 +11305,7 @@ function playElementEffect(element) {
     document.body.appendChild(starfield);
     setTimeout(function() { starfield.style.opacity = '0'; setTimeout(function(){ if(starfield.parentNode) starfield.remove(); }, 1000); }, 1500);
     // 背景星星（闪烁）
-    for (var i = 0; i < 60; i++) {
+    for (var i = 0; i < 36; i++) {
       (function(idx) {
         var star = document.createElement('div');
         var sx = Math.random() * vw;
@@ -11437,7 +11506,7 @@ function playArrowRain() {
     }, 1000);
 
     // 持续的金色粒子雨
-    for (var pi = 0; pi < 50; pi++) {
+    for (var pi = 0; pi < 30; pi++) {
       (function(idx) {
         setTimeout(function() {
           var p = document.createElement('div');
