@@ -2399,10 +2399,13 @@ function loadSave() {
     if (raw) data = JSON.parse(raw);
   } catch(e) {
     console.warn('读取存档失败，尝试恢复备份', e);
-    try {
-      const prev = localStorage.getItem(STORAGE_KEY + '_prev');
-      if (prev) data = JSON.parse(prev);
-    } catch(e2) { console.warn('备份存档也损坏', e2); }
+    var bkKeys = [STORAGE_KEY + '_prev', STORAGE_KEY + '_bak2', STORAGE_KEY + '_bak3'];
+    for (var bi = 0; bi < bkKeys.length; bi++) {
+      try {
+        var braw = localStorage.getItem(bkKeys[bi]);
+        if (braw) { data = JSON.parse(braw); break; }
+      } catch(e2) { console.warn('备份' + bkKeys[bi] + '损坏', e2); }
+    }
   }
   gameState.categories = data?.categories || { gongfa: [], permanent: [], consumable: [] };
   gameState.equipment = data?.equipment || { gongfa: [], permanent: [], consumable: [] };
@@ -2620,21 +2623,37 @@ function saveGame() {
   try { raw = JSON.stringify(gameState); } catch(e) { console.warn('序列化失败', e); return; }
   try {
     localStorage.setItem(STORAGE_KEY, raw);
+    // 备份轮换：保留最近3份历史，防止主档损坏/丢失时自定义配置全部回默认
+    try {
+      var _p1 = localStorage.getItem(STORAGE_KEY + '_prev');
+      var _p2 = localStorage.getItem(STORAGE_KEY + '_bak2');
+      if (_p1) localStorage.setItem(STORAGE_KEY + '_bak2', _p1);
+      if (_p2) localStorage.setItem(STORAGE_KEY + '_bak3', _p2);
+      localStorage.setItem(STORAGE_KEY + '_prev', raw);
+    } catch(e4) {}
   } catch(e) {
     console.warn('保存失败，尝试降级存储', e);
     try {
       // 存储空间不足：剥离大体积图片字段后重试，保证核心进度（等级/装备/周目/碎片）不丢
       var light = JSON.parse(JSON.stringify(gameState));
-      light.playerImage = '';
+      // 剥图前先把大图备份进独立保险库，刷新后显示仍优先读保险库，图片不再丢失
+      if (light.playerImage && String(light.playerImage).length > 2048) { savePlayerImage(light.playerImage); light.playerImage = ''; }
       if (light.swordInscriptions) {
-        light.swordInscriptions = light.swordInscriptions.map(function(i){ if (i.image) i.image = ''; return i; });
+        light.swordInscriptions = light.swordInscriptions.map(function(i){ if (i.image && String(i.image).length > 2048) { saveInscriptionImage(i.id, i.image); i.image = ''; } return i; });
       }
       ['gongfa','permanent','consumable'].forEach(function(cat) {
         var list = light.equipment[cat] || [];
         for (var i = 0; i < list.length; i++) {
-          if (list[i].image && String(list[i].image).length > 2048) list[i].image = '';
+          if (list[i].image && String(list[i].image).length > 2048) { saveEquipImage(list[i].id, list[i].image); list[i].image = ''; }
         }
       });
+      // 凶兽自定义图片同样备份进保险库（防止存档体积撑爆导致保存失败）
+      if (light.monsters) {
+        light.monsters = light.monsters.map(function(m){
+          if (m.image && String(m.image).length > 2048) { saveMonsterImage(m.id, m.image); m.image = ''; }
+          return m;
+        });
+      }
       // 完整版（含图）尝试存备份，图片数据不直接丢
       try { localStorage.setItem(STORAGE_KEY + '_prev', raw); } catch(e2) {}
       localStorage.setItem(STORAGE_KEY, JSON.stringify(light));
@@ -2783,7 +2802,8 @@ function getCatName(type, catId) {
 }
 // 法宝缩略图（有图显示图，无图显示首字字标）
 function equipThumbHtml(eq) {
-  if (eq.image) return '<img src="' + eq.image + '" alt="' + (eq.name || '') + '">';
+  var url = getEquipImageUrl(eq);
+  if (url) return '<img src="' + url + '" alt="' + (eq.name || '') + '">';
   return '<span class="eq-ph">' + (eq.name ? eq.name.charAt(0) : '器') + '</span>';
 }
 // ---------- 路由（导航时清理战斗状态）----------
@@ -3004,8 +3024,9 @@ function renderSwordWall() {
       html += '<div style="text-align:center;margin-bottom:20px;cursor:pointer;" onclick="viewInscription(\'' + ins.id + '\')">';
       html += '<div style="display:block;width:100%;box-sizing:border-box;padding:22px 16px;background:linear-gradient(160deg,#3a3530 0%,#2a2520 40%,#1f1c18 100%);border:2px solid #5a4f40;border-radius:4px;box-shadow:inset 0 2px 8px rgba(0,0,0,0.6),0 4px 16px rgba(0,0,0,0.5),inset 0 -1px 0 rgba(255,220,150,0.08);position:relative;">';
       html += '<div style="position:absolute;top:-6px;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,#5a4f40 0px,#5a4f40 18px,#2a2520 18px,#2a2520 24px);border-radius:2px 2px 0 0;"></div>';
-      if (ins.image) {
-        html += '<img src="' + ins.image + '" style="max-width:100%;width:auto;max-height:55vh;border-radius:3px;object-fit:contain;display:block;margin:0 auto;border:1px solid #5a4f40;">';
+      var insImgUrl = getInscriptionImageUrl(ins);
+      if (insImgUrl) {
+        html += '<img src="' + insImgUrl + '" style="max-width:100%;width:auto;max-height:55vh;border-radius:3px;object-fit:contain;display:block;margin:0 auto;border:1px solid #5a4f40;">';
         // 图片下方同以前一样显示刻的字
         if (ins.text && ins.text !== '石刻') {
           html += '<div style="font-size:24px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:6px;text-shadow:0 0 12px rgba(212,175,55,0.4);margin-top:10px;">' + ins.text + '</div>';
@@ -3081,6 +3102,7 @@ function doCarve() {
   var ins = { id: 'ins_' + Date.now(), date: new Date().toISOString() };
   if (carveImageData) {
     ins.image = carveImageData;
+    saveInscriptionImage(ins.id, carveImageData);
     ins.text = text || '石刻';
   } else {
     ins.text = text;
@@ -3106,8 +3128,9 @@ function viewInscription(insId) {
   overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;';
   overlay.onclick = function() { document.body.removeChild(overlay); };
   var middleHtml;
-  if (ins.image) {
-    middleHtml = '<img src="' + ins.image + '" style="max-width:90vw;max-height:55vh;border-radius:8px;box-shadow:0 0 40px rgba(212,175,55,0.4);">' +
+  var insImgUrl = getInscriptionImageUrl(ins);
+  if (insImgUrl) {
+    middleHtml = '<img src="' + insImgUrl + '" style="max-width:90vw;max-height:55vh;border-radius:8px;box-shadow:0 0 40px rgba(212,175,55,0.4);">' +
       (ins.text && ins.text !== '石刻' ? '<div style="font-size:28px;font-weight:700;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:8px;margin-top:20px;text-shadow:0 0 20px rgba(212,175,55,0.5);">' + ins.text + '</div>' : '');
   } else {
     middleHtml = '<div style="font-size:64px;font-weight:900;color:var(--gold);font-family:&quot;Ma Shan Zheng&quot;,Noto Serif SC,serif;letter-spacing:12px;text-shadow:0 0 30px rgba(212,175,55,0.6);">' + ins.text + '</div>';
@@ -3135,6 +3158,7 @@ function changeInscriptionImage(insId) {
       var ins = (gameState.swordInscriptions || []).find(function(x) { return x.id === insId; });
       if (!ins) { showToast('石刻不存在', 'error'); return; }
       ins.image = dataUrl;
+      saveInscriptionImage(insId, dataUrl);
       if (!ins.text || ins.text === '石刻') ins.text = '石刻';
       saveGame();
       // 关闭旧弹窗并重新打开显示新图
@@ -3152,6 +3176,7 @@ function clearInscriptionImage(insId) {
   var ins = (gameState.swordInscriptions || []).find(function(x) { return x.id === insId; });
   if (!ins) return;
   delete ins.image;
+  saveInscriptionImage(insId, '');
   if (!ins.text || ins.text === '石刻') ins.text = '石刻';
   saveGame();
   var overlays = document.querySelectorAll('.inscription-overlay');
@@ -3184,6 +3209,7 @@ function saveMonster() {
     if (m) {
       m.name = name; m.tier = tier;
       m.reqMinutes = reqMinutes; m.desc = desc; m.image = image;
+      if (image) saveMonsterImage(m.id, image); else saveMonsterImage(m.id, '');
       m.fragReward = fragReward; m.cultReward = cultReward; m.element = element;
       m.skill = skillObj;
       showToast(`凶兽「${name}」已更新`, 'success');
@@ -3191,6 +3217,7 @@ function saveMonster() {
     editingMonsterId = null;
   } else {
     const newM = { id: genId(), name, tier, reqMinutes, desc, image, fragReward: fragReward, cultReward: cultReward, element: element, skill: skillObj, createdAt: Date.now() };
+    if (image) saveMonsterImage(newM.id, image);
     gameState.monsters.push(newM);
     prepareState.selectedMonsterId = newM.id;
     // 自动加入当前分组
@@ -3523,6 +3550,30 @@ document.getElementById('equipImageInput').addEventListener('change', (e) => {
     preview.innerHTML = `<img src="${dataUrl}" alt="法宝图片">`;
   });
 });
+// ===== 图片保险库：自定义图片独立存储（不随存档），防止存储空间不足被降级清理 =====
+var EQ_IMG_KEY = 'xinmo_equipment_images';
+var INS_IMG_KEY = 'xinmo_inscription_images';
+var PLAYER_IMG_KEY = 'xinmo_player_image';
+function getStoredImages(key) { try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { return {}; } }
+function setStoredImage(key, id, url) {
+  var all = getStoredImages(key);
+  if (url) all[id] = url; else delete all[id];
+  try { localStorage.setItem(key, JSON.stringify(all)); } catch(e) { try { localStorage.setItem(key, '{}'); } catch(e2) {} }
+}
+function getStoredImage(key, id) { return getStoredImages(key)[id] || ''; }
+// 法宝/功法/消耗品图片（显示时独立键优先）
+function getEquipImageUrl(eq) { if (!eq) return ''; return getStoredImage(EQ_IMG_KEY, eq.id) || eq.image || ''; }
+function saveEquipImage(eqId, url) { setStoredImage(EQ_IMG_KEY, eqId, url); }
+// 石刻图片
+function getInscriptionImageUrl(ins) { if (!ins) return ''; return getStoredImage(INS_IMG_KEY, ins.id) || ins.image || ''; }
+function saveInscriptionImage(insId, url) { setStoredImage(INS_IMG_KEY, insId, url); }
+// 修士头像
+function getPlayerImage() { return getStoredImage(PLAYER_IMG_KEY, 'avatar') || gameState.playerImage || ''; }
+function savePlayerImage(url) { setStoredImage(PLAYER_IMG_KEY, 'avatar', url); }
+// 凶兽（副本秘境）图片
+var MON_IMG_KEY = 'xinmo_monster_images';
+function getMonsterImageUrl(m) { if (!m) return ''; return getStoredImage(MON_IMG_KEY, m.id) || m.image || ''; }
+function saveMonsterImage(monsterId, url) { setStoredImage(MON_IMG_KEY, monsterId, url); }
 function compressImage(file, cb) {
   const reader = new FileReader();
   reader.onload = (ev) => {
@@ -4067,25 +4118,28 @@ function getRealmInfo() {
   // 证道不足期间超出当前境界所需的时间被冻结丢弃，不给下一级做时间准备
   if (gameState.frozenFocus == null) gameState.frozenFocus = 0;
   var rawTotal = getTotalFocus();
-  var total = rawTotal - (gameState.frozenFocus || 0);
-  var focusIdx = Math.floor(total / 1500);
   // 证道境界：第1层4次，第2层5次...递增到10次封顶
   var maxRealmByEnlighten = getMaxRealmByEnlighten(gameState.enlightenCount || 0);
+  // 可用专注 = 总专注 - 已丢弃的溢出时间
+  var avail = rawTotal - (gameState.frozenFocus || 0);
+  var focusIdx = Math.floor(avail / 1500);
   var idx = Math.min(focusIdx, maxRealmByEnlighten);
   var name = REALM_NAMES[Math.min(idx, REALM_NAMES.length - 1)];
-  var progress = (total % 1500) / 1500;
   var pendingEnlighten = focusIdx > idx;
-  // 证道不足：把超出当前境界满值的时间永久冻结，突破后下一级从0开始
+  // 证道不足：把超出当前境界满值的时间永久冻结丢弃（突破后不会复活，也不累积下一境界）
   if (pendingEnlighten) {
     var cap = 1500 * (idx + 1);
-    if (total > cap) {
-      gameState.frozenFocus = (gameState.frozenFocus || 0) + (total - cap);
-      total = cap;
+    if (avail > cap) {
+      gameState.frozenFocus = (gameState.frozenFocus || 0) + (avail - cap);
+      avail = cap;
       // 冻结量变化时立即存档，防止刷新后丢失
       if (typeof saveGame === 'function') saveGame();
     }
-    progress = 0;
   }
+  // 当前境界内已累积的专注分钟：突破后从0开始重新计数；证道不足时固定满值1500不再变化
+  var total = avail - idx * 1500;
+  if (pendingEnlighten) total = 1500;
+  var progress = total / 1500;
   // 下一级还需多少证道
   var nextLevelEnlightenReq = getEnlightenReqForRealm(idx + 1);
   var enlightenNeeded = Math.max(0, nextLevelEnlightenReq - (gameState.enlightenCount || 0));
@@ -4112,7 +4166,7 @@ function renderRealm() {
   var nextName = REALM_NAMES[nextIdx];
   // 专注够了但证道不够时，进度条停在100%，不再往下一级累加
   var displayProgress = info.pendingEnlighten ? 1 : info.progress;
-  var remain = info.pendingEnlighten ? 0 : (1500 - (info.total % 1500));
+  var remain = info.pendingEnlighten ? 0 : (1500 - info.total);
   var enlightenHtml = '';
   if (info.pendingEnlighten) {
     enlightenHtml = '<div style="font-size:10px;color:var(--cinnabar-light);text-align:center;margin-top:2px;">⏳ 专注已足，还需证道 ' + info.enlightenNeeded + ' 次方可突破</div>';
@@ -4120,7 +4174,7 @@ function renderRealm() {
   el.innerHTML =
     '<div style="text-align:center;margin-bottom:6px;">' +
       '<div style="font-family:Noto Serif SC,serif;font-size:26px;font-weight:900;color:var(--gold-light);letter-spacing:2px;">' + info.name + '期</div>' +
-      '<div style="font-size:11px;color:var(--text-dim);">第 ' + (info.idx + 1) + ' 境界 · 累计专注 ' + info.total + ' 分钟</div>' +
+      '<div style="font-size:11px;color:var(--text-dim);">第 ' + (info.idx + 1) + ' 境界 · 本境专注 ' + info.total + '/1500 分钟</div>' +
     '</div>' +
     '<div class="realm-progress-bar"><div class="realm-progress-fill" style="width:' + (displayProgress * 100) + '%;"></div></div>' +
     '<div style="font-size:11px;color:var(--text-dim);text-align:center;margin-bottom:6px;">' + (info.pendingEnlighten ? '专注已足，等待证道突破' : '距 ' + nextName + ' 期还需 ' + remain + ' 分钟') + '</div>' +
@@ -4798,8 +4852,8 @@ renderMonsterSelector = function() {
       req = defM ? (defM.reqMinutes || 0) : 0;
     }
     var lockHtml = unlocked ? '' : '<div class="monster-lock-overlay">需专注' + req + '分钟</div>';
-    // 图片：优先用凶兽自己的图片，没有则用默认配置的图片
-    var monsterImg = m.image;
+    // 图片：优先用保险库/凶兽自己的图片，没有则用默认配置的图片
+    var monsterImg = getMonsterImageUrl(m);
     if (!monsterImg) {
       var defForImg = DEFAULT_MONSTERS.find(function(d){ return d.id === m.id; });
       if (defForImg) monsterImg = defForImg.image;
@@ -6222,6 +6276,11 @@ function startBattle(monsterInput, opts) {
     monster = JSON.parse(JSON.stringify(getMonsterById(prepareState.selectedMonsterId)));
   }
   if (!monster) { showToast('请先选择对手', 'error'); return; }
+  // 战斗怪图片优先读保险库（存档降级清理后自定义图不丢）
+  if (monster.id) {
+    var _mImg = getMonsterImageUrl(monster);
+    if (_mImg) monster.image = _mImg;
+  }
   // 凶兽专注门槛检查（从备战表单启动时）
   if (!opts.baseAtk && !isMonsterUnlocked(monster)) {
     showToast('今日专注不足' + (monster.reqMinutes || 0) + '分钟，无法挑战' + monster.name, 'error');
@@ -6423,10 +6482,11 @@ function initBattleUI() {
   document.getElementById('playerName').textContent = namePrefix + getZhoumuStars() + ' ' + battleState.player.name;
   document.getElementById('monsterName').textContent = battleState.monster.name;
   document.getElementById('monsterImage').src = battleState.monster.image;
-  // 修士自定义头像
-  if (gameState.playerImage) {
+  // 修士自定义头像（优先读保险库，降级清理后不再丢失）
+  var playerImgUrl = getPlayerImage();
+  if (playerImgUrl) {
     var playerImg = document.querySelector('#playerCombatant img');
-    if (playerImg) playerImg.src = gameState.playerImage;
+    if (playerImg) playerImg.src = playerImgUrl;
   }
   document.getElementById('battlePlayerAtk').textContent = battleState.player.attack;
   document.getElementById('battlePlayerCrit').textContent = battleState.player.crit + '%';
@@ -6785,6 +6845,7 @@ function handlePlayerAvatarChange(input) {
   var reader = new FileReader();
   reader.onload = function(e) {
     gameState.playerImage = e.target.result;
+    savePlayerImage(e.target.result);
     saveGame();
     renderZhoumu();
     showToast('修士头像已更新', 'success');
@@ -10005,6 +10066,8 @@ function addEquipment() {
       target.eq.skillType = skillType || '';
       target.eq.categoryId = categoryId;
       target.eq.image = equipImageData || '';
+      if (equipImageData) saveEquipImage(target.eq.id, equipImageData);
+      else if (!target.eq.image) saveEquipImage(target.eq.id, '');
       target.eq.affixes = JSON.parse(JSON.stringify(editingAffixes));
       saveGame();
       showToast(`法宝「${name}」已更新`, 'success');
@@ -10013,6 +10076,7 @@ function addEquipment() {
   } else {
     // 新增模式
     const eq = { id: genId(), name, type, categoryId, power, crit, effect, element: element, skillType: skillType || '', image: equipImageData || '', affixes: JSON.parse(JSON.stringify(editingAffixes)), createdAt: Date.now() };
+    if (equipImageData) saveEquipImage(eq.id, equipImageData);
     gameState.equipment[type].push(eq);
     saveGame();
     showToast(`法宝「${name}」锻造完成`, 'success');
