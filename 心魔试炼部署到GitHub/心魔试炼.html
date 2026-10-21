@@ -1908,7 +1908,11 @@ input, textarea, select { font-family: inherit; outline: none; }
     <div class="panel" style="margin-bottom:16px;padding:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <div class="panel-title" style="font-size:14px;margin-bottom:0;">阅读计时</div>
-        <select class="form-input" id="bookReadSelect" style="width:auto;font-size:13px;" onchange="updateBookReadDisplay()"></select>
+        <button class="btn btn-ghost btn-sm" onclick="toggleBookCfg()">⚙️ 难度与奖励</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+        <span style="font-size:12px;color:var(--text-dim);">当前卷</span>
+        <select class="form-input" id="bookReadSelect" style="width:auto;font-size:13px;flex:1;" onchange="updateBookReadDisplay()"></select>
       </div>
       <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:8px;">
         <span style="font-size:12px;color:var(--text-dim);">设定时长</span>
@@ -1920,6 +1924,55 @@ input, textarea, select { font-family: inherit; outline: none; }
         <button class="btn btn-primary btn-sm" id="bookTimerStartBtn" onclick="toggleBookTimer()">开始阅读</button>
         <button class="btn btn-ghost btn-sm" onclick="resetBookTimer()">停止并记录</button>
         <span id="bookReadProgress" style="font-size:12px;color:var(--text-dim);"></span>
+      </div>
+    </div>
+    <!-- 典籍难度与奖励自定义面板 -->
+    <div class="panel" id="bookCfgPanel" style="display:none;margin-bottom:16px;padding:16px;">
+      <div class="panel-title" style="font-size:14px;margin-bottom:12px;">⚙️ 典籍难度与奖励自定义</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">血量倍率</label>
+          <select class="form-input" id="bookCfgHpMult">
+            <option value="0.5">0.5× 极弱</option>
+            <option value="0.7">0.7× 较弱</option>
+            <option value="0.85">0.85× 略弱</option>
+            <option value="1">1× 默认</option>
+            <option value="1.2">1.2× 略强</option>
+            <option value="1.5">1.5× 较强</option>
+            <option value="2">2× 很强</option>
+            <option value="2.5">2.5× 极强</option>
+            <option value="3">3× 地狱</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">攻击倍率</label>
+          <select class="form-input" id="bookCfgAtkMult">
+            <option value="0.5">0.5× 极弱</option>
+            <option value="0.7">0.7× 较弱</option>
+            <option value="0.85">0.85× 略弱</option>
+            <option value="1">1× 默认</option>
+            <option value="1.2">1.2× 略强</option>
+            <option value="1.5">1.5× 较强</option>
+            <option value="2">2× 很强</option>
+            <option value="2.5">2.5× 极强</option>
+            <option value="3">3× 地狱</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">额外碎片（每胜）</label>
+          <input type="number" class="form-input" id="bookCfgFrag" value="0" min="0" max="99" style="width:100%;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">额外修为（每胜·分钟）</label>
+          <input type="number" class="form-input" id="bookCfgCult" value="0" min="0" max="999" style="width:100%;">
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;">七卷统一按境界划分战力（泥胚→十五境逐卷提升，随你每日战力动态调整）；难度倍率作用于全部七卷，额外奖励在原有首通/重复奖励基础上叠加。</div>
+      <div style="text-align:right;display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-ghost" onclick="toggleBookCfg()">取消</button>
+        <button class="btn btn-primary" onclick="saveBookConfig()">保存</button>
       </div>
     </div>
     <!-- 七卷BOSS列表 -->
@@ -2161,11 +2214,13 @@ function calcMonsterStats(monster) {
   var focus200Dps = (cp.nakedAtk + focus200Atk) * (1 + cp.nakedCrit/100 * 0.5);
   // 玩家装备越强，凶兽血量也相应提升（动态难度）
   var powerScale = 1 + (cp.nakedAtk - 86) / 200;  // 裸战力越高，凶兽越强
-  var maxHp = Math.floor(focus200Dps * tier.targetRounds * zhoumuMult * diffMult * Math.min(powerScale, 2.5));
+  // 难度系数：整体下调约15%，降低各境界凶兽的血量与攻击
+  var difficultyTune = 0.85;
+  var maxHp = Math.floor(focus200Dps * tier.targetRounds * zhoumuMult * diffMult * Math.min(powerScale, 2.5) * difficultyTune);
   // 攻击基于玩家当日实际生命，dmgRatio为每回合承伤比例
   var todayFocus = getTodayFocus();
   var todayTotalHp = cp.nakedHp + Math.floor(todayFocus * 0.5);
-  var attack = Math.max(10, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult) * Math.min(powerScale, 2.0)));
+  var attack = Math.max(10, Math.floor(todayTotalHp * tier.dmgRatio * zhoumuMult * Math.sqrt(diffMult) * Math.min(powerScale, 2.0) * difficultyTune));
   // 显示名称用原境界，实际强度用前移后的境界
   return { maxHp: maxHp, attack: attack, tierName: displayTier.name, targetRounds: tier.targetRounds };
 }
@@ -2669,8 +2724,8 @@ function saveGame() {
           return m;
         });
       }
-      // 完整版（含图）尝试存备份，图片数据不直接丢
-      try { localStorage.setItem(STORAGE_KEY + '_prev', raw); } catch(e2) {}
+      // 备份存剥图后版本（大图已在保险库，备份瘦身防撑爆存储）
+      try { localStorage.setItem(STORAGE_KEY + '_prev', JSON.stringify(light)); } catch(e2) {}
       localStorage.setItem(STORAGE_KEY, JSON.stringify(light));
       // 不提示"已删图片"：自定义图片始终保存在保险库，存档只是瘦身不丢图
     } catch(e3) {
@@ -2907,7 +2962,7 @@ function renderMonsterSelector() {
     var todayKills = (gameState.dailyMonsterKills && gameState.dailyMonsterKills.kills) ? (gameState.dailyMonsterKills.kills[m.id] || 0) : 0;
     return `
     <button class="diff-btn ${prepareState.selectedMonsterId === m.id ? 'active' : ''}" data-action="select-monster" data-monster-id="${m.id}" style="display:flex;align-items:center;gap:10px;text-align:left;">
-      ${m.image ? '<img src="' + m.image + '" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;">' : '<div style="width:42px;height:42px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🐾</div>'}
+      ${(getMonsterImageUrl(m) || m.image) ? '<img src="' + (getMonsterImageUrl(m) || m.image) + '" style="width:42px;height:42px;border-radius:6px;object-fit:cover;flex-shrink:0;">' : '<div style="width:42px;height:42px;border-radius:6px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🐾</div>'}
       <div style="flex:1;min-width:0;">
         <div class="diff-name">${m.name} <span style="font-size:10px;color:var(--text-dim);">今日 ${todayKills}/2</span></div>
         <div class="diff-stats">${tc.name}</div>
@@ -3573,7 +3628,11 @@ function getStoredImages(key) { try { return JSON.parse(localStorage.getItem(key
 function setStoredImage(key, id, url) {
   var all = getStoredImages(key);
   if (url) all[id] = url; else delete all[id];
-  try { localStorage.setItem(key, JSON.stringify(all)); } catch(e) { try { localStorage.setItem(key, '{}'); } catch(e2) {} }
+  try { localStorage.setItem(key, JSON.stringify(all)); }
+  catch(e) {
+    // 存储空间不足：绝不清空已有图片库（自定义图片永不丢），本次新图放弃并提示
+    try { showToast('图片存储空间不足，本次图片未能保存（已有图片不受影响）', 'error'); } catch(e2) {}
+  }
 }
 function getStoredImage(key, id) { return getStoredImages(key)[id] || ''; }
 // 法宝/功法/消耗品图片（显示时独立键优先）
@@ -3589,6 +3648,10 @@ function savePlayerImage(url) { setStoredImage(PLAYER_IMG_KEY, 'avatar', url); }
 var MON_IMG_KEY = 'xinmo_monster_images';
 function getMonsterImageUrl(m) { if (!m) return ''; return getStoredImage(MON_IMG_KEY, m.id) || m.image || ''; }
 function saveMonsterImage(monsterId, url) { setStoredImage(MON_IMG_KEY, monsterId, url); }
+// 宗门图片保险库（敌人立绘/宗门立绘/奖励图）：大图独立存储，防止 sectors 超限丢图
+var SECT_IMG_KEY = 'xinmo_sect_images';
+function getSectStoredImage(kind, id) { return getStoredImage(SECT_IMG_KEY, kind + ':' + id); }
+function saveSectStoredImage(kind, id, url) { setStoredImage(SECT_IMG_KEY, kind + ':' + id, url); }
 function compressImage(file, cb) {
   const reader = new FileReader();
   reader.onload = (ev) => {
@@ -5084,31 +5147,31 @@ function uploadStoneImage(stoneId) {
 
 // 明朝那些事儿七卷BOSS
 const BOOK_MING_BOSSES = [
-  { id:'ming1', vol:'第一部·洪武大帝', name:'朱元璋', readReq:200, maxHp:800, attack:55,
+  { id:'ming1', vol:'第一部·洪武大帝', name:'朱元璋', readReq:200, tier:7,
     skill:{name:'废相',type:'weaken',cooldown:3,reducePct:0.4,duration:2,text:'朱元璋废黜丞相，修士攻击力下降40%（2回合）！'},
     rewardType:'fire', rewardId:'qinglian',
     desc:'白手起家，洪武雷霆。' },
-  { id:'ming2', vol:'第二部·万国来朝', name:'朱棣', readReq:300, maxHp:1100, attack:70,
+  { id:'ming2', vol:'第二部·万国来朝', name:'朱棣', readReq:300, tier:8,
     skill:{name:'五征漠北',type:'heavy',cooldown:3,mult:2.5,text:'朱棣五征漠北，雷霆重击！'},
     rewardType:'sword', rewardId:'juque',
     desc:'永乐盛世，远迈汉唐。' },
-  { id:'ming3', vol:'第三部·太监弄权', name:'王振', readReq:300, maxHp:1400, attack:85,
+  { id:'ming3', vol:'第三部·太监弄权', name:'王振', readReq:300, tier:9,
     skill:{name:'土木之变',type:'confuse',cooldown:3,text:'王振惑主，土木之变，修士心神混乱！'},
     rewardType:'random',
     desc:'宦官专权，土木堡之变。' },
-  { id:'ming4', vol:'第四部·粉饰太平', name:'朱厚照', readReq:350, maxHp:1700, attack:100,
+  { id:'ming4', vol:'第四部·粉饰太平', name:'朱厚照', readReq:350, tier:10,
     skill:{name:'豹房',type:'lifesteal',cooldown:2,healPct:0.1,text:'朱厚照设豹房，吸取修士生命！'},
     rewardType:'sword', rewardId:'shuihan',
     desc:'应州大捷，顽童天子。' },
-  { id:'ming5', vol:'第五部·帝国飘摇', name:'严嵩', readReq:400, maxHp:2100, attack:120,
+  { id:'ming5', vol:'第五部·帝国飘摇', name:'严嵩', readReq:400, tier:11,
     skill:{name:'青词祸国',type:'poison',cooldown:2,poisonPct:0.05,poisonDuration:4,text:'严嵩青词祸国，剧毒渗入经脉！'},
     rewardType:'random',
     desc:'严党乱政，海瑞罢官。' },
-  { id:'ming6', vol:'第六部·日落西山', name:'张居正', readReq:400, maxHp:2500, attack:140,
+  { id:'ming6', vol:'第六部·日落西山', name:'张居正', readReq:400, tier:12,
     skill:{name:'一条鞭法',type:'percentDmg',cooldown:3,pct:0.15,text:'张居正一条鞭法，扣除15%最大生命！'},
     rewardType:'fire', rewardId:'yunluo',
     desc:'万历新政，救时宰相。' },
-  { id:'ming7', vol:'第七部·大结局', name:'崇祯', readReq:500, maxHp:3200, attack:170,
+  { id:'ming7', vol:'第七部·大结局', name:'崇祯', readReq:500, tier:13,
     skill:{name:'煤山自缢',type:'enrage',cooldown:99,atkMult:2.0,text:'崇祯煤山自缢，狂暴！攻击翻倍！'},
     rewardType:'ultimate',
     desc:'甲申之变，明亡清兴。' },
@@ -5458,6 +5521,41 @@ function getBookInfo(bookId) {
   return null;
 }
 
+// ===== 典籍难度与奖励自定义配置 {bookId: {hpMult, atkMult, frag, cult}} =====
+function getBookConfig(bookId) {
+  try { return (JSON.parse(localStorage.getItem('xinmo_book_cfg') || '{}'))[bookId] || null; } catch(e) { return null; }
+}
+function saveBookConfig() {
+  var bookId = currentBookId || 'book_ming';
+  var hp = parseFloat(document.getElementById('bookCfgHpMult').value) || 1;
+  var atk = parseFloat(document.getElementById('bookCfgAtkMult').value) || 1;
+  var frag = parseInt(document.getElementById('bookCfgFrag').value) || 0;
+  var cult = parseInt(document.getElementById('bookCfgCult').value) || 0;
+  var all = {};
+  try { all = JSON.parse(localStorage.getItem('xinmo_book_cfg') || '{}'); } catch(e) {}
+  all[bookId] = { hpMult: hp, atkMult: atk, frag: frag, cult: cult };
+  localStorage.setItem('xinmo_book_cfg', JSON.stringify(all));
+  var p = document.getElementById('bookCfgPanel');
+  if (p) p.style.display = 'none';
+  renderBookDungeon();
+  showToast('典籍难度与奖励已保存', 'success');
+}
+function toggleBookCfg() {
+  var p = document.getElementById('bookCfgPanel');
+  if (!p) return;
+  if (p.style.display === 'none') {
+    var cfg = getBookConfig(currentBookId || 'book_ming') || {};
+    var fillSel = function(id, v) { var s = document.getElementById(id); if (s && v) s.value = String(v); };
+    fillSel('bookCfgHpMult', cfg.hpMult || 1);
+    fillSel('bookCfgAtkMult', cfg.atkMult || 1);
+    var f = document.getElementById('bookCfgFrag'); if (f) f.value = cfg.frag || 0;
+    var cu = document.getElementById('bookCfgCult'); if (cu) cu.value = cfg.cult || 0;
+    p.style.display = 'block';
+  } else {
+    p.style.display = 'none';
+  }
+}
+
 // ===== 副本文件夹/书籍创建 =====
 function showCreateFolderForm() {
   document.getElementById('createFolderForm').style.display = 'block';
@@ -5730,11 +5828,17 @@ function renderBookDungeon() {
   // BOSS列表
   var list = document.getElementById('bookBossList');
   if (!list) return;
+  var bookCfg = getBookConfig(bookId);
   list.innerHTML = bosses.map(function(b) {
     var read = getBookRead(b.id);
     var unlocked = read >= b.readReq;
     var cleared = isBookBossCleared(b.id);
     var pct = Math.min(100, Math.round(read / b.readReq * 100));
+    var diffNote = '';
+    if (bookCfg) {
+      var _hp = parseFloat(bookCfg.hpMult), _atk = parseFloat(bookCfg.atkMult);
+      if (_hp !== 1 || _atk !== 1) diffNote = ' <span style="color:var(--cinnabar-light);">(血×' + (_hp || 1) + ' 攻×' + (_atk || 1) + ')</span>';
+    }
     var rewardText = '';
     if (b.rewardDesc) rewardText = '奖励：' + b.rewardDesc;
     else if (b.rewardType === 'fire' && DUNGEON_REWARDS[b.rewardId]) rewardText = '奖励：异火·' + DUNGEON_REWARDS[b.rewardId].name;
@@ -5751,7 +5855,7 @@ function renderBookDungeon() {
       '<div class="book-boss-info">' +
         '<div class="book-boss-vol">' + b.vol + (cleared ? ' · 已通关' : '') + '</div>' +
         '<div class="book-boss-name">' + b.name + '</div>' +
-        '<div>血' + b.maxHp + ' · 攻' + b.attack + ' · 技能：' + b.skill.name + '</div>' +
+        '<div>' + (b.tier ? '境界：' + getTierConfig(b.tier || 3).name : '血' + b.maxHp + ' · 攻' + b.attack) + ' · 技能：' + b.skill.name + (diffNote || '') + '</div>' +
         '<div style="font-size:11px;color:var(--text-dim);">' + b.desc + '</div>' +
         '<div class="book-boss-reward">' + rewardText + '</div>' +
         '<div class="book-read-bar"><div class="book-read-fill" style="width:' + pct + '%;"></div></div>' +
@@ -5902,10 +6006,23 @@ function startBookBoss(bossId) {
   var read = getBookRead(bossId);
   if (read < boss.readReq) { showToast('需阅读' + boss.readReq + '分钟，当前' + read + '分钟', 'error'); return; }
   var monster = {
-    id: boss.id, name: boss.name, maxHp: boss.maxHp, attack: boss.attack,
+    id: boss.id, name: boss.name,
     image: 'https://aka.doubaocdn.com/s/uXKUSDTAi2', desc: boss.desc,
     skill: JSON.parse(JSON.stringify(boss.skill)), custom: true,
   };
+  if (boss.tier) {
+    // 境界系统：按境界动态计算血量与攻击
+    monster.tier = boss.tier;
+    var bc = getBookConfig(currentBookId || 'book_ming');
+    if (bc) {
+      if (bc.hpMult && parseFloat(bc.hpMult) !== 1) monster.hpMult = parseFloat(bc.hpMult);
+      if (bc.atkMult && parseFloat(bc.atkMult) !== 1) monster.atkMult = parseFloat(bc.atkMult);
+    }
+  } else {
+    // 旧版/自定义无境界BOSS：保留固定血量攻击
+    monster.maxHp = boss.maxHp;
+    monster.attack = boss.attack;
+  }
   startBattle(monster, {
     baseAtk: 55, baseHp: 220, context: 'bookBoss',
     onWin: function(bs) { onBookBossWin(bossId, bs); },
@@ -5949,6 +6066,24 @@ function onBookBossWin(bossId, bs) {
     dailyState.fragments += 2;
     saveDaily();
     rewardHtml += '心魔碎片+2（重复挑战）<br>';
+  }
+  // 自定义额外奖励（每胜叠加：碎片/修为）
+  var bookIdCfg = getBookConfig('book_ming');
+  for (var _bk in (gameState.customBookBosses || {})) {
+    if ((gameState.customBookBosses[_bk] || []).find(function(_b){ return _b.id === bossId; })) {
+      bookIdCfg = getBookConfig(_bk);
+      break;
+    }
+  }
+  if (bookIdCfg) {
+    if (parseInt(bookIdCfg.frag) > 0) {
+      dailyState.fragments += parseInt(bookIdCfg.frag);
+      rewardHtml += '额外碎片+' + bookIdCfg.frag + '<br>';
+    }
+    if (parseInt(bookIdCfg.cult) > 0) {
+      gameState.bonusFocus = (gameState.bonusFocus || 0) + parseInt(bookIdCfg.cult);
+      rewardHtml += '额外修为+' + bookIdCfg.cult + '分钟<br>';
+    }
   }
   saveGame();
   showBattleOverlay('战胜 ' + boss.name, boss.vol + ' 通关！' + (firstClear ? '首通奖励：' : ''),
@@ -6857,15 +6992,13 @@ function getWeekRemainingDays() {
 function handlePlayerAvatarChange(input) {
   var file = input.files[0];
   if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    gameState.playerImage = e.target.result;
-    savePlayerImage(e.target.result);
+  compressImage(file, function(dataUrl) {
+    gameState.playerImage = dataUrl;
+    savePlayerImage(dataUrl);
     saveGame();
     renderZhoumu();
     showToast('修士头像已更新', 'success');
-  };
-  reader.readAsDataURL(file);
+  });
 }
 function equipTitle(title) {
   gameState.season.equippedTitle = title;
@@ -9189,6 +9322,17 @@ function showBattleResult(result) {
     ${rewardHtml}
   `;
   overlay.style.display = 'flex';
+  // 渲染退出按钮（胜负均可退出：返回大殿 / 继续备战）
+  var resultActions = document.querySelector('.result-actions');
+  if (resultActions) {
+    var btns = [
+      { label: '返回大殿', action: "navigate('home')", primary: true },
+      { label: '继续备战', action: "navigate('prepare')", primary: false }
+    ];
+    resultActions.innerHTML = btns.map(function(b) {
+      return '<button class="btn ' + (b.primary ? 'btn-primary' : 'btn-ghost') + '" onclick="' + b.action + '">' + b.label + '</button>';
+    }).join('');
+  }
 }
 // ========== 玩法说明折叠 ==========
 function toggleHelp(id) {
@@ -9278,6 +9422,16 @@ function loadSectors() {
       return;
     }
     sectors = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_SECTORS));
+    // 宗门图片迁移：sectors 中大图（自定义上传）转存保险库并清空
+    var _mig = false;
+    sectors.forEach(function(_s0) {
+      if (_s0.image && String(_s0.image).length > 2048) { saveSectStoredImage('sect', _s0.id, _s0.image); _s0.image = ''; _mig = true; }
+      (_s0.enemies || []).forEach(function(_e3, _ei3) {
+        if (_e3.image && String(_e3.image).length > 2048) { saveSectStoredImage('enemy', _s0.id + '_' + _ei3, _e3.image); _e3.image = ''; _mig = true; }
+      });
+      if (_s0.reward && _s0.reward.image && String(_s0.reward.image).length > 2048) { saveSectStoredImage('reward', _s0.id, _s0.reward.image); _s0.reward.image = ''; _mig = true; }
+    });
+    if (_mig) saveSectors();
   } catch (e) { sectors = JSON.parse(JSON.stringify(DEFAULT_SECTORS)); }
 }
 function saveSectors() { localStorage.setItem('xinmo_sectors', JSON.stringify(sectors)); }
@@ -9290,11 +9444,17 @@ function openSectEditor(sectId) {
   if (sectId) {
     var s = getSectorById(sectId);
     sectEditorState = { editingId: sectId, enemies: JSON.parse(JSON.stringify(s.enemies)), reward: JSON.parse(JSON.stringify(s.reward || {})) };
+    // 从保险库回填大图（sectors 里大图已剥出独立保存）
+    sectEditorState.enemies.forEach(function(_e0, _ei0) {
+      var _vi0 = getSectStoredImage('enemy', sectId + '_' + _ei0);
+      if (_vi0 && !_e0.image) _e0.image = _vi0;
+    });
+    if (!sectEditorState.reward.image) sectEditorState.reward.image = getSectStoredImage('reward', sectId) || '';
     document.getElementById('sectEditorTitle').textContent = '编辑宗门：' + s.name;
     document.getElementById('sectEditorName').value = s.name;
     document.getElementById('sectEditorIcon').value = s.icon || '';
     document.getElementById('sectEditorDesc').value = s.desc || '';
-    document.getElementById('sectEditorImage').value = s.image || '';
+    document.getElementById('sectEditorImage').value = getSectStoredImage('sect', sectId) || s.image || '';
     document.getElementById('sectDeleteBtn').style.display = 'inline-block';
   } else {
     sectEditorState = { editingId: null, enemies: [{ name: '宗门弟子', tier: 2, skillKey: 'none' }], reward: { name: '宗门秘宝', type: 'gongfa', power: 20, crit: 5, affixes: [], effect: '' } };
@@ -9394,7 +9554,7 @@ function saveSect() {
     name: name, icon: document.getElementById('sectEditorIcon').value.trim() || '🏯',
     desc: document.getElementById('sectEditorDesc').value.trim(),
     image: document.getElementById('sectEditorImage').value.trim() || '',
-    enemies: sectEditorState.enemies.filter(function(e) { return e.name && e.name.trim(); }),
+    enemies: sectEditorState.enemies.filter(function(e) { return e.name && e.name.trim(); }).map(function(e){ return JSON.parse(JSON.stringify(e)); }),
     reward: reward,
   };
   if (sectEditorState.editingId) {
@@ -9404,6 +9564,13 @@ function saveSect() {
     data.id = 'sect_' + Date.now();
     sectors.push(data);
   }
+  // 宗门图片保险库：大图独立存储，sectors 只保留 URL（防 sectors 超限丢图）
+  var _sid2 = sectEditorState.editingId || data.id;
+  data.enemies.forEach(function(_e2, _ei2) {
+    if (_e2.image && String(_e2.image).length > 2048) { saveSectStoredImage('enemy', _sid2 + '_' + _ei2, _e2.image); _e2.image = ''; }
+  });
+  if (data.image && String(data.image).length > 2048) { saveSectStoredImage('sect', _sid2, data.image); data.image = ''; }
+  if (reward.image && String(reward.image).length > 2048) { saveSectStoredImage('reward', _sid2, reward.image); reward.image = ''; }
   saveSectors();
   closeSectEditor();
   showToast('宗门已保存', 'success');
@@ -9426,8 +9593,9 @@ function renderSects() {
   var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
   grid.innerHTML = sectors.map(function(s) {
     var isCleared = cleared[s.id];
-    var iconHtml = s.image
-      ? '<img src="' + s.image + '" onclick="event.stopPropagation();showSectDetail(\'' + s.id + '\')" style="width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid rgba(212,175,55,0.35);margin-bottom:6px;cursor:pointer;">'
+    var _sIcon = getSectStoredImage('sect', s.id) || s.image || '';
+    var iconHtml = _sIcon
+      ? '<img src="' + _sIcon + '" onclick="event.stopPropagation();showSectDetail(\'' + s.id + '\')" style="width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid rgba(212,175,55,0.35);margin-bottom:6px;cursor:pointer;">'
       : '<div class="sector-icon">' + (s.icon || '🏯') + '</div>';
     return '<div class="sector-card ' + (isCleared ? 'cleared' : '') + '" onclick="showSectDetail(\'' + s.id + '\')">' +
       iconHtml +
@@ -9449,8 +9617,9 @@ function showSectDetail(sectId) {
   var cleared = JSON.parse(localStorage.getItem('xinmo_sector_cleared') || '{}');
   var isCleared = cleared[s.id];
   var html = '';
-  if (s.image) {
-    html += '<div style="text-align:center;margin-bottom:14px;"><img src="' + s.image + '" style="max-width:100%;max-height:180px;border-radius:8px;object-fit:cover;"></div>';
+  var _sImg = getSectStoredImage('sect', s.id) || s.image || '';
+  if (_sImg) {
+    html += '<div style="text-align:center;margin-bottom:14px;"><img src="' + _sImg + '" style="max-width:100%;max-height:180px;border-radius:8px;object-fit:cover;"></div>';
   }
   html += '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;line-height:1.7;">' + (s.desc || '') + '</div>';
   html += '<div style="font-size:13px;font-weight:600;color:var(--gold-light);margin-bottom:8px;">挑战路线（' + s.enemies.length + '连战）</div>';
@@ -9459,7 +9628,8 @@ function showSectDetail(sectId) {
     var skLabel = (e.skillKey && e.skillKey !== 'none' && ENEMY_SKILL_PRESETS[e.skillKey]) ? ENEMY_SKILL_PRESETS[e.skillKey].label : '';
     var tierCfg = getTierConfig(e.tier || 3);
     var isBoss = i === s.enemies.length - 1;
-    var enemyImg = e.image ? '<img src="' + e.image + '" style="width:28px;height:28px;border-radius:4px;object-fit:cover;margin-right:6px;vertical-align:middle;">' : '';
+    var _eImg = getSectStoredImage('enemy', s.id + '_' + i) || e.image || '';
+    var enemyImg = _eImg ? '<img src="' + _eImg + '" style="width:28px;height:28px;border-radius:4px;object-fit:cover;margin-right:6px;vertical-align:middle;">' : '';
     html += '<div style="display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px;align-items:center;">' +
       '<span>' + enemyImg + (i + 1) + '. ' + (isBoss ? '<b style="color:var(--cinnabar-light);">【BOSS】</b> ' : '') + e.name + (skLabel ? ' <span style="color:var(--cinnabar-light);">[' + skLabel + ']</span>' : '') + '</span>' +
       '<span style="color:' + (isBoss ? 'var(--cinnabar-light)' : 'var(--gold-light)') + ';font-weight:600;">' + tierCfg.name + '</span></div>';
@@ -9505,7 +9675,7 @@ function runNextSectBattle() {
   var monsterObj = {
     id: 'sect_' + s.id + '_' + sectRun.enemyIndex,
     name: enemy.name, maxHp: stats.maxHp, attack: stats.attack,
-    image: enemy.image || 'https://aka.doubaocdn.com/s/tUOlUrUx0F',
+    image: getSectStoredImage('enemy', s.id + '_' + sectRun.enemyIndex) || enemy.image || 'https://aka.doubaocdn.com/s/tUOlUrUx0F',
     skill: skillFromPreset(enemy.skillKey),
     tier: enemy.tier || 3,
   };
