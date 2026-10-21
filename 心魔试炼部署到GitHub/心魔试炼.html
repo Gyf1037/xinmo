@@ -2617,6 +2617,21 @@ function loadSave() {
     }
   }
   if (needRestore) saveGame();
+  // 老存档大图一次性迁移进保险库（图片永不删；存档瘦身，避免频繁触发存储降级）
+  var _migrated = false;
+  ['gongfa','permanent','consumable'].forEach(function(cat) {
+    (gameState.equipment[cat] || []).forEach(function(eq) {
+      if (eq.image && String(eq.image).length > 2048) { saveEquipImage(eq.id, eq.image); eq.image = ''; _migrated = true; }
+    });
+  });
+  (gameState.monsters || []).forEach(function(mm) {
+    if (mm.image && String(mm.image).length > 2048) { saveMonsterImage(mm.id, mm.image); mm.image = ''; _migrated = true; }
+  });
+  if (gameState.playerImage && String(gameState.playerImage).length > 2048) { savePlayerImage(gameState.playerImage); gameState.playerImage = ''; _migrated = true; }
+  (gameState.swordInscriptions || []).forEach(function(ins2) {
+    if (ins2.image && String(ins2.image).length > 2048) { saveInscriptionImage(ins2.id, ins2.image); ins2.image = ''; _migrated = true; }
+  });
+  if (_migrated) saveGame();
 }
 function saveGame() {
   var raw;
@@ -2657,7 +2672,7 @@ function saveGame() {
       // 完整版（含图）尝试存备份，图片数据不直接丢
       try { localStorage.setItem(STORAGE_KEY + '_prev', raw); } catch(e2) {}
       localStorage.setItem(STORAGE_KEY, JSON.stringify(light));
-      if (typeof showToast === 'function') showToast('存储空间不足：已临时清理部分图片，核心进度已保存，可重新上传图片', 'warn');
+      // 不提示"已删图片"：自定义图片始终保存在保险库，存档只是瘦身不丢图
     } catch(e3) {
       console.warn('降级保存也失败', e3);
     }
@@ -7343,20 +7358,31 @@ function switchAdventureMap(mapId) {
     return;
   }
   gameState.adventure.currentMap = mapId;
-  // 首次进入该地图时随机生成事件布局
-  if (!(gameState.adventure.mapLayouts || {})[mapId]) randomizeMapLayout(mapId);
-  // 进入地图：全未知（迷雾不露出格子），事件已重新随机分布
-  gameState.adventure.explored = {};
-  if (!gameState.adventure.mapState) gameState.adventure.mapState = {};
-  gameState.adventure.mapState[mapId] = {};
-  gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
+  var _clearedMap = (gameState.adventure.clearedMaps || []).indexOf(mapId) >= 0;
+  if (_clearedMap) {
+    // 已通关的地图：不初始化，保留已探索/已清理状态，继续探索
+    if (!gameState.adventure.mapState) gameState.adventure.mapState = {};
+    gameState.adventure.explored = {};
+    var _st = gameState.adventure.mapState[mapId] || {};
+    for (var _k in _st) {
+      if (_st[_k] && (_st[_k].revealed || _st[_k].cleared)) gameState.adventure.explored[_k] = true;
+    }
+    showToast('进入' + map.name + '（继续探索）', 'info');
+  } else {
+    // 未通关：首次进入随机生成事件布局；进入后全未知（迷雾不露格子），事件重新随机分布
+    if (!(gameState.adventure.mapLayouts || {})[mapId]) randomizeMapLayout(mapId);
+    gameState.adventure.explored = {};
+    if (!gameState.adventure.mapState) gameState.adventure.mapState = {};
+    gameState.adventure.mapState[mapId] = {};
+    gameState.adventure.playerPos = { x: map.start.x, y: map.start.y };
+    showToast('进入' + map.name + '（迷雾重置，事件重新分布）', 'info');
+  }
   gameState.adventure.weather = '';
   // 切换地图时清空临时buff/debuff
   gameState.adventure.mapBuffs = [];
   gameState.adventure.mapDebuffs = [];
   saveGame();
   renderAdventureMap();
-  showToast('进入' + map.name + '（迷雾重置，事件重新分布）', 'info');
 }
 
 function resetAdventureMap() {
@@ -9195,41 +9221,46 @@ function skillFromPreset(key) {
 const DEFAULT_SECTORS = [
   { id: 'qingyun', name: '青云宗', icon: '⛰️', desc: '正道魁首，剑法通神，以凌厉剑意为尊。',
     enemies: [
-      { name: '青云外门弟子', tier: 2, skillKey: 'none' },
-      { name: '青云内门弟子', tier: 3, skillKey: 'heavy' },
-      { name: '青云执法长老', tier: 5, skillKey: 'heavy' },
-      { name: '掌门·剑痴', tier: 7, skillKey: 'enrage' },
+      { name: '青云宗杂役', tier: 2, skillKey: 'none', image: 'https://aka.doubaocdn.com/s/e660VG7HsO' },
+      { name: '青云宗弟子', tier: 3, skillKey: 'heavy', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '青云宗嫡传', tier: 4, skillKey: 'heavy', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '青云宗长老', tier: 5, skillKey: 'enrage', image: 'https://aka.doubaocdn.com/s/PVzpUsQPSr' },
+      { name: '宗主·剑痴', tier: 7, skillKey: 'enrage' },
     ],
     reward: { name: '青云剑诀', type: 'gongfa', categoryId: 'cat_jianjue', power: 32, crit: 10, affixes: [{ type: 'execute', value: 25 }, { type: 'multiHit', value: 15 }], effect: '青云宗镇宗剑诀，剑出如山，遇弱则强。' } },
   { id: 'tianjian', name: '天剑门', icon: '⚔️', desc: '攻伐无双，门下皆为剑中狂客，只求一剑破万法。',
     enemies: [
-      { name: '天剑门剑客', tier: 2, skillKey: 'none' },
-      { name: '天剑门剑狂', tier: 4, skillKey: 'enrage' },
-      { name: '天剑门长老', tier: 5, skillKey: 'heavy' },
+      { name: '天剑门杂役', tier: 2, skillKey: 'none', image: 'https://aka.doubaocdn.com/s/e660VG7HsO' },
+      { name: '天剑门弟子', tier: 3, skillKey: 'enrage', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '天剑门嫡传', tier: 4, skillKey: 'enrage', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '天剑门长老', tier: 5, skillKey: 'heavy', image: 'https://aka.doubaocdn.com/s/PVzpUsQPSr' },
       { name: '门主·剑无极', tier: 8, skillKey: 'enrage' },
     ],
     reward: { name: '天剑秘录', type: 'gongfa', categoryId: 'cat_jianjue', power: 45, crit: 18, affixes: [{ type: 'execute', value: 30 }], effect: '天剑门至高秘录，攻伐之凌厉冠绝天下。' } },
   { id: 'wandu', name: '万毒谷', icon: '☠️', desc: '毒道至尊，谷中遍地毒物，入谷者九死一生。',
     enemies: [
-      { name: '万毒谷药童', tier: 2, skillKey: 'poison' },
-      { name: '万毒谷弟子', tier: 3, skillKey: 'poison' },
-      { name: '万毒谷长老', tier: 5, skillKey: 'poison' },
+      { name: '万毒谷杂役', tier: 2, skillKey: 'poison', image: 'https://aka.doubaocdn.com/s/e660VG7HsO' },
+      { name: '万毒谷弟子', tier: 3, skillKey: 'poison', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '万毒谷嫡传', tier: 4, skillKey: 'poison', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '万毒谷长老', tier: 5, skillKey: 'poison', image: 'https://aka.doubaocdn.com/s/PVzpUsQPSr' },
       { name: '谷主·毒圣', tier: 7, skillKey: 'poison' },
     ],
     reward: { name: '万毒真经', type: 'gongfa', categoryId: 'cat_xinfa', power: 20, crit: 5, affixes: [{ type: 'poison', value: 35 }, { type: 'lifesteal', value: 10 }], effect: '万毒谷镇谷真经，淬毒于兵刃，触之即溃。' } },
   { id: 'liehuo', name: '烈火宗', icon: '🔥', desc: '以火入道，焚尽一切，门下弟子性情暴烈如火。',
     enemies: [
-      { name: '烈火宗杂役', tier: 2, skillKey: 'none' },
-      { name: '烈火宗弟子', tier: 3, skillKey: 'burn' },
-      { name: '烈火宗长老', tier: 5, skillKey: 'burn' },
-      { name: '宗主·炎尊', tier: 7, skillKey: 'burn' },
+      { name: '烈火宗杂役', tier: 2, skillKey: 'none', image: 'https://aka.doubaocdn.com/s/e660VG7HsO' },
+      { name: '烈火宗弟子', tier: 3, skillKey: 'burn', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '烈火宗嫡传', tier: 4, skillKey: 'burn', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '烈火宗长老', tier: 5, skillKey: 'burn', image: 'https://aka.doubaocdn.com/s/PVzpUsQPSr' },
+      { name: '宗主·炎尊', tier: 7, skillKey: 'burn', image: 'https://aka.doubaocdn.com/s/2VbuMPGvrt' },
     ],
     reward: { name: '烈焰心法', type: 'gongfa', categoryId: 'cat_xinfa', power: 25, crit: 8, affixes: [{ type: 'burn', value: 40 }, { type: 'hp', value: 60 }], effect: '烈火宗秘传心法，以烈焰淬炼己身。' } },
   { id: 'xuanbing', name: '玄冰阁', icon: '❄️', desc: '冰道圣地，寒气彻骨，擅长以冰寒之力冻结敌胆。',
     enemies: [
-      { name: '玄冰阁侍女', tier: 2, skillKey: 'none' },
-      { name: '玄冰阁弟子', tier: 3, skillKey: 'weaken' },
-      { name: '玄冰阁长老', tier: 5, skillKey: 'confuse' },
+      { name: '玄冰阁杂役', tier: 2, skillKey: 'none', image: 'https://aka.doubaocdn.com/s/e660VG7HsO' },
+      { name: '玄冰阁弟子', tier: 3, skillKey: 'weaken', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '玄冰阁嫡传', tier: 4, skillKey: 'confuse', image: 'https://aka.doubaocdn.com/s/58NY7adtMq' },
+      { name: '玄冰阁长老', tier: 5, skillKey: 'weaken', image: 'https://aka.doubaocdn.com/s/PVzpUsQPSr' },
       { name: '阁主·冰皇', tier: 8, skillKey: 'weaken' },
     ],
     reward: { name: '玄冰护体诀', type: 'gongfa', categoryId: 'cat_xinfa', power: 18, crit: 5, affixes: [{ type: 'shield', value: 80 }, { type: 'thorns', value: 15 }, { type: 'hp', value: 80 }], effect: '玄冰阁护阁神功，冰盾护体，反噬来敌。' } },
@@ -9239,6 +9270,13 @@ var currentSectId = null;
 function loadSectors() {
   try {
     var raw = localStorage.getItem('xinmo_sectors');
+    // 版本迁移：旧存档宗门（4档无图）升级为 5 档（杂役/弟子/嫡传/长老/宗主）并配图
+    if (!localStorage.getItem('xinmo_sectors_v5')) {
+      sectors = JSON.parse(JSON.stringify(DEFAULT_SECTORS));
+      saveSectors();
+      localStorage.setItem('xinmo_sectors_v5', '1');
+      return;
+    }
     sectors = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_SECTORS));
   } catch (e) { sectors = JSON.parse(JSON.stringify(DEFAULT_SECTORS)); }
 }
